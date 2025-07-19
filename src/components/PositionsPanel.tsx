@@ -49,7 +49,8 @@ export function PositionsPanel({ positions, setPositions }: PositionParams) {
                         newPnlAbs = (p.entry - p.ltp) * newQty;
                     }
 
-                    newPnlPct = (newPnlAbs / (p.entry * newQty)) * 100;
+                    // Ensure division by zero is handled if entry * newQty is 0
+                    newPnlPct = (p.entry * newQty) !== 0 ? (newPnlAbs / (p.entry * newQty)) * 100 : 0;
 
                     return {
                         ...p,
@@ -65,20 +66,19 @@ export function PositionsPanel({ positions, setPositions }: PositionParams) {
 
     return (
         <Card className={clsx(
-            "h-full",
+            "h-full flex flex-col",
             isDark ? "bg-gray-900 border-gray-800" : "bg-white border-gray-200"
         )}>
-            <CardHeader className="pb-4">
+            <CardHeader className='-mt-2'>
                 <CardTitle className={clsx(
                     "text-lg font-medium",
                     isDark ? "text-gray-100" : "text-gray-900"
                 )}>Positions</CardTitle>
             </CardHeader>
-
-            <CardContent className="space-y-4">
-                <div className="overflow-x-auto">
+            <CardContent className="flex-grow flex flex-col overflow-hidden -mt-6">
+                <div className="flex-grow overflow-y-auto overflow-x-auto hide-scrollbar">
                     <Table>
-                        <TableHeader>
+                        <TableHeader className="sticky top-0 bg-inherit z-10 ">
                             <TableRow className={clsx(
                                 isDark ? "border-gray-700 hover:bg-gray-800" : "border-gray-200 hover:bg-gray-50"
                             )}>
@@ -87,7 +87,7 @@ export function PositionsPanel({ positions, setPositions }: PositionParams) {
                                     'LTP', 'Delta', 'P&L', 'Lots', 'Actions'
                                 ].map(h => (
                                     <TableHead key={h} className={clsx(
-                                        "text-xs text-center font-medium",
+                                        "text-xs text-center font-medium min-w-[70px]",
                                         isDark ? "text-gray-300" : "text-gray-700"
                                     )}>{h}</TableHead>
                                 ))}
@@ -177,7 +177,7 @@ export function PositionsPanel({ positions, setPositions }: PositionParams) {
 
 
                 <div className={clsx(
-                    "border-t pt-4",
+                    "border-t pt-4 mt-auto", // `mt-auto` pushes it to the bottom of the flex container (CardContent)
                     isDark ? "border-gray-700" : "border-gray-200"
                 )}>
                     <div className="flex justify-between mb-4">

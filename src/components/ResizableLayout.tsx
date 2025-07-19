@@ -199,6 +199,7 @@ export function ResizableLayout({ date, time, setMeta, meta, theme }: LayoutPara
                                 date={date}
                                 time={time}
                                 theme={theme}
+                                positions={positions}
                                 bulkData={bulkData}
                                 onAddPosition={addPosition}
                                 selectedExpiry={selectedExpiry!}
@@ -216,7 +217,7 @@ export function ResizableLayout({ date, time, setMeta, meta, theme }: LayoutPara
                             <PayoffChart positions={positions} spotPrice={meta.spot} />
                         </ResizablePanel>
                         <ResizableHandle withHandle />
-                        <ResizablePanel defaultSize={35} minSize={25}>
+                        <ResizablePanel defaultSize={45} minSize={25}>
                             <PositionsPanel
                                 positions={positions}
                                 setPositions={setPositions}
