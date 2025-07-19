@@ -1,7 +1,7 @@
 // components/PayoffChart.tsx
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import type { PositionRow } from '@/lib/PositionType';
 
 // interface Meta {
