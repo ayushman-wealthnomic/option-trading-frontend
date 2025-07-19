@@ -1,115 +1,54 @@
-import React, { useState } from 'react';
-import { Menu, X, ArrowRight, MessageCircle, Twitter, Instagram, Linkedin, Youtube } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-function Home() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+const Home = () => {
   const navigate = useNavigate();
-
   return (
-    <div className="min-h-screen text-white relative overflow-hidden flex flex-col w-screen">
-      <div className="absolute inset-0 z-0">
-        <img
-          src="/cover.jpg"
-          alt="Industrial background"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-opacity-70"></div>
-      </div>
-
-      <header className="relative z-10 flex items-center justify-between p-6 lg:px-12">
-        <button
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="lg:hidden p-2 hover:bg-white hover:bg-opacity-10 rounded-md transition-colors"
-        >
-          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-
-        {/* Logo */}
+    <div className="min-h-screen bg-white text-black flex flex-col items-center w-screen">
+      <header className="w-full flex justify-between items-center px-8 py-6 border-b border-gray-200">
         <div className="flex items-center space-x-2">
-          <span className="text-2xl font-bold">100X</span>
-          <span className="text-2xl font-bold">SPACE</span>
-          <img
-            src="/logo.png"
-            alt="100X Space Logo" // Changed alt text to be more specific
-            className="w-[98px] h-[47px] object-cover"
-          />
+          <h1 className="text-2xl font-bold">WEALTHNOMIC</h1>
+          <img src="./logo-black.png" alt="Wealthnomic Bear Logo" className="w-[79px] h-[43px]" />
         </div>
-
-        <nav className="hidden lg:flex items-center space-x-8">
-          <a href="#" className="hover:text-gray-300 transition-colors">Mission</a>
-          <a href="#" className="hover:text-gray-300 transition-colors">Blog</a>
-          <a href="#" className="hover:text-gray-300 transition-colors">Sign Up</a>
-          <a href="#" className="hover:text-gray-300 transition-colors">Login</a>
-        </nav>
-
-        <div className="lg:hidden w-10"></div>
+        <button
+          className="text-lg font-medium hover:underline"
+          onClick={() => { navigate('/dashboard'); }}
+        >
+          Signup/ Login
+        </button>
       </header>
 
-
-      {isMenuOpen && (
-        <div className="lg:hidden absolute top-20 left-0 right-0 z-20 bg-black bg-opacity-95 backdrop-blur-sm">
-          <nav className="flex flex-col p-6 space-y-4">
-            <a href="#" className="text-lg hover:text-gray-300 transition-colors">Mission</a>
-            <a href="#" className="text-lg hover:text-gray-300 transition-colors">Blog</a>
-            <a href="#" className="text-lg hover:text-gray-300 transition-colors">Sign Up</a>
-            <a href="#" className="text-lg hover:text-gray-300 transition-colors">Login</a>
-          </nav>
+      <main className="flex-grow flex flex-col items-center justify-center pt-16 pb-24 relative w-full">
+        <div className="flex items-center space-x-2 px-6 py-3 rounded-full w-4/5 max-w-lg mb-20 relative">
+          <span className="text-xl text-slate-500">Made with</span>
+          <img src="./heart.png" alt="Wealthnomic Bear Logo" className="w-[56px] h-[56px]" />
+          <span className="text-xl text-slate-500">for all investors and traders ...</span>
         </div>
-      )}
 
-      {/* Main content now takes up available space */}
-      <main className="relative z-10 flex flex-col justify-center px-6 lg:px-12 pb-32 flex-grow"> {/* Removed min-h-screen, Added flex-grow */}
-        <div className="max-w-4xl">
-          <h1 className="text-6xl sm:text-7xl lg:text-8xl xl:text-9xl font-bold mb-4 leading-none">
-            Discover
-          </h1>
-          <p className="text-2xl sm:text-3xl lg:text-4xl text-gray-400 mb-12 font-light">
-            the strategy
-          </p>
-
-          <div className="mb-12">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold mb-2">
-              INDIA'S FIRST AI DRIVEN
-            </h2>
-            <h2 className="text-xl sm:text-2xl lg:text-3xl font-semibold">
-              Trading PLATFORM
-            </h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8 px-4 w-full max-w-6xl">
+          <div className="flex flex-col items-center text-center">
+            <img src="./fundamental.png" alt="Fundamental Logo" className='w-[88px] h-[88px]' />
+            <span className="mt-2 text-lg font-medium">Fundamental</span>
           </div>
-
-          {/* CTA Button */}
-          <button onClick={() => { navigate('/dashboard') }} className="inline-flex items-center space-x-3 border-2 border-white px-8 py-4 hover:bg-white hover:text-black transition-all duration-300 group">
-            <span className="text-lg font-medium">EXPLORE PLATFORM</span>
-            <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform duration-300" />
-          </button>
+          <div className="flex flex-col items-center text-center">
+            <img src="./options.png" alt="Options Logo" className='w-[88px] h-[88px]' />
+            <span className="mt-2 text-lg font-medium">Options</span>
+          </div>
+          <div className="flex flex-col items-center text-center">
+            <img src="./technical.png" alt="Technicals Logo" className='w-[88px] h-[88px]' />
+            <span className="mt-2 text-lg font-medium">Technicals</span>
+          </div>
+          <div className="flex flex-col items-center text-center">
+            <img src="./indian-market.png" alt="Indian Markets Logo" className='w-[88px] h-[88px]' />
+            <span className="mt-2 text-lg font-medium">Indian Markets</span>
+          </div>
+          <div className="flex flex-col items-center text-center">
+            <img src="./global-market.png" alt="Global Markets Logo" className='w-[88px] h-[88px]' />
+            <span className="mt-2 text-lg font-medium">Global Markets</span>
+          </div>
         </div>
       </main>
-
-      <footer className="relative z-10 flex flex-col sm:flex-row items-center justify-between p-6 lg:px-12">
-        <p className="text-sm text-gray-400 mb-4 sm:mb-0">
-          © 100X SPACE INVESTMENT TECHNOLOGIES PVT LTD 2022
-        </p>
-
-        <div className="flex items-center space-x-4">
-          <a href="#" className="p-2 hover:bg-white hover:bg-opacity-10 hover:text-black rounded-full transition-colors">
-            <MessageCircle size={20} />
-          </a>
-          <a href="#" className="p-2 hover:bg-white hover:bg-opacity-10 hover:text-black rounded-full transition-colors">
-            <Youtube size={20} />
-          </a>
-          <a href="#" className="p-2 hover:bg-white hover:bg-opacity-10 hover:text-black rounded-full transition-colors">
-            <Twitter size={20} />
-          </a>
-          <a href="#" className="p-2 hover:bg-white hover:bg-opacity-10  hover:text-black rounded-full transition-colors">
-            <Instagram size={20} />
-          </a>
-          <a href="#" className="p-2 hover:bg-white hover:bg-opacity-10 hover:text-black rounded-full transition-colors">
-            <Linkedin size={20} />
-          </a>
-        </div>
-      </footer>
     </div>
   );
-}
+};
 
 export default Home;
