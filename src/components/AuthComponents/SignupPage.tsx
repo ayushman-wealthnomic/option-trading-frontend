@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { toast } from "sonner" // Assuming sonner is installed and Toaster is rendered
 import { supabase } from '../../lib/supabase'; // Your frontend supabase client
+import { baseURL } from '@/lib/baseURL';
 
 export function SignupPage() {
     const [email, setEmail] = useState('');
@@ -20,7 +21,7 @@ export function SignupPage() {
         setLoading(true);
 
         try {
-            const response = await fetch('http://localhost:3000/api/user/register', { // <--- IMPORTANT: Replace with your actual backend URL
+            const response = await fetch(`${baseURL}/user/register`, { // <--- IMPORTANT: Replace with your actual backend URL
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

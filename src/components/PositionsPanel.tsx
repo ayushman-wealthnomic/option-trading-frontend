@@ -8,6 +8,7 @@ import type { SetStateAction } from 'react';
 import { useTheme } from '@/hooks/useTheme';
 import { supabase } from '@/lib/supabase';
 import { format } from 'date-fns'; // Import format from date-fns for YYYY-MM-DD string
+import { baseURL } from '@/lib/baseURL';
 
 interface PositionParams {
     date: Date;
@@ -69,7 +70,7 @@ export function PositionsPanel({ positions, setPositions, date }: PositionParams
                     return;
                 }
 
-                const response = await fetch('http://localhost:3000/api/positions', {
+                const response = await fetch(`${baseURL}/api/positions`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
