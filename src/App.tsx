@@ -7,21 +7,38 @@ import Home from "./pages/Index";
 import { LoginPage } from "./components/AuthComponents/LoginPage";
 import { SignupPage } from "./components/AuthComponents/SignupPage";
 import { UserActivityHeatmap } from "./components/HeatMap";
+import { AuthProvider } from "./components/AuthComponents/AuthContext";
+import { ProtectedRoute } from "./components/ProtectedRoute";
 
 
 const App = () => (
   <ThemeProvider>
     <TooltipProvider>
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/profile" element={<UserActivityHeatmap />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <UserActivityHeatmap />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </ThemeProvider>

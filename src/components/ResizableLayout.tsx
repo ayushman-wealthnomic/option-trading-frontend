@@ -26,11 +26,13 @@ interface LayoutParams {
     meta: Meta;
     setMeta: Dispatch<SetStateAction<Meta>>;
     theme?: 'light' | 'dark';
+    isDisable?: boolean;
+    setIsDisable?: Dispatch<SetStateAction<boolean>>;
 }
 
 
 
-export function ResizableLayout({ date, time, setMeta, meta, theme }: LayoutParams) {
+export function ResizableLayout({ date, time, setMeta, meta, theme, isDisable, setIsDisable }: LayoutParams) {
     const [positions, setPositions] = useState<PositionRow[]>([]);
     const [selectedExpiry, setExpiry] = useState<string | undefined>('2021-01-07');
     const [bulkData, setBulkData] = useState<BulkData | undefined>();
@@ -55,6 +57,22 @@ export function ResizableLayout({ date, time, setMeta, meta, theme }: LayoutPara
         return session?.access_token;
     }
 
+
+    useEffect(() => {
+        positions.map(pos => {
+            console.log(formatDateForAPI(date));
+            if (pos.expiry == formatDateForAPI(date)) {
+                if (setIsDisable) setIsDisable(true);
+            } else {
+                if (setIsDisable) setIsDisable(false);
+            }
+        })
+
+        if (positions.length === 0) {
+            if (setIsDisable) setIsDisable(false);
+        }
+        console.log("isDisable changed:", isDisable);
+    }, [date, positions]);
 
 
     useEffect(() => {
@@ -148,6 +166,7 @@ export function ResizableLayout({ date, time, setMeta, meta, theme }: LayoutPara
 
 
 
+
     const addPosition = (
         strike: number,
         side: OptionSide,
@@ -211,6 +230,7 @@ export function ResizableLayout({ date, time, setMeta, meta, theme }: LayoutPara
                             </div>
                         ) : (
                             <OptionsChain
+                                meta={meta}
                                 date={date}
                                 time={time}
                                 theme={theme}
