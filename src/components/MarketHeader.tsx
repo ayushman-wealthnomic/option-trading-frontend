@@ -1,6 +1,5 @@
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { TrendingUp, Clock, ChevronDown, CalendarIcon, ChevronRight, ChevronLeft, ChevronFirst, ChevronLast, Moon, Sun } from "lucide-react";
+import { TrendingUp, ChevronDown, CalendarIcon, ChevronRight, ChevronLeft, ChevronFirst, ChevronLast, Moon, Sun, UserRound } from "lucide-react";
 import { useEffect, useState } from "react";
 import { baseURL } from "@/lib/baseURL";
 import {
@@ -16,6 +15,8 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { useTheme } from "@/hooks/useTheme";
+import { supabase } from "@/lib/supabase";
+import { useNavigate } from "react-router-dom";
 
 interface Meta {
     dayOpen: number;
@@ -35,6 +36,7 @@ interface HeaderParams {
 export function MarketHeader({ selectedDate, selectedTime, setSelectedDate, setSelectedTime, meta }: HeaderParams) {
     const [times, setTimes] = useState<string[]>([]);
     const { theme, toggleTheme } = useTheme();
+    const navigate = useNavigate();
 
     const handlePrevDay = () => {
         const prevDate = new Date(selectedDate);
@@ -79,6 +81,12 @@ export function MarketHeader({ selectedDate, selectedTime, setSelectedDate, setS
     };
 
 
+    const authToken = async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        return session?.access_token;
+    }
+
+
     const handleFirstTS = () => {
         if (times.length > 0) setSelectedTime(times[0]);
     }
@@ -104,6 +112,8 @@ export function MarketHeader({ selectedDate, selectedTime, setSelectedDate, setS
         return `${year}-${month}-${day}`;
     };
 
+
+
     useEffect(() => {
         const getTimesFunction = async () => {
             try {
@@ -111,7 +121,8 @@ export function MarketHeader({ selectedDate, selectedTime, setSelectedDate, setS
                 const res = await fetch(`${baseURL}/times?date=${formattedDate}`, {
                     method: 'GET',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${await authToken()}`,
                     },
                 });
                 const data = await res.json();
@@ -186,14 +197,27 @@ export function MarketHeader({ selectedDate, selectedTime, setSelectedDate, setS
                             `}
                         />
                     </button>
+                    <button
+                        onClick={() => {
+                            navigate("/profile")
+                        }}
+                        className={`
+                            relative inline-flex items-center justify-center
+                            w-10 h-10 rounded-xl
+                            transition-all duration-300 ease-in-out
+                            ${theme === 'dark'
+                                ? 'bg-gray-800 hover:bg-gray-700 border-gray-600'
+                                : 'bg-white hover:bg-gray-50 border-gray-200'
+                            }
+                            border shadow-lg hover:shadow-xl
+                        `}
+                        aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
+                    >
+                        <UserRound className="w-4 h-4" />
 
-                    <Badge variant="outline" className={`${theme === 'dark'
-                        ? 'bg-green-900/30 text-green-300 border-green-700'
-                        : 'bg-green-50 text-green-700 border-green-200'
-                        }`}>
-                        <Clock className="w-3 h-3 mr-1" />
-                        Live
-                    </Badge>
+                    </button>
+
+
                 </div>
 
                 <div className="flex items-center justify-center gap-6">
@@ -204,7 +228,7 @@ export function MarketHeader({ selectedDate, selectedTime, setSelectedDate, setS
                         </div>
                         <div className={`font-bold ${theme === 'dark' ? 'text-white' : 'text-black'
                             }`}>
-                            {meta.atm_iv}
+                            {meta.atm_iv == 0 ? '-' : meta.atm_iv}
                         </div>
                     </div>
                     <div className="text-center">
@@ -214,7 +238,7 @@ export function MarketHeader({ selectedDate, selectedTime, setSelectedDate, setS
                         </div>
                         <div className={`font-bold ${theme === 'dark' ? 'text-white' : 'text-black'
                             }`}>
-                            {meta.spot}
+                            {meta.spot == 0 ? '-' : meta.spot}
                         </div>
                     </div>
                     <div className="text-center">
@@ -224,7 +248,7 @@ export function MarketHeader({ selectedDate, selectedTime, setSelectedDate, setS
                         </div>
                         <div className={`font-bold ${theme === 'dark' ? 'text-white' : 'text-black'
                             }`}>
-                            {meta.dayOpen}
+                            {meta.dayOpen == 0 ? '-' : meta.dayOpen}
                         </div>
                     </div>
                     <div className="text-center">
@@ -234,7 +258,7 @@ export function MarketHeader({ selectedDate, selectedTime, setSelectedDate, setS
                         </div>
                         <div className={`font-bold ${theme === 'dark' ? 'text-white' : 'text-black'
                             }`}>
-                            {meta.fut_price}
+                            {meta.fut_price == 0 ? '-' : meta.fut_price}
                         </div>
                     </div>
                 </div>

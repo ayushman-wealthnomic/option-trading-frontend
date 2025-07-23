@@ -12,15 +12,14 @@ const Home = () => {
         <div className='flex gap-18'>
           <button
             className="text-lg font-medium underline"
-            onClick={() => { navigate('/dashboard'); }}
           >
             About Us
           </button>
           <button
             className="text-lg font-medium underline"
-            onClick={() => { navigate('/dashboard'); }}
+            onClick={() => { navigate('/login'); }}
           >
-            Signup/ Login
+            Login
           </button>
         </div>
       </header>

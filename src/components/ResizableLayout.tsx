@@ -10,6 +10,7 @@ import { nanoid } from 'nanoid';
 import { baseURL } from '@/lib/baseURL';
 import { Loader } from 'lucide-react';
 import type { BulkData } from '@/lib/BulkDataType';
+import { supabase } from '@/lib/supabase';
 
 interface Meta {
     dayOpen: number;
@@ -35,9 +36,10 @@ export function ResizableLayout({ date, time, setMeta, meta, theme }: LayoutPara
     const [bulkData, setBulkData] = useState<BulkData | undefined>();
     const [loading, setLoading] = useState(false);
 
+
     const isWeekend = (date: Date) => {
         const day = date.getDay();
-        return day;
+        return (day === 0 || day === 6) ? true : false;
     };
 
 
@@ -48,23 +50,31 @@ export function ResizableLayout({ date, time, setMeta, meta, theme }: LayoutPara
         return `${year}-${month}-${day}`;
     };
 
+    const authToken = async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        return session?.access_token;
+    }
+
+
+
     useEffect(() => {
         console.log("Cached");
-        if (isWeekend(date) === 6) {
-            date.setDate(date.getDate() + 2);
-            return;
-        } else if (isWeekend(date) === 0) {
-            date.setDate(date.getDate() + 1);
+        if (isWeekend(date)) {
             return;
         }
         const selected = formatDateForAPI(date);
         if (bulkData && bulkData[selected]) return;
 
         const fetchAndStore = async () => {
+
             setLoading(true);
             console.log("Trigerred");
             try {
-                const res = await fetch(`${baseURL}/bulk?date=${selected}`);
+                const res = await fetch(`${baseURL}/bulk?date=${selected}`, {
+                    headers: {
+                        'Authorization': `Bearer ${await authToken()}`
+                    }
+                });
                 const data = await res.json();
                 setBulkData(prev => ({
                     ...prev,
@@ -190,6 +200,11 @@ export function ResizableLayout({ date, time, setMeta, meta, theme }: LayoutPara
             <ResizablePanelGroup direction="horizontal" className="h-full">
                 <ResizablePanel defaultSize={45} minSize={35}>
                     <>
+                        {isWeekend(date) && (
+                            <div className="flex justify-center items-center h-full">
+                                <span className="text-gray-500 dark:text-gray-400">No trading on weekends</span>
+                            </div>
+                        )}
                         {loading ? (
                             <div className="flex justify-center items-center h-full">
                                 <Loader className="w-6 h-6 animate-spin text-blue-600 dark:text-white" />
@@ -219,6 +234,7 @@ export function ResizableLayout({ date, time, setMeta, meta, theme }: LayoutPara
                         <ResizableHandle withHandle />
                         <ResizablePanel defaultSize={45} minSize={25}>
                             <PositionsPanel
+                                date={date}
                                 positions={positions}
                                 setPositions={setPositions}
                             />

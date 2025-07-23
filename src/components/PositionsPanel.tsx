@@ -6,19 +6,22 @@ import clsx from 'clsx';
 import type { PositionRow } from '@/lib/PositionType';
 import type { SetStateAction } from 'react';
 import { useTheme } from '@/hooks/useTheme';
+import { supabase } from '@/lib/supabase';
+import { format } from 'date-fns'; // Import format from date-fns for YYYY-MM-DD string
 
 interface PositionParams {
+    date: Date;
     positions: PositionRow[];
     setPositions: React.Dispatch<SetStateAction<PositionRow[]>>;
 }
 
 const LOT_SIZE = 35;
+// Helper to format date for display (e.g., "22 Jul 25")
 const fmtDate = (iso: string) =>
     new Date(iso).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: '2-digit' });
 
 
-export function PositionsPanel({ positions, setPositions }: PositionParams) {
-
+export function PositionsPanel({ positions, setPositions, date }: PositionParams) {
     const totals = positions.reduce(
         (acc, p) => {
             acc.delta += p.delta * (p.qty / LOT_SIZE);
@@ -33,7 +36,69 @@ export function PositionsPanel({ positions, setPositions }: PositionParams) {
     const deleteRow = (id: string) =>
         setPositions(prev => prev.filter(p => p.id !== id));
 
-    const clearAll = () => setPositions([]);
+    const authToken = async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        return session?.access_token;
+    }
+
+    const saveClearAll = () => {
+        if (positions.length === 0) return;
+
+        const payload = positions.map(p => ({
+            ...p,
+            lotNo: p.lotNo,
+            qty: p.qty,
+            entry: parseFloat(p.entry.toFixed(2)), // Ensure number, not string
+            ltp: parseFloat(p.ltp.toFixed(2)),     // Ensure number, not string
+            pnlAbs: parseFloat(p.pnlAbs.toFixed(2)), // Ensure number, not string
+            pnlPct: parseFloat(p.pnlPct.toFixed(2)), // Ensure number, not string
+            // IMPORTANT CHANGE HERE: Format the date prop to a 'YYYY-MM-DD' string
+            // This avoids timezone issues by sending a date-only representation.
+            end_date: format(date, 'yyyy-MM-dd'),
+            selected: true // Ensure 'selected' is included in payload
+        }));
+
+        console.log("Payload being sent:", payload);
+
+        const savePositions = async () => {
+            try {
+                const token = await authToken();
+                if (!token) {
+                    console.error('Authentication token not available.');
+                    // Optionally show a user-facing error or redirect to login
+                    return;
+                }
+
+                const response = await fetch('http://localhost:3000/api/positions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('Positions saved:', data);
+                setPositions([]); // Clear positions on successful save
+
+            } catch (error) {
+                console.error('Error saving positions:', error);
+                // Handle user feedback for the error
+            }
+        }
+
+        savePositions();
+    }
+
+    const clearAll = () => {
+        setPositions([]);
+    }
 
     const updateQty = (id: string, change: number) => {
         setPositions(prev =>
@@ -198,21 +263,28 @@ export function PositionsPanel({ positions, setPositions }: PositionParams) {
                             </span>
                         </div>
                     </div>
-
-                    <Button
-                        size="sm"
-                        variant="destructive"
-                        className={clsx(
-                            isDark
-                                ? "bg-red-600 hover:bg-red-700 text-white border-red-600 disabled:bg-gray-600 disabled:text-gray-400 disabled:border-gray-600"
-                                : "bg-red-600 hover:bg-red-700 text-white disabled:bg-gray-300 disabled:text-gray-500"
-                        )}
-                        onClick={clearAll}
-                        disabled={!positions.length}
-                    >
-                        <Trash2 className="w-3 h-3 mr-1" />
-                        Clear All
-                    </Button>
+                    <div className='flex justify-baseline items-center gap-4'>
+                        <Button
+                            size="sm"
+                            className={clsx(
+                                "bg-blue-500 hover:bg-blue-700 hover:text-white text-white disabled:bg-gray-300 disabled:text-gray-500"
+                            )}
+                            onClick={clearAll}
+                            disabled={!positions.length}
+                        >
+                            Exit all
+                        </Button>
+                        <Button
+                            size="sm"
+                            className={clsx(
+                                "bg-blue-500 hover:bg-blue-700 hover:text-white text-white disabled:bg-gray-300 disabled:text-gray-500"
+                            )}
+                            onClick={saveClearAll}
+                            disabled={!positions.length}
+                        >
+                            Exit all and Save to Trade Logs
+                        </Button>
+                    </div>
                 </div>
             </CardContent>
         </Card>
