@@ -33,6 +33,8 @@ interface LayoutParams {
 
 
 export function ResizableLayout({ date, time, setMeta, meta, theme, isDisable, setIsDisable }: LayoutParams) {
+    console.log("Time", time);
+
     const [positions, setPositions] = useState<PositionRow[]>([]);
     const [selectedExpiry, setExpiry] = useState<string | undefined>('2021-01-07');
     const [bulkData, setBulkData] = useState<BulkData | undefined>();
@@ -130,9 +132,23 @@ export function ResizableLayout({ date, time, setMeta, meta, theme, isDisable, s
                 return;
             }
             setMeta(dayData.meta);
-
             setPositions(prev =>
                 prev.map(pos => {
+
+                    const formattedStartDate = formatDateForAPI(pos.start_date);
+
+                    console.log("Start Date: ", new Date(formattedStartDate));
+                    console.log("Current Date", new Date(date));
+
+
+                    if (new Date(formattedStartDate).getDate() > new Date(date).getDate()) {
+                        return pos;
+                    }
+
+                    if (time < pos.start_time) {
+                        return pos;
+                    }
+
                     const match = dayData.chain.find((opt: { strike: number, call_ltp: number, put_ltp: number }) => opt.strike === pos.strike);
                     if (!match) return pos;
 
@@ -196,6 +212,8 @@ export function ResizableLayout({ date, time, setMeta, meta, theme, isDisable, s
             const newRow: PositionRow = {
                 id: nanoid(),
                 lotNo: prev.length + 1,
+                start_date: date,
+                start_time: time,
                 qty: lotQty,
                 strike,
                 side,

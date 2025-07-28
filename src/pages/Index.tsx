@@ -36,11 +36,11 @@ const Home = () => {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-46 mt-36 mx-auto">
-          <div className="flex flex-col items-center text-center">
+          <div className="flex flex-col items-center text-center" onClick={() => { navigate('/stock-screener') }}>
             <img src="./fundamental.png" alt="Fundamental Logo" className='w-[74px] h-[74px] font-light' />
-            <span className="mt-2 text-lg font-medium">Fundamental</span>
+            <span className="mt-2 text-lg font-medium">Screener</span>
           </div>
-          <div className="flex flex-col items-center text-center cursor-pointer" onClick={() => { navigate('/dashboard'); }}>
+          <div className="flex flex-col items-center text-center cursor-pointer" onClick={() => { navigate('/option-trading'); }}>
             <img src="./options.png" alt="Options Logo" className='w-[74px] h-[74px] font-light' />
             <span className="mt-2 text-lg font-medium">Options</span>
           </div>

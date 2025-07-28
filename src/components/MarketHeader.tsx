@@ -42,6 +42,10 @@ export function MarketHeader({ selectedDate, selectedTime, setSelectedDate, setS
     const { theme, toggleTheme } = useTheme();
     const navigate = useNavigate();
 
+    const handleDisabledCalendar = () => {
+        toast.error("Check Positions");
+    }
+
     const handlePrevDay = () => {
         const prevDate = new Date(selectedDate);
         prevDate.setDate(prevDate.getDate() - 1);
@@ -52,6 +56,10 @@ export function MarketHeader({ selectedDate, selectedTime, setSelectedDate, setS
         const nextDate = new Date(selectedDate);
         nextDate.setDate(nextDate.getDate() + 1);
         setSelectedDate(nextDate);
+    }
+
+    const handleDisabledNextDayClick = () => {
+        toast.error("Check Positions");
     }
 
     const handlePrevTS = () => {
@@ -68,6 +76,10 @@ export function MarketHeader({ selectedDate, selectedTime, setSelectedDate, setS
             setSelectedTime(times[currentIndex - 1]);
         }
     };
+
+    const handleDisabledNextTSClick = () => {
+        toast.error("Check Positions");
+    }
 
 
     const handleNextTS = () => {
@@ -278,6 +290,8 @@ export function MarketHeader({ selectedDate, selectedTime, setSelectedDate, setS
                                     }
                                 });
 
+                                await supabase.auth.signOut();
+
                                 if (res.status === 200) {
                                     navigate("/");
                                     toast.success("Logged out successfully");
@@ -343,21 +357,22 @@ export function MarketHeader({ selectedDate, selectedTime, setSelectedDate, setS
                                 required={true}
                                 defaultMonth={new Date(2021, 0, 1)}
                                 selected={selectedDate}
-                                onSelect={setSelectedDate}
+                                onSelect={isDisable ? handleDisabledCalendar : setSelectedDate}
                                 captionLayout="dropdown"
-                                className={theme === 'dark' ? 'text-white' : ''}
+                                className={theme === 'dark' ? 'text-white !bg-[#1F1F1F]' : ''}
                             />
                         </PopoverContent>
                     </Popover>
                     <div>
                         <Button
                             variant="outline"
-                            disabled={isDisable}
-                            onClick={handleNextDay}
+                            onClick={isDisable ? handleDisabledNextDayClick : handleNextDay}
                             className={`${theme === 'dark'
                                 ? 'bg-gray-800 text-gray-200 border-gray-600 hover:bg-gray-700 hover:text-white hover:scale-105 hover:shadow-lg'
                                 : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:scale-105 hover:shadow-lg'
+                                } ${isDisable ? 'opacity-50 cursor-not-allowed' : ''
                                 }`}
+                            aria-disabled={isDisable}
                         >
                             <span>Next</span>
                             <ChevronRight />
@@ -445,12 +460,17 @@ export function MarketHeader({ selectedDate, selectedTime, setSelectedDate, setS
                     <div>
                         <Button
                             variant="outline"
-                            disabled={isDisable && times.indexOf(selectedTime) === times.length - 1}
-                            onClick={handleNextTS}
+                            // Remove the `disabled` attribute
+                            // disabled={isDisable && times.indexOf(selectedTime) === times.length - 1}
+
+                            // Conditionally call the appropriate handler
+                            onClick={times.indexOf(selectedTime) === times.length - 1 ? handleDisabledNextTSClick : handleNextTS}
                             className={`${theme === 'dark'
                                 ? 'bg-gray-800 text-gray-200 border-gray-600 hover:bg-gray-700 hover:text-white hover:scale-105 hover:shadow-lg'
                                 : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:scale-105 hover:shadow-lg'
+                                } ${times.indexOf(selectedTime) === times.length - 1 ? 'opacity-50 cursor-not-allowed' : ''
                                 }`}
+                            aria-disabled={times.indexOf(selectedTime) === times.length - 1}
                         >
                             <span>Next</span>
                             <ChevronRight />

@@ -56,7 +56,7 @@ export function SignupPage() {
 
                 // Redirect only if the session is active immediately after signup
                 if (data.sessionStatus === 'active') {
-                    window.location.href = '/dashboard'; // Redirect on immediate login
+                    window.location.href = '/option-trading'; // Redirect on immediate login
                 } else {
                     // If email confirmation is required, redirect to login or show specific instructions
                     window.location.href = '/login'; // Redirect to login, where they can try after confirming

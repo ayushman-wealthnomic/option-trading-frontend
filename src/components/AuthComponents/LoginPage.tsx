@@ -55,7 +55,7 @@ export function LoginPage() {
                 // Redirect to a protected route.
                 // Now that supabase.auth.setSession() has been called,
                 // supabase.auth.getSession() will correctly return the session.
-                window.location.href = '/dashboard';
+                window.location.href = '/option-trading';
             }
         } catch (networkError) {
             console.error('Network error during login:', networkError);

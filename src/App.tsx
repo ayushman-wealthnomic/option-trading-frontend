@@ -9,6 +9,7 @@ import { SignupPage } from "./components/AuthComponents/SignupPage";
 import { UserActivityHeatmap } from "./components/HeatMap";
 import { AuthProvider } from "./components/AuthComponents/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import StockScreener from "./pages/Stock-Screener/Main";
 
 
 const App = () => (
@@ -21,7 +22,7 @@ const App = () => (
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
             <Route
-              path="/dashboard"
+              path="/option-trading"
               element={
                 <ProtectedRoute>
                   <Dashboard />
@@ -33,6 +34,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <UserActivityHeatmap />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/stock-screener"
+              element={
+                <ProtectedRoute>
+                  <StockScreener />
                 </ProtectedRoute>
               }
             />

@@ -130,6 +130,9 @@ export function PositionsPanel({ positions, setPositions, date }: PositionParams
         );
     };
 
+    console.log(positions);
+
+
     return (
         <Card className={clsx(
             "h-full flex flex-col",
@@ -142,7 +145,7 @@ export function PositionsPanel({ positions, setPositions, date }: PositionParams
                 )}>Positions</CardTitle>
             </CardHeader>
             <CardContent className="flex-grow flex flex-col overflow-hidden -mt-6">
-                <div className="bg-[#1F1F1F] flex-grow overflow-y-auto overflow-x-auto hide-scrollbar">
+                <div className={clsx("flex-grow overflow-y-auto overflow-x-auto hide-scrollbar", isDark ? "bg-[#1F1F1F]" : "bg-[#FFFFFF]")}>
                     <Table>
                         <TableHeader className="sticky top-0 bg-inherit z-10 ">
                             <TableRow className={clsx(
