@@ -1,6 +1,6 @@
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Dashboard from "./pages/Dashboard";
+import Dashboard from "./pages/Option-Trading/Dashboard";
 import NotFound from "./pages/NotFound";
 import { ThemeProvider } from "./hooks/useTheme";
 import Home from "./pages/Index";
@@ -10,6 +10,7 @@ import { UserActivityHeatmap } from "./components/HeatMap";
 import { AuthProvider } from "./components/AuthComponents/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import StockScreener from "./pages/Stock-Screener/Main";
+import IndexPlay from "./pages/IndexPlay/Main";
 
 
 const App = () => (
@@ -42,6 +43,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <StockScreener />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/index-play"
+              element={
+                <ProtectedRoute>
+                  <IndexPlay />
                 </ProtectedRoute>
               }
             />
