@@ -1,6 +1,6 @@
 import { MarketHeader } from "@/components/MarketHeader";
 import { ResizableLayout } from "@/components/ResizableLayout";
-import SEOHead from "@/components/SEOHead";
+import { useSEO } from "@/hooks/useSEO";
 import { useTheme } from "@/hooks/useTheme";
 import { seoConfig } from "@/lib/seoConfig";
 import { supabase } from "@/lib/supabase";
@@ -45,13 +45,15 @@ const Dashboard = () => {
 
         checkAuth();
     }, [])
+
+    useSEO({
+        title: seoConfig.optionTrading.title,
+        description: seoConfig.optionTrading.description,
+        keywords: seoConfig.optionTrading.keywords,
+        canonical: seoConfig.optionTrading.canonical,
+        image: '/og-option-trading.jpg'
+    });
     return (<>
-        <SEOHead
-            title={seoConfig.optionTrading.title}
-            description={seoConfig.optionTrading.description}
-            keywords={seoConfig.optionTrading.keywords}
-            canonical={seoConfig.optionTrading.canonical}
-        />
         <div className={`min-h-screen w-screen ${theme === 'dark' ? 'bg-black' : 'bg-slate-50'}`}>
             <MarketHeader meta={meta} isDisable={isDisable} setIsDisable={setIsDisable} selectedDate={selectedDate} setSelectedDate={setSelectedDate} selectedTime={selectedTime} setSelectedTime={setSelectedTime} />
             <div className="w-full max-w-none">

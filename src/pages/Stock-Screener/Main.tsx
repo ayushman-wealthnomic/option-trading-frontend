@@ -5,8 +5,8 @@ import Controls from '../../components/Stock-Screener/Controls';
 import StockGrid from '../../components/Stock-Screener/StockGrid';
 import MessageArea from '../../components/Stock-Screener/MessageArea';
 import { Toaster } from 'sonner';
-import SEOHead from '@/components/SEOHead';
 import { seoConfig } from '@/lib/seoConfig';
+import { useSEO } from '@/hooks/useSEO';
 
 function StockScreener() {
     const {
@@ -22,13 +22,15 @@ function StockScreener() {
         loading
     } = useStockData();
 
+    useSEO({
+        title: seoConfig.stockScreener.title,
+        description: seoConfig.stockScreener.description,
+        keywords: seoConfig.stockScreener.keywords,
+        canonical: seoConfig.stockScreener.canonical,
+        image: '/og-stock-screener.jpg'
+    });
+
     return (<>
-        <SEOHead
-            title={seoConfig.stockScreener.title}
-            description={seoConfig.stockScreener.description}
-            keywords={seoConfig.stockScreener.keywords}
-            canonical={seoConfig.stockScreener.canonical}
-        />
         <div className="min-h-screen w-screen p-10 md:px-40 text-gray-300 overflow-auto">
             <div className="max-w-screen-5xl mx-auto">
                 <Header

@@ -1,4 +1,4 @@
-import SEOHead from '@/components/SEOHead';
+import { useSEO } from '@/hooks/useSEO';
 import { seoConfig } from '@/lib/seoConfig';
 import { supabase } from '@/lib/supabase';
 import { CheckCircle2 } from 'lucide-react';
@@ -17,12 +17,16 @@ const Home = () => {
     authToken();
   }, [])
 
+  useSEO({
+    title: seoConfig.home.title,
+    description: seoConfig.home.description,
+    keywords: seoConfig.home.keywords,
+    canonical: seoConfig.home.canonical,
+    image: '/og-home.jpg'
+  });
+
   return (
     <>
-      <SEOHead title={seoConfig.home.title}
-        description={seoConfig.home.description}
-        keywords={seoConfig.home.keywords}
-        canonical={seoConfig.home.canonical} />
       <div className="min-h-screen bg-white text-black flex flex-col items-center w-screen">
         <header className="w-full flex justify-end-safe items-end py-6 gap-4 px-46">
           {/* <div className="flex items-center space-x-2">
