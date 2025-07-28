@@ -1,6 +1,8 @@
 import { MarketHeader } from "@/components/MarketHeader";
 import { ResizableLayout } from "@/components/ResizableLayout";
+import SEOHead from "@/components/SEOHead";
 import { useTheme } from "@/hooks/useTheme";
+import { seoConfig } from "@/lib/seoConfig";
 import { supabase } from "@/lib/supabase";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -43,13 +45,20 @@ const Dashboard = () => {
 
         checkAuth();
     }, [])
-    return (
+    return (<>
+        <SEOHead
+            title={seoConfig.optionTrading.title}
+            description={seoConfig.optionTrading.description}
+            keywords={seoConfig.optionTrading.keywords}
+            canonical={seoConfig.optionTrading.canonical}
+        />
         <div className={`min-h-screen w-screen ${theme === 'dark' ? 'bg-black' : 'bg-slate-50'}`}>
             <MarketHeader meta={meta} isDisable={isDisable} setIsDisable={setIsDisable} selectedDate={selectedDate} setSelectedDate={setSelectedDate} selectedTime={selectedTime} setSelectedTime={setSelectedTime} />
             <div className="w-full max-w-none">
                 <ResizableLayout isDisable={isDisable} setIsDisable={setIsDisable} setMeta={setMeta} theme={theme} date={selectedDate} time={selectedTime} meta={meta} />
             </div>
         </div>
+    </>
     );
 };
 
