@@ -1,3 +1,3 @@
-# Wealthnomic - OpenSource Stock Analysis and Recommendation Platform
+# Wealthnomic - Stock Recommendation Platform  
 
 Website - https://www.wealthnomic.com/

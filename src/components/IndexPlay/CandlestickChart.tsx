@@ -117,8 +117,8 @@ const CandlestickChart: React.FC<CandlestickChartProps> = ({
             type: 'datetime',
             labels: { style: { colors: '#a0aec0' } },
             tooltip: { enabled: false },
-            min: xaxisMin, // Now correctly typed as number | undefined
-            max: xaxisMax  // Now correctly typed as number | undefined
+            min: xaxisMin,
+            max: xaxisMax
         },
         yaxis: {
             tooltip: { enabled: true },

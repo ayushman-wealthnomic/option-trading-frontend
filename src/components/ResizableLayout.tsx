@@ -96,10 +96,7 @@ export function ResizableLayout({ date, time, setMeta, meta, theme, isDisable, s
                     }
                 });
                 const data = await res.json();
-                setBulkData(prev => ({
-                    ...prev,
-                    ...data,
-                }));
+                setBulkData(data);
 
             } catch (err) {
                 console.error(`Error fetching future date ${selected}`, err);

@@ -91,6 +91,10 @@ const Home = () => {
               <img src="./global-market.png" alt="Global Markets Logo" className='w-[74px] h-[74px] font-light' />
               <span className="mt-2 text-lg font-medium">Global Markets</span>
             </div>
+            <div className="flex flex-col items-center text-center cursor-pointer" onClick={() => { navigate('/charts') }}>
+              <img src="./bullish.png" alt="Bullish Logo" className='w-[74px] h-[74px] font-light' />
+              <span className="mt-2 text-lg font-medium">Technical Analysis</span>
+            </div>
           </div>
         </main>
       </div>

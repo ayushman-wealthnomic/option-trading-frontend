@@ -10,7 +10,7 @@ import PlotButtons from '../../components/IndexPlay/PlotButtons';
 // For simplicity in this example, they are placed here.
 import { calculateSMA, calculateEMA, calculatePSAR } from '../../lib/chartCalculations';
 
-const SERVER_URL = 'http://127.0.0.1:5000';
+const SERVER_URL = 'https://flask-server-elds.onrender.com';
 const INITIAL_DATA_POINTS = 40;
 const VISIBLE_WINDOW_SIZE = 60;
 
@@ -200,11 +200,12 @@ function IndexPlay() { // Specify return type as JSX.Element
     }, [selectedTimeframe, loadSelectedData]);
 
     return (
-        <div className="container mx-auto p-4 sm:p-6 lg:p-8 w-screen">
+        <div className="p-10 sm:p-6 lg:px-20 w-screen">
             <ChartCard>
                 <Header
                     lastPriceInfo={lastPriceInfo}
                     onToggleIndicatorPanel={() => setIsIndicatorPanelHidden(prev => !prev)}
+                    isIndicatorPanelHidden={isIndicatorPanelHidden}
                 />
 
                 <Controls
