@@ -1,26 +1,22 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Check } from "lucide-react";
-import { cn } from "@/lib/utils"; // helper for classNames
+import { cn } from "@/lib/utils";
 
-import stockList from '../../../data/stockList.json' // your static JSON
+import stockList from '../../../data/stockList.json';
 
 interface StockSearchDropdownProps {
-    selectedStock: string;
-    setSelectedStock: React.Dispatch<React.SetStateAction<string>>;
+    selectedStock: string | null;
+    setSelectedStock: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-export default function StockSearchDropdown({ selectedStock, setSelectedStock }: StockSearchDropdownProps) {
-    const [stocks, setStocks] = useState<string[]>([]);
+export default function
+    StockSearchDropdown({ selectedStock, setSelectedStock }: StockSearchDropdownProps) {
     const [open, setOpen] = useState(false);
-
-    useEffect(() => {
-        setStocks(stockList); // load from JSON
-    }, []);
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
@@ -40,22 +36,22 @@ export default function StockSearchDropdown({ selectedStock, setSelectedStock }:
                     <CommandList>
                         <CommandEmpty>No stock found.</CommandEmpty>
                         <CommandGroup>
-                            {stocks.map((stock) => (
+                            {Object.entries(stockList).map(([ticker, fullName]) => (
                                 <CommandItem
-                                    key={stock}
-                                    value={stock}
-                                    onSelect={(currentValue) => {
-                                        setSelectedStock(currentValue);
+                                    key={ticker}
+                                    value={`${fullName} ${ticker}`}
+                                    onSelect={() => {
+                                        setSelectedStock(ticker);
                                         setOpen(false);
                                     }}
                                 >
                                     <Check
                                         className={cn(
                                             "mr-2 h-4 w-4",
-                                            selectedStock === stock ? "opacity-100" : "opacity-0"
+                                            selectedStock === ticker ? "opacity-100" : "opacity-0"
                                         )}
                                     />
-                                    {stock}
+                                    {ticker} {/* Only ticker visible */}
                                 </CommandItem>
                             ))}
                         </CommandGroup>

@@ -15,8 +15,8 @@ interface WatchlistStock {
 }
 
 interface TechAnalysisProps {
-    selectedStock: string;
-    setSelectedStock: React.Dispatch<React.SetStateAction<string>>;
+    selectedStock: string | null;
+    setSelectedStock: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 const TechAnalysis = ({ setSelectedStock }: TechAnalysisProps) => {

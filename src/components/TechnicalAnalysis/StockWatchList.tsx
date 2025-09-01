@@ -15,7 +15,7 @@ interface WatchlistStock {
 
 interface StockWatchlistProps {
     watchlists: WatchlistStock[];
-    onStockSelect?: React.Dispatch<React.SetStateAction<string>>;
+    onStockSelect?: React.Dispatch<React.SetStateAction<string | null>>;
     onAddStock?: (symbol: string) => void;
     onRemoveStock: (stockId: string) => void;
 }
@@ -35,11 +35,20 @@ const StockWatchlist = ({
             setFilteredStocks([]);
             return;
         }
-        const q = searchQuery.toUpperCase();
-        setFilteredStocks(
-            stockList.filter((ticker) => ticker.toUpperCase().includes(q)).slice(0, 10) // limit results
-        );
+
+        const q = searchQuery.toLowerCase();
+
+        // Search by ticker OR full company name
+        const matches = Object.entries(stockList)
+            .filter(([ticker, fullName]) =>
+                ticker.toLowerCase().includes(q) || fullName.toLowerCase().includes(q)
+            )
+            .map(([ticker]) => ticker) // only keep ticker for UI
+            .slice(0, 10);
+
+        setFilteredStocks(matches);
     }, [searchQuery]);
+
 
 
     const handleStockClick = (stock: WatchlistStock) => {

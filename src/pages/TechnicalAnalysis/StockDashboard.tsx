@@ -4,7 +4,7 @@ import { useState } from "react";
 
 
 const StockDashboard = () => {
-    const [selectedStock, setSelectedStock] = useState<string>('');
+    const [selectedStock, setSelectedStock] = useState<string | null>(null);
     return (
         <div className="w-screen h-screen flex bg-black text-white">
             {/* Left side: Candlestick Chart */}
