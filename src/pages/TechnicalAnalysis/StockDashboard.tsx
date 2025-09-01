@@ -13,7 +13,7 @@ const StockDashboard = () => {
             </div>
 
             {/* Right side: Technical Analysis / Watchlist */}
-            <div className="w-96 border-l border-gray-800 bg-[#111] overflow-y-auto">
+            <div className="w-96 border-gray-800 bg-[#111] overflow-y-auto">
                 <TechAnalysis selectedStock={selectedStock} setSelectedStock={setSelectedStock} />
             </div>
         </div>

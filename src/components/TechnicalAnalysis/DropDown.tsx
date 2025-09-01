@@ -1,62 +1,86 @@
 "use client";
-
-import React, { useState } from "react";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import React, { useState, useEffect } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { Check } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
+import stockListJson from '../../../data/stockList.json';
 
-import stockList from '../../../data/stockList.json';
+const stockList: Record<string, string> = stockListJson;
 
 interface StockSearchDropdownProps {
+    theme?: 'light' | 'dark';
     selectedStock: string | null;
     setSelectedStock: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-export default function
-    StockSearchDropdown({ selectedStock, setSelectedStock }: StockSearchDropdownProps) {
+export default function StockSearchDropdown({ selectedStock, setSelectedStock, theme }: StockSearchDropdownProps) {
     const [open, setOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [filteredStocks, setFilteredStocks] = useState<string[]>([]);
+
+    useEffect(() => {
+        if (!searchQuery.trim()) {
+            // Show first 30 stocks when no search query
+            const allStocks = Object.keys(stockList).slice(0, 30);
+            setFilteredStocks(allStocks);
+            return;
+        }
+
+        const q = searchQuery.toLowerCase();
+
+        // Search by ticker OR full company name
+        const matches = Object.entries(stockList)
+            .filter(([ticker, fullName]) =>
+                ticker.toLowerCase().includes(q) || fullName.toLowerCase().includes(q)
+            )
+            .map(([ticker]) => ticker) // only keep ticker for UI
+            .slice(0, 50);
+
+        setFilteredStocks(matches);
+    }, [searchQuery]);
+
+    const handleStockSelect = (ticker: string) => {
+        setSelectedStock(ticker);
+        setSearchQuery('');
+        setFilteredStocks([]);
+        setOpen(false);
+    };
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
                 <Button
-                    variant="outline"
+                    variant="default"
                     role="combobox"
                     aria-expanded={open}
-                    className="w-64 justify-between"
+                    className={`w-64 justify-between ${theme === 'light' ? 'bg-black text-white hover:bg-gray-900' : 'bg-white text-black'}`}
                 >
-                    {selectedStock || "Select stock..."}
+                    {selectedStock ? `${selectedStock}: ${stockList[selectedStock]}` : "Select stock..."}
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-64 p-0">
-                <Command>
-                    <CommandInput placeholder="Search stock..." />
-                    <CommandList>
-                        <CommandEmpty>No stock found.</CommandEmpty>
-                        <CommandGroup>
-                            {Object.entries(stockList).map(([ticker, fullName]) => (
-                                <CommandItem
+                <div className="p-3">
+                    <Input
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Search stock..."
+                        className="w-full"
+                    />
+                    {/* Dropdown with results */}
+                    {filteredStocks.length > 0 && (
+                        <div className="mt-1 w-full bg-background border rounded-md shadow-lg max-h-48 overflow-y-auto">
+                            {filteredStocks.map((ticker) => (
+                                <div
                                     key={ticker}
-                                    value={`${fullName} ${ticker}`}
-                                    onSelect={() => {
-                                        setSelectedStock(ticker);
-                                        setOpen(false);
-                                    }}
+                                    className="px-3 py-2 hover:bg-muted cursor-pointer text-sm"
+                                    onClick={() => handleStockSelect(ticker)}
                                 >
-                                    <Check
-                                        className={cn(
-                                            "mr-2 h-4 w-4",
-                                            selectedStock === ticker ? "opacity-100" : "opacity-0"
-                                        )}
-                                    />
-                                    {ticker} {/* Only ticker visible */}
-                                </CommandItem>
+                                    {ticker}: {stockList[ticker]}
+                                </div>
                             ))}
-                        </CommandGroup>
-                    </CommandList>
-                </Command>
+                        </div>
+                    )}
+                </div>
             </PopoverContent>
         </Popover>
     );

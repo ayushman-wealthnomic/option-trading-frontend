@@ -3,7 +3,6 @@ import { Search, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import stockList from "../../../data/stockList.json";
 
 interface WatchlistStock {
@@ -85,14 +84,17 @@ const StockWatchlist = ({
     //     return 'secondary';
     // };
 
-    // const getChangeColor = (change: number) => {
-    //     if (change > 0) return 'text-green-600';
-    //     if (change < 0) return 'text-red-600';
-    //     return 'text-muted-foreground';
-    // };
+    const getChangeColor = (change: string | number) => {
+        // Remove % sign and convert to number
+        const numChange = parseFloat(String(change).replace('%', ''));
+        if (isNaN(numChange)) return 'text-gray-500';
+        if (numChange > 0) return 'text-green-500';
+        if (numChange < 0) return 'text-red-500';
+        return 'text-gray-500';
+    };
 
     return (
-        <Card className="h-screen">
+        <Card className="h-screen rounded-none">
             <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
                     <CardTitle className="text-lg font-semibold">Watchlist</CardTitle>
@@ -137,7 +139,7 @@ const StockWatchlist = ({
                 </div>
 
                 {/* Stock List */}
-                <div className="divide-y divide-gray-800">
+                <div className="divide-y">
                     {watchlists.map((stock) => (
                         <div
                             key={stock.id}
@@ -166,17 +168,15 @@ const StockWatchlist = ({
                                 </div>
 
                                 {/* Change */}
-                                <div className="col-span-3 text-right">
-                                    <Badge
-                                        // variant={getChangeVariant(stock.change ?? 0)}
-                                        className="text-xs font-medium"
-                                    >
-                                        {stock.change_percent ?? 0}
-                                    </Badge>
-                                    {/* <div className={`text-xs ${getChangeColor(stock.change ?? 0)}`}>
-                                        {formatChange(stock.change ?? 0)}
-                                    </div> */}
-                                </div>
+                                {stock.change_percent !== undefined && (
+                                    <div className="col-span-3 text-right">
+                                        <div className="text-xs font-medium">
+                                            <p className={getChangeColor(stock.change_percent)}>
+                                                {stock.change_percent}
+                                            </p>
+                                        </div>
+                                    </div>
+                                )}
 
                                 {/* Actions */}
                                 <div className="col-span-2 text-right">

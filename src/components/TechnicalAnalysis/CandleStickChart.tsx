@@ -13,6 +13,7 @@ import type { IChartApi, ISeriesApi } from "lightweight-charts";
 import { baseURL } from "@/lib/baseURL";
 import stocklist from "../../../data/stockList.json";
 import StockSearchDropdown from "./DropDown";
+import { Button } from "../ui/button";
 
 const colors = {
     white: "#f0f0f0",
@@ -32,6 +33,7 @@ const colors = {
 } as const;
 
 type ChartType = 'Candles' | 'Line' | 'Bar' | 'Area' | 'Histogram' | 'Baseline';
+type Theme = 'dark' | 'light';
 
 interface CandlestickChartProps {
     selectedStock: string | null;
@@ -53,19 +55,14 @@ const CandlestickChart = (props: CandlestickChartProps) => {
         selectedStock,
         setSelectedStock,
         colors: {
-            backgroundColor = "black",
-            textColor = "white",
             upColor = "#26a69a",
             downColor = "#ef5350",
-            borderUpColor = "#26a69a",
-            borderDownColor = "#ef5350",
-            wickUpColor = "#26a69a",
-            wickDownColor = "#ef5350",
         } = {},
     } = props;
 
     const [loading, setLoading] = useState(false);
     const [activeChartType, setActiveChartType] = useState<ChartType>('Candles');
+    const [theme, setTheme] = useState<Theme>('dark');
 
     const chartContainerRef = useRef<HTMLDivElement>(null);
 
@@ -77,7 +74,44 @@ const CandlestickChart = (props: CandlestickChartProps) => {
     const [chartData, setChartData] = useState<any[]>([]);
     const [, setRawData] = useState<any[]>([]);
 
-    const chartTypes: ChartType[] = ['Candles', 'Line', 'Bar', 'Area', 'Histogram', 'Baseline'];
+    // Theme configurations
+    const themeConfig = {
+        dark: {
+            backgroundColor: "black",
+            textColor: "white",
+            gridColor: "rgba(42, 46, 57, 0.6)",
+            borderColor: "rgba(197, 203, 206, 0.8)",
+            upColor: "#26a69a",
+            downColor: "#ef5350",
+            lineColor: colors.blue100,
+            areaTopColor: 'rgba(38, 166, 154, 0.56)',
+            areaBottomColor: 'rgba(38, 166, 154, 0.04)',
+            volumeColor: colors.blue,
+            legendColor: "white",
+        },
+        light: {
+            backgroundColor: "#ffffff",
+            textColor: "#333333",
+            gridColor: "rgba(197, 203, 206, 0.3)",
+            borderColor: "rgba(42, 46, 57, 0.8)",
+            upColor: "#089981",
+            downColor: "#f23645",
+            lineColor: "#2962FF",
+            areaTopColor: 'rgba(41, 98, 255, 0.28)',
+            areaBottomColor: 'rgba(41, 98, 255, 0.05)',
+            volumeColor: "#26a69a",
+            legendColor: "#333333",
+        }
+    };
+
+    const currentTheme = themeConfig[theme];
+
+    const chartTypes: ChartType[] = ['Candles', 'Line', 'Bar', 'Area', 'Baseline'];
+
+    // Handle theme toggle
+    const toggleTheme = () => {
+        setTheme(prev => prev === 'dark' ? 'light' : 'dark');
+    };
 
     // Handle chart type change with debouncing
     const handleChartTypeChange = (type: ChartType) => {
@@ -197,7 +231,6 @@ const CandlestickChart = (props: CandlestickChartProps) => {
                     baseValue: { type: 'price', price: avgPrice },
                 }));
             }
-
             default:
                 return [];
         }
@@ -221,23 +254,23 @@ const CandlestickChart = (props: CandlestickChartProps) => {
 
         const chart = createChart(chartContainerRef.current, {
             layout: {
-                background: { type: ColorType.Solid, color: backgroundColor },
-                textColor,
+                background: { type: ColorType.Solid, color: currentTheme.backgroundColor },
+                textColor: currentTheme.textColor,
             },
             width: chartContainerRef.current.clientWidth,
             height: chartContainerRef.current.clientHeight,
             grid: {
-                vertLines: { color: "rgba(42, 46, 57, 0.6)" },
-                horzLines: { color: "rgba(42, 46, 57, 0.6)" },
+                vertLines: { color: currentTheme.gridColor },
+                horzLines: { color: currentTheme.gridColor },
             },
             crosshair: {
                 mode: 1,
             },
             rightPriceScale: {
-                borderColor: "rgba(197, 203, 206, 0.8)",
+                borderColor: currentTheme.borderColor,
             },
             timeScale: {
-                borderColor: "rgba(197, 203, 206, 0.8)",
+                borderColor: currentTheme.borderColor,
                 timeVisible: true,
                 secondsVisible: false,
             },
@@ -249,12 +282,12 @@ const CandlestickChart = (props: CandlestickChartProps) => {
         switch (activeChartType) {
             case 'Candles':
                 mainSeries = chart.addSeries(CandlestickSeries, {
-                    upColor,
-                    downColor,
-                    borderUpColor,
-                    borderDownColor,
-                    wickUpColor,
-                    wickDownColor,
+                    upColor: currentTheme.upColor,
+                    downColor: currentTheme.downColor,
+                    borderUpColor: currentTheme.upColor,
+                    borderDownColor: currentTheme.downColor,
+                    wickUpColor: currentTheme.upColor,
+                    wickDownColor: currentTheme.downColor,
                     priceScaleId: "right",
                     lastValueVisible: false,
                     priceLineVisible: false,
@@ -263,7 +296,7 @@ const CandlestickChart = (props: CandlestickChartProps) => {
 
             case 'Line':
                 mainSeries = chart.addSeries(LineSeries, {
-                    color: colors.blue100,
+                    color: currentTheme.lineColor,
                     lineWidth: 2,
                     priceScaleId: "right",
                     lastValueVisible: false,
@@ -273,9 +306,9 @@ const CandlestickChart = (props: CandlestickChartProps) => {
 
             case 'Area':
                 mainSeries = chart.addSeries(AreaSeries, {
-                    topColor: 'rgba(38, 166, 154, 0.56)',
-                    bottomColor: 'rgba(38, 166, 154, 0.04)',
-                    lineColor: 'rgba(38, 166, 154, 1)',
+                    topColor: currentTheme.areaTopColor,
+                    bottomColor: currentTheme.areaBottomColor,
+                    lineColor: currentTheme.lineColor,
                     lineWidth: 2,
                     priceScaleId: "right",
                     lastValueVisible: false,
@@ -285,8 +318,8 @@ const CandlestickChart = (props: CandlestickChartProps) => {
 
             case 'Bar':
                 mainSeries = chart.addSeries(BarSeries, {
-                    upColor,
-                    downColor,
+                    upColor: currentTheme.upColor,
+                    downColor: currentTheme.downColor,
                     priceScaleId: "right",
                     lastValueVisible: false,
                     priceLineVisible: false,
@@ -295,7 +328,7 @@ const CandlestickChart = (props: CandlestickChartProps) => {
 
             case 'Histogram':
                 mainSeries = chart.addSeries(HistogramSeries, {
-                    color: colors.blue,
+                    color: currentTheme.volumeColor,
                     priceFormat: { type: "volume" },
                     priceScaleId: "right",
                     lastValueVisible: false,
@@ -307,19 +340,19 @@ const CandlestickChart = (props: CandlestickChartProps) => {
                 const avgPrice = chartData.reduce((sum, d) => sum + d.close, 0) / chartData.length;
                 mainSeries = chart.addSeries(BaselineSeries, {
                     baseValue: { type: 'price', price: avgPrice },
-                    topFillColor1: 'rgba(38, 166, 154, 0.28)',
-                    topFillColor2: 'rgba(38, 166, 154, 0.05)',
-                    bottomFillColor1: 'rgba(239, 83, 80, 0.05)',
-                    bottomFillColor2: 'rgba(239, 83, 80, 0.28)',
-                    topLineColor: upColor,
-                    bottomLineColor: downColor,
+                    topFillColor1: theme === 'dark' ? 'rgba(38, 166, 154, 0.28)' : 'rgba(41, 98, 255, 0.28)',
+                    topFillColor2: theme === 'dark' ? 'rgba(38, 166, 154, 0.05)' : 'rgba(41, 98, 255, 0.05)',
+                    bottomFillColor1: theme === 'dark' ? 'rgba(239, 83, 80, 0.05)' : 'rgba(242, 54, 69, 0.05)',
+                    bottomFillColor2: theme === 'dark' ? 'rgba(239, 83, 80, 0.28)' : 'rgba(242, 54, 69, 0.28)',
+                    topLineColor: currentTheme.upColor,
+                    bottomLineColor: currentTheme.downColor,
                     lineWidth: 2,
                     priceScaleId: "right",
                     lastValueVisible: false,
                     priceLineVisible: false,
                 });
-            }
                 break;
+            }
 
             default:
                 mainSeries = chart.addSeries(CandlestickSeries, {});
@@ -329,7 +362,7 @@ const CandlestickChart = (props: CandlestickChartProps) => {
         let volumeSeries: ISeriesApi<"Histogram"> | null = null;
         if (activeChartType !== 'Histogram') {
             volumeSeries = chart.addSeries(HistogramSeries, {
-                color: colors.blue,
+                color: currentTheme.volumeColor,
                 priceFormat: { type: "volume" },
                 priceScaleId: "volume",
             });
@@ -337,7 +370,7 @@ const CandlestickChart = (props: CandlestickChartProps) => {
             const volumeData = chartData.map(d => ({
                 time: d.time,
                 value: d.volume,
-                color: d.close >= d.open ? colors.green : colors.red,
+                color: d.close >= d.open ? currentTheme.upColor : currentTheme.downColor,
             }));
 
             volumeSeries.setData(volumeData);
@@ -443,9 +476,9 @@ const CandlestickChart = (props: CandlestickChartProps) => {
                     : param.time;
 
             legendRef.current.innerHTML = `
-                <div style="font-size: 30px; font-weight: 600;">${selectedStock ? stocklist[selectedStock as keyof typeof stocklist] : ""}</div>
-                <div style="font-size: 24px; margin-top: 15px;">${price?.toFixed(2)}</div>
-                <div style="font-size: 10px;">${dateStr}</div>
+                <div style="font-size: 30px; font-weight: 600; color: ${currentTheme.legendColor};">${selectedStock ? stocklist[selectedStock as keyof typeof stocklist] : ""}</div>
+                <div style="font-size: 24px; margin-top: 15px; color: ${currentTheme.legendColor};">${price?.toFixed(2)}</div>
+                <div style="font-size: 10px; color: ${currentTheme.legendColor};">${dateStr}</div>
             `;
         });
 
@@ -477,36 +510,65 @@ const CandlestickChart = (props: CandlestickChartProps) => {
                 volumeSeriesRef.current = null;
             }
         };
-    }, [backgroundColor, textColor, selectedStock, activeChartType, chartData]);
+    }, [selectedStock, activeChartType, chartData, theme]);
 
     return (
-        <div style={{ width: "100%", height: "100%", position: "relative" }}>
+        <div style={{
+            width: "100%",
+            height: "100%",
+            position: "relative",
+            backgroundColor: currentTheme.backgroundColor
+        }}>
             {/* Chart Type Tabs */}
-            <div className="absolute left-4 top-4 z-10 flex space-x-1">
+            <div className="absolute left-4 top-4 z-10 flex space-x-3">
                 {chartTypes.map((type) => (
-                    <button
+                    <Button
                         key={type}
                         onClick={() => handleChartTypeChange(type)}
                         disabled={loading}
-                        className={`px-3 py-1.5 text-sm font-medium rounded transition-colors ${activeChartType === type
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                            } ${loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-                        style={{
-                            backgroundColor: activeChartType === type ? colors.blue100 : colors.gray100,
-                            color: activeChartType === type ? colors.white : colors.gray,
-                            border: 'none',
-                            opacity: loading ? 0.5 : 1,
-                        }}
+                        className={`${theme === 'dark'
+                            ? `bg-black text-white border-gray-800 hover:bg-gray-900 hover:scale-105 hover:shadow-lg  ${activeChartType === type ? 'bg-white text-black border-white' : ''}`
+                            : `bg-white text-black border-gray-300 hover:scale-105 hover:shadow-lg ${activeChartType === type ? 'bg-black text-white border-black' : ''}`
+                            }`}
                     >
                         {type}
-                    </button>
+                    </Button>
                 ))}
+            </div>
+
+            {/* Theme Toggle Button */}
+            <div className="absolute left-4 top-16 z-10">
+                <Button
+                    variant="default"
+                    onClick={toggleTheme}
+                    disabled={loading}
+                    className={`hover:scale-105 hover:shadow-lg
+                            relative inline-flex items-center justify-center
+                            w-10 h-10 rounded-xl
+                            transition-all duration-300 ease-in-out
+                            ${theme === 'dark'
+                            ? 'bg-gray-800 hover:bg-gray-700 border-gray-600'
+                            : 'bg-white hover:bg-gray-50 border-gray-200'
+                        }
+                            border shadow-lg hover:shadow-xl}`}
+                    style={{
+                        // backgroundColor: theme === 'dark' ? '#FFA726' : '#424242',
+                        color: theme === 'dark' ? '#000' : '#fff',
+                        border: 'none',
+                        opacity: loading ? 0.5 : 1,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                    }}
+                >
+                    {theme === 'dark' ? '☀️' : '🌙'}
+                </Button>
             </div>
 
             {/* Stock Dropdown */}
             <div className="w-64 absolute right-20 top-4 z-10">
                 <StockSearchDropdown
+                    theme={theme}
                     selectedStock={selectedStock}
                     setSelectedStock={setSelectedStock}
                 />
@@ -517,12 +579,12 @@ const CandlestickChart = (props: CandlestickChartProps) => {
                 ref={legendRef}
                 style={{
                     position: "absolute",
-                    left: 50,
-                    top: 100,
+                    left: 80,
+                    top: 150,
                     zIndex: 10,
                     fontFamily: "sans-serif",
                     lineHeight: "18px",
-                    color: "white",
+                    color: currentTheme.legendColor,
                 }}
             />
 
