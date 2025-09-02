@@ -13,8 +13,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     const getInitialTheme = (): Theme => {
         if (typeof window === 'undefined') return 'dark';
         const stored = localStorage.getItem('theme') as Theme | null;
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        return stored || (prefersDark ? 'dark' : 'light');
+        return stored || 'dark';
     };
 
     const [theme, setTheme] = useState<Theme>(getInitialTheme);

@@ -6,7 +6,7 @@ import { useState } from "react";
 const StockDashboard = () => {
     const [selectedStock, setSelectedStock] = useState<string | null>(null);
     return (
-        <div className="w-screen h-screen flex bg-black text-white">
+        <div className="w-screen h-screen flex">
             {/* Left side: Candlestick Chart */}
             <div className="flex-1">
                 <CandlestickChart selectedStock={selectedStock} setSelectedStock={setSelectedStock} />

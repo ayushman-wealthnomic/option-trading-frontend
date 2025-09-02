@@ -132,7 +132,8 @@ const TechAnalysis = ({ setSelectedStock }: TechAnalysisProps) => {
             });
 
             // re-fetch watchlist after deleting
-            fetchWishlist();
+            // fetchWishlist();
+            setWatchlists((prev) => prev.filter((w) => w.id !== id));
         } catch (err) {
             console.error("Error deleting stock:", err);
         }

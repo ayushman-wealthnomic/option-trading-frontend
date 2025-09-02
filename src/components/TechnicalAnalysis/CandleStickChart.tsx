@@ -7,6 +7,7 @@ import {
     BaselineSeries,
     createChart,
     ColorType,
+    LineStyle,
 } from "lightweight-charts";
 import { useEffect, useRef, useState } from "react";
 import type { IChartApi, ISeriesApi } from "lightweight-charts";
@@ -15,6 +16,7 @@ import stocklist from "../../../data/stockList.json";
 import StockSearchDropdown from "./DropDown";
 import { Button } from "../ui/button";
 import stock_data from "../../../data/sd_data_by_symbol_processed.json";
+import { Loader, Moon, Sun } from "lucide-react";
 
 const colors = {
     white: "#f0f0f0",
@@ -65,6 +67,9 @@ const CandlestickChart = (props: CandlestickChartProps) => {
     const [activeChartType, setActiveChartType] = useState<ChartType>('Candles');
     const [theme, setTheme] = useState<Theme>('dark');
 
+    console.log(theme);
+
+
     const chartContainerRef = useRef<HTMLDivElement>(null);
 
     const chartRef = useRef<IChartApi | null>(null);
@@ -91,7 +96,7 @@ const CandlestickChart = (props: CandlestickChartProps) => {
             legendColor: "white",
         },
         light: {
-            backgroundColor: "#ffffff",
+            backgroundColor: "white",
             textColor: "#333333",
             gridColor: "rgba(197, 203, 206, 0.3)",
             borderColor: "rgba(42, 46, 57, 0.8)",
@@ -427,8 +432,9 @@ const CandlestickChart = (props: CandlestickChartProps) => {
                 demand.forEach((price,) => {
                     mainSeries.createPriceLine({
                         price,
-                        color: '#26a69a',
-                        lineStyle: 2, // Dashed
+                        color: '#1BE3D0',
+                        lineStyle: LineStyle.Dashed,
+                        lineWidth: 1,
                         axisLabelVisible: true,
                         title: `Demand`,
                     });
@@ -438,8 +444,9 @@ const CandlestickChart = (props: CandlestickChartProps) => {
                 supply.forEach((price,) => {
                     mainSeries.createPriceLine({
                         price,
-                        color: '#ef5350',
-                        lineStyle: 2, // Dashed
+                        color: '#F50510',
+                        lineStyle: LineStyle.Dashed,
+                        lineWidth: 1,
                         axisLabelVisible: true,
                         title: `Supply`,
                     });
@@ -516,8 +523,11 @@ const CandlestickChart = (props: CandlestickChartProps) => {
         };
     }, [selectedStock, activeChartType, chartData, theme]);
 
-    return (
-        <div style={{
+    {
+        return (loading ? (<div className="flex justify-center items-center h-full">
+            <Loader className={`w-6 h-6 animate-spin ${theme === 'dark' ? 'text-white' : 'text-black'
+                }`} />
+        </div>) : (<div style={{
             width: "100%",
             height: "100%",
             position: "relative",
@@ -538,11 +548,48 @@ const CandlestickChart = (props: CandlestickChartProps) => {
                         {type}
                     </Button>
                 ))}
-            </div>
 
-            {/* Theme Toggle Button */}
-            <div className="absolute left-4 top-16 z-10">
-                <Button
+                <button
+                    onClick={toggleTheme}
+                    className={`
+                            hover:scale-105 hover:shadow-lg
+                            relative inline-flex items-center justify-center
+                            w-10 h-10 rounded-xl
+                            transition-all duration-300 ease-in-out
+                            ${theme === 'dark'
+                            ? 'bg-gray-800 hover:bg-gray-700 border-gray-600'
+                            : 'bg-white hover:bg-gray-50 border-gray-200'
+                        }
+                            border shadow-lg hover:shadow-xl
+                        `}
+                    aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
+                >
+                    {/* Sun icon */}
+                    <Sun
+                        className={`
+                                absolute w-4 h-4
+                                transition-all duration-500 ease-in-out
+                                ${theme === 'dark'
+                                ? 'scale-0 rotate-90 opacity-0 text-gray-400'
+                                : 'scale-100 rotate-0 opacity-100 text-gray-700'
+                            }
+                            `}
+                    />
+
+                    {/* Moon icon */}
+                    <Moon
+                        className={`
+                                absolute w-4 h-4
+                                transition-all duration-500 ease-in-out
+                                ${theme === 'dark'
+                                ? 'scale-100 rotate-0 opacity-100 text-gray-200'
+                                : 'scale-0 -rotate-90 opacity-0 text-gray-400'
+                            }
+                            `}
+                    />
+                </button>
+
+                {/* <Button
                     variant="default"
                     onClick={toggleTheme}
                     disabled={loading}
@@ -566,8 +613,12 @@ const CandlestickChart = (props: CandlestickChartProps) => {
                     }}
                 >
                     {theme === 'dark' ? '☀️' : '🌙'}
-                </Button>
+                </Button> */}
+
+
             </div>
+
+            {/* Theme Toggle Button */}
 
             {/* Stock Dropdown */}
             <div className="w-64 absolute right-20 top-4 z-10">
@@ -584,7 +635,7 @@ const CandlestickChart = (props: CandlestickChartProps) => {
                 style={{
                     position: "absolute",
                     left: 80,
-                    top: 150,
+                    top: 70,
                     zIndex: 10,
                     fontFamily: "sans-serif",
                     lineHeight: "18px",
@@ -594,8 +645,9 @@ const CandlestickChart = (props: CandlestickChartProps) => {
 
             {/* Chart Container */}
             <div ref={chartContainerRef} className="w-full h-full" />
-        </div>
-    );
+        </div>)
+        )
+    }
 };
 
 export default CandlestickChart;
