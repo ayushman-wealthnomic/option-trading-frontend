@@ -14,6 +14,7 @@ import { baseURL } from "@/lib/baseURL";
 import stocklist from "../../../data/stockList.json";
 import StockSearchDropdown from "./DropDown";
 import { Button } from "../ui/button";
+import stock_data from "../../../data/sd_data_by_symbol_processed.json";
 
 const colors = {
     white: "#f0f0f0",
@@ -419,36 +420,44 @@ const CandlestickChart = (props: CandlestickChartProps) => {
             mainSeries.createPriceLine(maxVolumeLine);
         } else {
             // For all other chart types (price-based), show price lines
-            const prices = chartData.map(d => d.close);
-            const minPrice = Math.min(...prices);
-            const maxPrice = Math.max(...prices);
-            const avgPrice = prices.reduce((sum, price) => sum + price, 0) / prices.length;
+            if (selectedStock && stock_data[selectedStock as keyof typeof stock_data]) {
+                const { supply, demand } = stock_data[selectedStock as keyof typeof stock_data];
+                // Calculate min, avg, max from combined supply + demand
+                const allValues = [...supply, ...demand];
+                const minPrice = Math.min(...allValues);
+                const maxPrice = Math.max(...allValues);
+                // const avgPrice = allValues.reduce((a, b) => a + b, 0) / allValues.length;
 
-            const minPriceLine = {
-                price: minPrice,
-                color: '#ef5350',
-                lineStyle: 2, // Dashed
-                axisLabelVisible: true,
-                title: 'Min Price',
-            };
-            const avgPriceLine = {
-                price: avgPrice,
-                color: '#FFB74D', // Orange color for better visibility
-                lineStyle: 1, // Dotted
-                axisLabelVisible: true,
-                title: 'Avg Price',
-            };
-            const maxPriceLine = {
-                price: maxPrice,
-                color: '#26a69a',
-                lineStyle: 2, // Dashed
-                axisLabelVisible: true,
-                title: 'Max Price',
-            };
+                // Define line configs
+                const minPriceLine = {
+                    price: minPrice,
+                    color: '#ef5350',
+                    lineStyle: 2, // Dashed
+                    axisLabelVisible: true,
+                    title: `${selectedStock} Demand`,
+                };
 
-            mainSeries.createPriceLine(minPriceLine);
-            mainSeries.createPriceLine(avgPriceLine);
-            mainSeries.createPriceLine(maxPriceLine);
+                // const avgPriceLine = {
+                //     price: avgPrice,
+                //     color: '#FFB74D',
+                //     lineStyle: 1, // Dotted
+                //     axisLabelVisible: true,
+                //     title: `${selectedStock} Avg Price`,
+                // };
+
+                const maxPriceLine = {
+                    price: maxPrice,
+                    color: '#26a69a',
+                    lineStyle: 2, // Dashed
+                    axisLabelVisible: true,
+                    title: `${selectedStock} Supply`,
+                };
+
+                // Add lines to chart
+                mainSeries.createPriceLine(minPriceLine);
+                // mainSeries.createPriceLine(avgPriceLine);
+                mainSeries.createPriceLine(maxPriceLine);
+            }
         }
 
         chart.priceScale("right").applyOptions({
