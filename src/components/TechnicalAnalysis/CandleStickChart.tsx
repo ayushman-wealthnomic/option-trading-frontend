@@ -422,41 +422,28 @@ const CandlestickChart = (props: CandlestickChartProps) => {
             // For all other chart types (price-based), show price lines
             if (selectedStock && stock_data[selectedStock as keyof typeof stock_data]) {
                 const { supply, demand } = stock_data[selectedStock as keyof typeof stock_data];
-                // Calculate min, avg, max from combined supply + demand
-                const allValues = [...supply, ...demand];
-                const minPrice = Math.min(...allValues);
-                const maxPrice = Math.max(...allValues);
-                // const avgPrice = allValues.reduce((a, b) => a + b, 0) / allValues.length;
 
-                // Define line configs
-                const minPriceLine = {
-                    price: minPrice,
-                    color: '#ef5350',
-                    lineStyle: 2, // Dashed
-                    axisLabelVisible: true,
-                    title: `${selectedStock} Demand`,
-                };
+                // Loop over demand values
+                demand.forEach((price,) => {
+                    mainSeries.createPriceLine({
+                        price,
+                        color: '#26a69a',
+                        lineStyle: 2, // Dashed
+                        axisLabelVisible: true,
+                        title: `Demand`,
+                    });
+                });
 
-                // const avgPriceLine = {
-                //     price: avgPrice,
-                //     color: '#FFB74D',
-                //     lineStyle: 1, // Dotted
-                //     axisLabelVisible: true,
-                //     title: `${selectedStock} Avg Price`,
-                // };
-
-                const maxPriceLine = {
-                    price: maxPrice,
-                    color: '#26a69a',
-                    lineStyle: 2, // Dashed
-                    axisLabelVisible: true,
-                    title: `${selectedStock} Supply`,
-                };
-
-                // Add lines to chart
-                mainSeries.createPriceLine(minPriceLine);
-                // mainSeries.createPriceLine(avgPriceLine);
-                mainSeries.createPriceLine(maxPriceLine);
+                // Loop over supply values
+                supply.forEach((price,) => {
+                    mainSeries.createPriceLine({
+                        price,
+                        color: '#ef5350',
+                        lineStyle: 2, // Dashed
+                        axisLabelVisible: true,
+                        title: `Supply`,
+                    });
+                });
             }
         }
 
@@ -464,7 +451,15 @@ const CandlestickChart = (props: CandlestickChartProps) => {
             scaleMargins: { top: 0.1, bottom: activeChartType === 'Histogram' ? 0.1 : 0.4 },
         });
 
-        chart.timeScale().fitContent();
+        if (chartData.length > 0) {
+            // Show only the last 100 bars (adjust number as needed)
+            const from = chartData[Math.max(0, chartData.length - 300)].time;
+            const to = chartData[chartData.length - 1].time;
+
+            chart.timeScale().setVisibleRange({ from, to });
+        } else {
+            chart.timeScale().fitContent(); // fallback if no data
+        }
 
         chartRef.current = chart;
         seriesRef.current = mainSeries;
