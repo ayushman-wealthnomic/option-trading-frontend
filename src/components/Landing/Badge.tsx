@@ -1,5 +1,5 @@
 const Badge: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-    <span className="inline-block font-bold text-xs px-2 py-1 rounded-full bg-blue-50 text-blue-800">
+    <span className="inline-block font-medium text-md px-2 py-1 rounded-full bg-[#2A2A2A] text-white">
         {children}
     </span>
 );

@@ -46,7 +46,7 @@ const FeaturesSection = () => {
     ];
 
     return (
-        <section id="features" className="py-16 bg-black">
+        <section id="features" className="py-4 bg-black">
             <div className="max-w-6xl mx-auto px-5 text-center">
                 <h2 className="text-4xl lg:text-5xl font-light leading-tight tracking-tight mb-4">
                     Zero Guesswork. <span style={{ color: theme.colors.brand }}>Only Intelligent Decisions.</span>

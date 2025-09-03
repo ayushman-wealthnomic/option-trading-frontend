@@ -71,7 +71,7 @@ export function SignupPage() {
     };
 
     return (
-        <div className="flex items-center w-screen justify-center min-h-screen bg-gray-50"> {/* Light background */}
+        <div className="flex items-center w-screen justify-center min-h-screen bg-black"> {/* Light background */}
             <Card className="w-full max-w-md border-gray-200 bg-white text-black"> {/* White card, light border, dark text */}
                 <CardHeader>
                     <CardTitle className="text-3xl text-center text-black">Sign Up</CardTitle> {/* Dark text */}

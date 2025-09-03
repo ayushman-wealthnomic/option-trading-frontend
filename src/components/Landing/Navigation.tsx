@@ -36,8 +36,8 @@ const Navigation = () => {
                     <a href="#valuation" className="text-white text-lg">Valuation</a>
                     <a href="#ideas" className="text-white text-lg">Ideas</a>
                     <a href="#alerts" className="text-white text-lg">Alerts</a>
-                    <Button href='/login' variant="ghost">Sign in</Button>
-                    <Button href='/signup'>Start Free</Button>
+                    <Button className='font-medium text-lg' href='/login' variant="ghost">Sign in</Button>
+                    <Button className='font-medium text-lg' href='/signup'>Start Free</Button>
                 </nav>
             </div>
         </div>

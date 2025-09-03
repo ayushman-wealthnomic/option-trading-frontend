@@ -56,8 +56,8 @@ const HeroSection = () => {
                         Accelerate research, optimize portfolios, and uncover winning stocks—without the noise.
                     </p>
                     <div className="flex flex-wrap gap-4 mb-5">
-                        <Button>Life Time Free</Button>
-                        <Button variant="ghost">See How It Works</Button>
+                        <Button className='font-medium text-lg'>Life Time Free</Button>
+                        <Button className='font-medium text-lg' variant="ghost">See How It Works</Button>
                     </div>
                     {/* <div className="text-sm text-gray-600">
                         ⭐️⭐️⭐️⭐️⭐️ Rated by global investors • Trusted worldwide • Built with AI
