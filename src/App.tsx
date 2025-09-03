@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Dashboard from "./pages/Option-Trading/Dashboard";
 import NotFound from "./pages/NotFound";
 import { ThemeProvider } from "./hooks/useTheme";
-import Home from "./pages/Index";
+// import Home from "./pages/Index";
 import { LoginPage } from "./components/AuthComponents/LoginPage";
 import { SignupPage } from "./components/AuthComponents/SignupPage";
 import { UserActivityHeatmap } from "./components/HeatMap";
@@ -17,6 +17,7 @@ import Main from "./pages/AlphaStock/Main";
 import StockDashboard from "./pages/TechnicalAnalysis/StockDashboard";
 import StockStorytellingDashboard from "./pages/StockStory/SingleStockDashboard";
 import TechnicalDashboard from "./pages/Technical/TechnicalDashboard";
+import Landing from "./pages/Landing";
 // import BaselineChart from "./pages/BaselineChart";
 // import HistogramChart from "./pages/HistogramChart";
 
@@ -1086,7 +1087,7 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <Routes>
-            <Route path="/" element={<Home />} />
+            {/* <Route path="/" element={<Home />} /> */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
             <Route
@@ -1152,6 +1153,14 @@ const App = () => (
               element={
                 <div className="w-screen h-screen">
                   <TechnicalDashboard />
+                </div>
+              }
+            />
+            <Route
+              path="/"
+              element={
+                <div className="w-screen h-screen">
+                  <Landing />
                 </div>
               }
             />
