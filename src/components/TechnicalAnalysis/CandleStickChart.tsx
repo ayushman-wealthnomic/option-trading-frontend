@@ -98,7 +98,7 @@ const CandlestickChart = (props: CandlestickChartProps) => {
         light: {
             backgroundColor: "white",
             textColor: "#333333",
-            gridColor: "rgba(197, 203, 206, 0.3)",
+            gridColor: "rgba(197, 203, 206, 0.1)",
             borderColor: "rgba(42, 46, 57, 0.8)",
             upColor: "#089981",
             downColor: "#f23645",
