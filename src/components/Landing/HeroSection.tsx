@@ -49,7 +49,7 @@ const HeroSection = () => {
                 <div>
                     <Badge>AI-driven Fintech for Investors</Badge>
                     <div className="text-4xl lg:text-5xl font-light leading-tight tracking-tight mt-4 mb-4 flex flex-col space-y-2">
-                        <span>Smarter</span><br /><span>Investing Starts</span><br /><span>with AI</span>
+                        <span>Smarter</span><span>Investing Starts</span><span>with AI</span>
                     </div>
                     <p className="text-gray-400 text-lg mb-6">
                         At <strong>WEALTHNOMICS</strong>, we merge fintech innovation with AI-powered intelligence.
