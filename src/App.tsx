@@ -16,6 +16,7 @@ import Main from "./pages/AlphaStock/Main";
 // import TVChart from "./pages/Charts";
 import StockDashboard from "./pages/TechnicalAnalysis/StockDashboard";
 import StockStorytellingDashboard from "./pages/StockStory/SingleStockDashboard";
+import TechnicalDashboard from "./pages/Technical/TechnicalDashboard";
 // import BaselineChart from "./pages/BaselineChart";
 // import HistogramChart from "./pages/HistogramChart";
 
@@ -1143,6 +1144,14 @@ const App = () => (
               element={
                 <div className="w-screen h-screen">
                   <StockStorytellingDashboard />
+                </div>
+              }
+            />
+            <Route
+              path="/technical"
+              element={
+                <div className="w-screen h-screen">
+                  <TechnicalDashboard />
                 </div>
               }
             />
