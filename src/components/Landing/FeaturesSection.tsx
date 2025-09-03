@@ -1,42 +1,61 @@
-import { BarChart3, Bell, TrendingUp, Zap } from "lucide-react";
 import FeatureCard from "./FeatureCard";
 
-interface Feature {
-    icon: React.ReactNode;
-    title: string;
-    description: string;
-}
+
+const theme = {
+    colors: {
+        bgTop: '#EAF0FF',
+        bgMid: '#F6ECF3',
+        bgBottom: '#FFF5EC',
+        ink: '#0E1320',
+        inkSoft: '#30364A',
+        muted: '#6E778A',
+        brand: '#6C7CFF',
+        brand2: '#7C4DFF',
+        cta: '#1E88E5',
+        card: '#ffffff',
+        cardDark: '#0B0E19',
+        accent: '#11C786',
+        warn: '#F59E0B',
+        danger: '#EF4444',
+        ring: 'rgba(108,124,255,.35)',
+    },
+};
 
 const FeaturesSection = () => {
-    const features: Feature[] = [
+    const features = [
         {
-            icon: <BarChart3 className="w-8 h-8" />,
+            icon: "✓",
             title: "Portfolio Intelligence",
-            description: "Let our AI analyze your portfolio, tracking true returns, valuation, and providing predictive insights."
+            description: "AI-powered monitoring that adapts to your holdings."
         },
         {
-            icon: <TrendingUp className="w-8 h-8" />,
-            title: "Visual In-depth Stock Reports",
-            description: "Go beyond the numbers with AI-generated reports that visualize complex fundamental and technical data."
+            icon: "✓",
+            title: "Visual Stock Reports",
+            description: "Data-rich insights with fundamentals decoded."
         },
         {
-            icon: <Zap className="w-8 h-8" />,
-            title: "Market Relevant Investing Ideas",
-            description: "Discover new opportunities with AI agents that constantly scan the market for winning stocks in any cycle."
+            icon: "✓",
+            title: "AI-Driven Valuations",
+            description: "Updated in real time with multiple models."
         },
         {
-            icon: <Bell className="w-8 h-8" />,
-            title: "Smart Updates & Weekly Insights",
-            description: "Receive concise, timely updates and insights curated by our AI, focusing only on what truly matters."
+            icon: "✓",
+            title: "Smart Insights & Alerts",
+            description: "Weekly signals that truly matter."
         }
     ];
 
     return (
-        <section className="py-20 bg-white">
-            <div className="container mx-auto px-6 text-center">
-                <h2 className="text-4xl font-bold text-gray-900">Harness the Power of AI. <br /> Make Smarter Decisions.</h2>
-                <p className="mt-4 text-lg text-gray-600">Our suite of AI-powered tools cuts through the noise, providing you with a clear, data-driven edge.</p>
-                <div className="mt-12 grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <section id="features" className="py-16 bg-black">
+            <div className="max-w-6xl mx-auto px-5 text-center">
+                <h2 className="text-4xl lg:text-5xl font-light leading-tight tracking-tight mb-4">
+                    Zero Guesswork. <span style={{ color: theme.colors.brand }}>Only Intelligent Decisions.</span>
+                </h2>
+                <p className="text-gray-400 text-lg mb-8">
+                    WEALTHNOMICS combines technical and fundamental analysis with AI models to deliver research,
+                    valuation, and portfolio insights—all in one place.
+                </p>
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
                     {features.map((feature, index) => (
                         <FeatureCard key={index} {...feature} />
                     ))}

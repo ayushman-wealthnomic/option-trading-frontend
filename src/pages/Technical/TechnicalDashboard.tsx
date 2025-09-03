@@ -172,9 +172,9 @@ const StockMarketDashboard: React.FC = () => {
   );
 
   return (
-    <div className="w-full min-h-screen bg-blue-950 text-white overflow-hidden flex flex-col">
+    <div className="w-full min-h-screen bg-black text-white overflow-hidden flex flex-col">
       {/* Header */}
-      <div className="px-6 py-6 border-b border-gray-700 bg-slate-900">
+      <div className="px-6 py-6 border-b border-gray-700 bg-black">
         {/* Filter Tabs */}
         <div className="flex space-x-8 mb-6">
           <div>
@@ -212,7 +212,7 @@ const StockMarketDashboard: React.FC = () => {
         {/* Controls Row */}
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-6">
-            <div className="bg-slate-900 border-gray-700 px-6 py-4 flex-shrink-0">
+            <div className="bg-black border-gray-700 px-6 py-4 flex-shrink-0">
               <div className="flex items-center justify-baseline">
                 {/* <div className="text-sm text-gray-400">
                   Page {page} of {totalPages} • Showing {stocks.length} results
@@ -299,14 +299,14 @@ const StockMarketDashboard: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex flex-1">
+      <div className="flex flex-1 bg-black">
         {/* Stock Table - Horizontally Scrollable */}
-        <div className="flex-1 bg-slate-900 h-screen overflow-hidden">
+        <div className="flex-1 bg-black h-screen overflow-hidden">
           {/* Table Container with Horizontal Scroll */}
           <div className="overflow-x-auto overflow-y-auto h-full">
             <div className="min-w-max">
               {/* Table Header - Fixed */}
-              <div className="bg-slate-800 sticky top-0 z-10 border-b border-gray-700">
+              <div className="bg-black sticky top-0 z-10 border-b border-gray-700">
                 <div className="flex text-sm text-gray-400 px-6 py-4">
                   <div className="w-64 flex items-center font-medium">Company</div>
                   <div className="w-28 flex items-center font-medium">Market Cap</div>
@@ -336,7 +336,7 @@ const StockMarketDashboard: React.FC = () => {
               </div>
 
               {/* Stock Rows */}
-              <div className="bg-slate-900 flex-1 min-h-0">
+              <div className="bg-black flex-1 min-h-0">
                 {loading ? (
                   <div className="flex items-center justify-center h-64">
                     <div className="text-gray-400">Loading stocks...</div>

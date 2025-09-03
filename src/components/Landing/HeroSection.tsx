@@ -1,51 +1,81 @@
+import React from 'react'
+import Badge from './Badge';
+import Button from './Button';
+
+const MockDashboard: React.FC = () => (
+    <div className="border border-gray-200  rounded-2xl shadow-lg p-4">
+        {/* <div className="h-8 rounded-lg bg-white bg-opacity-10 mb-3"></div> */}
+        <img src="./chart_demo.png" alt="Chart" className='object-cover' />
+        {/* <div
+            className="h-72 rounded-lg opacity-90"
+            style={{
+                background: 'conic-gradient(from 270deg at 75% 35%, #2BD88F, #6C7CFF, #7C4DFF, #2BD88F)'
+            }}
+        ></div> */}
+    </div>
+);
+
 const HeroSection = () => {
+    const icons = [
+        {
+            icon: "./image 2.png",
+            title: "Portfolio Intelligence",
+            url: "/"
+        },
+        {
+            icon: "./image 3.png",
+            title: "Charts",
+            url: "/charts"
+        },
+        {
+            icon: "./image 4.png",
+            title: "Screener",
+            url: "/technical"
+        },
+        {
+            icon: "./image 5.png",
+            title: "Smart Insights & Alerts",
+            url: "/"
+        },
+        {
+            icon: "./image 7.png",
+            title: "Smart Insights & Alerts",
+            url: "/"
+        }
+    ];
     return (
-        <section style={{ background: 'linear-gradient(180deg, #f0f4ff 0%, #ffffff 100%)' }} className="py-20">
-            <div className="container mx-auto px-6">
-                <div className="grid md:grid-cols-2 gap-12 items-center">
-                    <div className="text-center md:text-left">
-                        <h1 className="text-4xl md:text-6xl font-extrabold text-gray-900 leading-tight">
-                            AI-Powered Investing. <br /> Unleash Your Portfolio's Potential.
-                        </h1>
-                        <p className="mt-6 text-lg text-gray-600">
-                            Leverage our advanced AI models and autonomous agents to perform deep technical and fundamental analysis, uncovering winning stocks effortlessly.
-                        </p>
-                        <div className="mt-8 flex justify-center md:justify-start items-center space-x-4">
-                            <img
-                                src="https://placehold.co/120x40/EFEFEF/333333?text=Investors"
-                                alt="Investor avatars"
-                                className="rounded-full"
-                            />
-                            <span className="text-gray-500">Join a global community of 7m+ investors</span>
-                        </div>
-                        <div className="mt-8 flex flex-col sm:flex-row justify-center md:justify-start space-y-4 sm:space-y-0 sm:space-x-4">
-                            <button className="bg-blue-600 text-white font-bold py-3 px-8 rounded-lg text-lg hover:bg-blue-700 transition duration-300">
-                                Start free
-                            </button>
-                            <button className="bg-white border border-gray-300 text-gray-800 font-bold py-3 px-8 rounded-lg text-lg hover:bg-gray-100 transition duration-300">
-                                Demo portfolio
-                            </button>
-                        </div>
-                        <p className="mt-4 text-sm text-gray-500">No credit card required. Free forever.</p>
+        <header className="pt-20 pb-6 bg-black">
+            <div className="max-w-6xl mx-auto px-5 grid gap-8 lg:grid-cols-[1.2fr_0.9fr] items-center">
+                <div>
+                    <Badge>AI-driven Fintech for Investors</Badge>
+                    <div className="text-4xl lg:text-5xl font-light leading-tight tracking-tight mt-4 mb-4 flex flex-col space-y-2">
+                        <span>Smarter</span><br /><span>Investing Starts</span><br /><span>with AI</span>
                     </div>
-                    <div>
-                        <img
-                            src="https://placehold.co/600x400/1A202C/FFFFFF?text=Dashboard+Preview"
-                            alt="AI Investing Dashboard Preview"
-                            className="rounded-xl shadow-2xl"
-                        />
+                    <p className="text-gray-400 text-lg mb-6">
+                        At <strong>WEALTHNOMICS</strong>, we merge fintech innovation with AI-powered intelligence.
+                        Accelerate research, optimize portfolios, and uncover winning stocks—without the noise.
+                    </p>
+                    <div className="flex flex-wrap gap-4 mb-5">
+                        <Button>Life Time Free</Button>
+                        <Button variant="ghost">See How It Works</Button>
                     </div>
+                    {/* <div className="text-sm text-gray-600">
+                        ⭐️⭐️⭐️⭐️⭐️ Rated by global investors • Trusted worldwide • Built with AI
+                    </div> */}
                 </div>
-                <div className="mt-16 text-center">
-                    <div className="max-w-xl mx-auto">
-                        <p className="text-yellow-500 text-2xl mb-2">★★★★★</p>
-                        <p className="text-lg text-gray-600 italic">"The AI-driven insights are a game-changer. WEALTHNOMICS provides incredibly deep analysis that's both easy to understand and actionable. A must-have for any serious investor."</p>
-                        <p className="mt-4 font-semibold text-gray-800">- Alex from New York</p>
-                    </div>
-                </div>
+                <MockDashboard />
             </div>
-        </section>
-    );
+            <div className="flex justify-between items-center max-w-6xl mx-auto mt-10">
+                {icons.map((item, index) => (
+                    <a href={item.url} className='flex flex-col items-center justify-center'>
+                        <img key={index} src={item.icon} className="w-[80px] h-[80px] rounded-lg bg-transparent flex items-center justify-center font-extrabold">
+                        </img>
+                        <div className="font-medium text-white mt-4">{item.title}</div>
+                    </a>
+                ))}
+            </div>
+        </header>
+    )
 }
 
-export default HeroSection
+export default HeroSection;

@@ -17,7 +17,7 @@ export default function StockSidebar() {
     };
 
     return (
-        <aside className="w-96 h-screen bg-slate-900 border-l text-white p-4 overflow-y-auto">
+        <aside className="w-96 h-screen bg-black border-l text-white p-4 overflow-y-auto">
             {/* Fundamental Section */}
             <div>
                 <h2 className="text-lg font-semibold mb-2">Fundamental</h2>
