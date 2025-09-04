@@ -11,6 +11,8 @@ import { useSEO } from '@/hooks/useSEO';
 import { seoConfig } from '@/lib/seoConfig';
 import IdeaSection from '@/components/Landing/IdeaSection';
 import InvestorClone from '@/components/Landing/InvestorClone';
+import OptionsSection from '@/components/Landing/OptionsSection';
+import WatchlistSection from '@/components/Landing/WatchlistSection';
 
 const theme = {
     colors: {
@@ -68,6 +70,12 @@ const Landing = () => {
                 </section>
                 <section id='investor-clone'>
                     <InvestorClone />
+                </section>
+                <section id='watchlist'>
+                    <WatchlistSection />
+                </section>
+                <section id='options'>
+                    <OptionsSection />
                 </section>
                 <FeaturesSection />
                 <BuilderSection />

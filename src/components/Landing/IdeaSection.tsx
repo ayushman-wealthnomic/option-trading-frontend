@@ -133,12 +133,12 @@ const InvestmentPlatformSection = () => {
                 </div>
 
                 {/* Column 3 - SVG + CTA */}
-                <div className="flex flex-col justify-center items-center text-center space-y-10 z-10">
+                <div className="flex flex-col justify-center items-center text-center z-10">
                     {/* <h2 className="text-4xl lg:text-5xl font-light leading-tight">
                         Ride the Wave <br />
                         of Innovation
                     </h2> */}
-                    <div ref={headlineRef} className="keen-slider h-32 flex-1">
+                    <div ref={headlineRef} className="keen-slider flex-1">
                         <div className="keen-slider__slide text-4xl lg:text-5xl font-light leading-tight">
                             Invest in Fortresses
                         </div>

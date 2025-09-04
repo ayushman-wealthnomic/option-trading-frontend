@@ -45,16 +45,16 @@ const slides = [
     },
     {
         image: "./charly 1.png",
-        title: "Elon Musk Visionary",
+        title: "Charlie Munger Agent",
         description:
-            "Innovator in technology and space exploration. Driven to push the boundaries of what is possible.",
+            "The Architect: Warren Buffett's partner. Demands wonderful businesses at fair prices and applies a multidisciplinary latticework of mental models to avoid common investing pitfalls",
         textPosition: { left: "65%", top: "55%", translateX: "-35%", translateY: "80%" },
     },
     {
         image: "./peterl 1.png",
-        title: "Steve Jobs Legend",
+        title: "Peter Lynch Agent",
         description:
-            "Revolutionized personal computing and mobile technology with a focus on design and simplicity.",
+            'The Everyday Explorer: The master of "investing in what you know." This agent excels at finding explosive "ten-baggers" in understandable, everyday businesses before they hit the mainstream',
         textPosition: { left: "60%", top: "50%", translateX: "-30%", translateY: "90%" },
     },
 ];
