@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Button from "./Button";
 import { supabase } from "@/lib/supabase";
 
 type Profile = {
@@ -51,14 +50,14 @@ const Navigation = () => {
 
     return (
         <div className="sticky top-0 backdrop-blur-md bg-black bg-opacity-60 border-b border-gray-900 border-opacity-5 z-40">
-            <div className="max-w-7xl mx-auto px-5 flex items-center justify-between h-16">
+            <div className="mx-auto px-10 flex items-center justify-between h-16">
                 {/* Logo */}
-                <div className="flex items-center space-x-3">
-                    <img src="./logo.png" alt="Logo" className="w-[60px] h-[30px]" />
+                <div className="flex items-center justify-center space-x-3">
                     <div className="text-black text-3xl font-semibold tracking-wide">
                         <span className="text-white">WEALTH</span>
                         <span className="text-white">NOMICS</span>
                     </div>
+                    <img src="./logo.png" alt="Logo" className="w-[60px] h-[30px]" />
                 </div>
 
                 {/* Nav links */}
@@ -77,15 +76,16 @@ const Navigation = () => {
                         <div className="w-24 h-6 bg-gray-700 rounded animate-pulse" />
                     ) : profile ? (
                         <div className="flex items-center gap-3">
-                            <div className="text-right">
+                            <div className="text-right text-xl">
                                 <p className="text-white font-medium">{profile.name}</p>
                             </div>
                             <div className="w-9 h-9 rounded-full bg-gray-700 flex items-center justify-center text-white font-bold">
                                 {profile.name.charAt(0)}
                             </div>
-                            <Button className="font-medium" variant="ghost" onClick={handleLogout}>
+                            <div onClick={handleLogout} className="text-white font-medium text-xl underline cursor-pointer">Logout</div>
+                            {/* <Button className="font-medium" variant="ghost" onClick={handleLogout}>
                                 Logout
-                            </Button>
+                            </Button> */}
                         </div>
                     ) : (
                         <div className="flex items-center gap-5">

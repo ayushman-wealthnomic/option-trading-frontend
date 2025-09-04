@@ -1,6 +1,6 @@
 import "keen-slider/keen-slider.min.css"
 import { useKeenSlider } from "keen-slider/react"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 function AutoplayPlugin(ms: number) {
     return (slider: any) => {
@@ -35,6 +35,30 @@ function AutoplayPlugin(ms: number) {
     }
 }
 
+const slides = [
+    {
+        image: "./warren 1.png",
+        title: "Warren Buffett Agent",
+        description:
+            'The Oracle of Omaha: Seeks wonderful companies with durable competitive advantages ("Moats") at a fair price. The ultimate mentor for long-term, quality investing.',
+        textPosition: { left: "70%", top: "60%", translateX: "-40%", translateY: "100%" },
+    },
+    {
+        image: "./charly 1.png",
+        title: "Elon Musk Visionary",
+        description:
+            "Innovator in technology and space exploration. Driven to push the boundaries of what is possible.",
+        textPosition: { left: "65%", top: "55%", translateX: "-35%", translateY: "80%" },
+    },
+    {
+        image: "./peterl 1.png",
+        title: "Steve Jobs Legend",
+        description:
+            "Revolutionized personal computing and mobile technology with a focus on design and simplicity.",
+        textPosition: { left: "60%", top: "50%", translateX: "-30%", translateY: "90%" },
+    },
+];
+
 const InvestorClone = () => {
     const [, headline] = useKeenSlider<HTMLDivElement>(
         {
@@ -49,6 +73,16 @@ const InvestorClone = () => {
         }
     )
 
+    const [current, setCurrent] = useState(0);
+
+    // Cycle slides every 4 seconds
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrent((prev) => (prev + 1) % slides.length);
+        }, 4000);
+        return () => clearInterval(interval);
+    }, []);
+
     useEffect(() => {
         if (!headline.current || !icon.current) return;
 
@@ -62,27 +96,29 @@ const InvestorClone = () => {
         return unsubscribe;
     }, [headline, icon]);
 
+
     return (
         <div className="relative bg-black text-white p-8 lg:p-24">
             <div className="absolute inset-0 m-10 bg-white/10 opacity-50 rounded-xl"></div>
 
             {/* Main content container with text on the left */}
-            <div className="relative z-10 p-10">
+            <div className="relative z-30 p-10">
                 {/* Text content */}
-                <div className="flex flex-col justify-between max-w-lg">
-                    <div>
-                        <h2 className="text-5xl lg:text-7xl font-medium text-yellow-500 mb-4">The AI Investor Clones</h2>
-                        <p className="text-gray-300 text-2xl leading-relaxed">
-                            Our groundbreaking Agentic AI goes beyond basic analysis. We have meticulously cloned the philosophies, strategies, and analytical frameworks of the world's most legendary investors and financial experts.
-                        </p>
+                <div className="flex flex-col justify-between max-w-xl">
+                    <div className="mb-20">
+                        <h2 className="text-4xl lg:text-6xl font-medium text-[#EAFF00]">The AI Investor Clones</h2>
+                        <div>
+                            <p className="text-4xl font-light text-[#8E8E8E]">
+                                Why settle for one opinion when you can consult a virtual hall of fame?
+                            </p>
+                        </div>
                     </div>
-                    <div>
-                        <p className="text-gray-300 text-3xl font-medium leading-relaxed mt-10">
-                            Why settle for one opinion when you can consult a virtual hall of fame?
-                        </p>
-                    </div>
+                    <p className="text-white text-2xl leading-relaxed">
+                        Our groundbreaking Agentic AI goes beyond basic analysis. We have meticulously cloned the philosophies, strategies, and analytical frameworks of the world's most legendary investors and financial experts.
+                    </p>
+
                     <div className="mt-24">
-                        <button className="text-yellow-500 hover:text-green-300 text-4xl font-light underline flex items-center gap-2 transition-colors group">
+                        <button className="text-[#EAFF00] hover:text-yellow-300 text-3xl font-light underline flex items-center gap-2 transition-colors group z-30">
                             Assemble Your Dream Team
                             <svg
                                 className="w-6 h-6 group-hover:translate-x-1 transition-transform"
@@ -103,21 +139,40 @@ const InvestorClone = () => {
             </div>
 
             {/* Absolute positioned image and text */}
-            <div className="absolute right-0 top-0 h-full w-1/2">
-                <img
-                    src="./warren 1.png"
-                    alt="Head Background"
-                    className="w-full h-full object-contain pointer-events-none"
-                />
+            <div className="absolute inset-0 w-full h-full">
+                {slides.map((slide, index) => {
+                    const isActive = index === current;
+                    return (
+                        <div
+                            key={index}
+                            className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ${isActive ? "opacity-100 z-10" : "opacity-0 z-0"
+                                }`}
+                        >
+                            <img
+                                src={slide.image}
+                                alt={slide.title}
+                                className="absolute right-0 top-0 object-contain pointer-events-none w-[929px] h-[929px] opacity-70"
+                            />
 
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 translate-y-[150%] text-center w-full">
-                    <p className="text-2xl lg:text-3xl font-bold text-yellow-500 pointer-events-none">
-                        Warren Buffett Agent
-                    </p>
-                    <p className="text-gray-300 text-sm mt-2 leading-relaxed max-w-sm mx-auto">
-                        The Oracle of Omaha: Seeks wonderful companies with durable competitive advantages ("Moats") at a fair price. The ultimate mentor for long-term, quality investing.
-                    </p>
-                </div>
+                            {/* Positioned text, centered over the image */}
+                            <div
+                                className="absolute text-center"
+                                style={{
+                                    right: '464.5px', // Half of the image's width
+                                    top: '70%',
+                                    transform: 'translate(50%, -50%)',
+                                }}
+                            >
+                                <p className="text-2xl lg:text-3xl font-bold text-white pointer-events-none">
+                                    {slide.title}
+                                </p>
+                                <p className="text-gray-300 text-sm mt-2 leading-relaxed max-w-sm">
+                                    {slide.description}
+                                </p>
+                            </div>
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );

@@ -6,6 +6,7 @@ import HeroSection from '@/components/Landing/HeroSection';
 import Navigation from '@/components/Landing/Navigation';
 import SocialProofSection from '@/components/Landing/SocialProofSection';
 import ValuationSection from '@/components/Landing/ValuationSection';
+
 import { useSEO } from '@/hooks/useSEO';
 import { seoConfig } from '@/lib/seoConfig';
 import IdeaSection from '@/components/Landing/IdeaSection';
@@ -59,7 +60,9 @@ const Landing = () => {
             {/* Content */}
             <div className="relative z-10">
                 <Navigation />
-                <HeroSection />
+                <section className='bg-black'>
+                    <HeroSection />
+                </section>
                 <section id='ideas'>
                     <IdeaSection />
                 </section>

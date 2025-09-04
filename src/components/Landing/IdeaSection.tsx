@@ -70,7 +70,7 @@ const InvestmentPlatformSection = () => {
                 alt="Head Background"
                 className="absolute -right-60 top-0 h-full object-contain opacity-100 pointer-events-none"
             />
-            <div className="mx-auto grid grid-cols-1 lg:grid-cols-3 gap-12 mt-10 p-10">
+            <div className="mx-auto grid grid-cols-1 lg:grid-cols-3 gap-12 mt-10 p-10 z-30">
 
                 {/* Column 1 - The Idea */}
                 <div className="flex flex-col justify-between">
