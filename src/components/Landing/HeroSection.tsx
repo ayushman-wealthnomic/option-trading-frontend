@@ -3,7 +3,7 @@ import Badge from './Badge';
 import Button from './Button';
 
 const MockDashboard: React.FC = () => (
-    <div className="border border-gray-600  rounded-md shadow-lg p-4">
+    <div className="border border-gray-600 rounded-md shadow-lg p-2">
         {/* <div className="h-8 rounded-lg bg-white bg-opacity-10 mb-3"></div> */}
         <img src="./chart_demo.png" alt="Chart" className='object-cover' />
         {/* <div

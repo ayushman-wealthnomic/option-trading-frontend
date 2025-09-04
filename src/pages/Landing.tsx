@@ -3,10 +3,13 @@ import BuilderSection from '@/components/Landing/BuilderSection';
 import FeaturesSection from '@/components/Landing/FeaturesSection';
 import Footer from '@/components/Landing/Footer';
 import HeroSection from '@/components/Landing/HeroSection';
-import IdeasSection from '@/components/Landing/IdeasSection';
 import Navigation from '@/components/Landing/Navigation';
 import SocialProofSection from '@/components/Landing/SocialProofSection';
 import ValuationSection from '@/components/Landing/ValuationSection';
+import { useSEO } from '@/hooks/useSEO';
+import { seoConfig } from '@/lib/seoConfig';
+import IdeaSection from '@/components/Landing/IdeaSection';
+import InvestorClone from '@/components/Landing/InvestorClone';
 
 const theme = {
     colors: {
@@ -29,6 +32,14 @@ const theme = {
 };
 
 const Landing = () => {
+
+    useSEO({
+        title: seoConfig.home.title,
+        description: seoConfig.home.description,
+        keywords: seoConfig.home.keywords,
+        canonical: seoConfig.home.canonical,
+        image: '/og-home.jpg'
+    });
     return (
         <div className="min-h-screen bg-white relative">
             {/* Background gradients */}
@@ -49,10 +60,16 @@ const Landing = () => {
             <div className="relative z-10">
                 <Navigation />
                 <HeroSection />
+                <section id='ideas'>
+                    <IdeaSection />
+                </section>
+                <section id='investor-clone'>
+                    <InvestorClone />
+                </section>
                 <FeaturesSection />
                 <BuilderSection />
                 <ValuationSection />
-                <IdeasSection />
+                {/* <IdeasSection /> */}
                 <AlertsSection />
                 <SocialProofSection />
                 <Footer />

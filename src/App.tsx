@@ -88,16 +88,17 @@ const App = () => (
             <Route
               path="/technical"
               element={
-                <div className="w-screen h-screen">
-                  <TechnicalDashboard />
-                </div>
+                <ProtectedRoute>
+                  <div className="w-screen h-screen">
+                    <TechnicalDashboard />
+                  </div>
+                </ProtectedRoute>
               }
             />
             <Route
               path="/"
               element={
                 <div className="w-screen h-screen">
-                  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"></link>
                   <Landing />
                 </div>
               }
