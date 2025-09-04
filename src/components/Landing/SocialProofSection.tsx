@@ -1,3 +1,4 @@
+import Footer from "./Footer";
 import Testimonial from "./Testimonial";
 
 const SocialProofSection = () => {
@@ -8,8 +9,8 @@ const SocialProofSection = () => {
     ];
 
     return (
-        <section className="py-16">
-            <div className="max-w-6xl mx-auto px-5">
+        <section className="py-16 bg-black">
+            <div className="max-w-6xl mx-auto px-5 bg-black mb-10">
                 <h3 className="text-4xl font-bold leading-tight tracking-tight text-center mb-8">
                     Trusted by Forward-Thinking Investors Worldwide.
                 </h3>
@@ -19,6 +20,7 @@ const SocialProofSection = () => {
                     ))}
                 </div>
             </div>
+            <Footer />
         </section>
     );
 }

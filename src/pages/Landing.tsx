@@ -1,11 +1,7 @@
-import AlertsSection from '@/components/Landing/AlertsSection';
-import BuilderSection from '@/components/Landing/BuilderSection';
-import FeaturesSection from '@/components/Landing/FeaturesSection';
-import Footer from '@/components/Landing/Footer';
+
 import HeroSection from '@/components/Landing/HeroSection';
 import Navigation from '@/components/Landing/Navigation';
 import SocialProofSection from '@/components/Landing/SocialProofSection';
-import ValuationSection from '@/components/Landing/ValuationSection';
 
 import { useSEO } from '@/hooks/useSEO';
 import { seoConfig } from '@/lib/seoConfig';
@@ -77,13 +73,13 @@ const Landing = () => {
                 <section id='options'>
                     <OptionsSection />
                 </section>
-                <FeaturesSection />
+                {/* <FeaturesSection />
                 <BuilderSection />
                 <ValuationSection />
-                {/* <IdeasSection /> */}
+                <IdeasSection />
                 <AlertsSection />
+                <SocialProofSection /> */}
                 <SocialProofSection />
-                <Footer />
             </div>
 
             {/* Custom styles for shimmer animation */}
