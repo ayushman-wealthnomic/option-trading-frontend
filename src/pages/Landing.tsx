@@ -10,6 +10,7 @@ import InvestorClone from '@/components/Landing/InvestorClone';
 import OptionsSection from '@/components/Landing/OptionsSection';
 import WatchlistSection from '@/components/Landing/WatchlistSection';
 
+
 const theme = {
     colors: {
         bgTop: '#EAF0FF',

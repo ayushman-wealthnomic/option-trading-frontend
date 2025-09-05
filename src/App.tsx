@@ -16,6 +16,7 @@ import StockDashboard from "./pages/TechnicalAnalysis/StockDashboard";
 import StockStorytellingDashboard from "./pages/StockStory/SingleStockDashboard";
 import TechnicalDashboard from "./pages/Technical/TechnicalDashboard";
 import Landing from "./pages/Landing";
+import TeamSection from "./components/Landing/TeamSection";
 
 
 const App = () => (
@@ -100,6 +101,14 @@ const App = () => (
               element={
                 <div className="w-screen h-screen">
                   <Landing />
+                </div>
+              }
+            />
+            <Route
+              path="/team"
+              element={
+                <div className="w-screen h-screen">
+                  <TeamSection />
                 </div>
               }
             />

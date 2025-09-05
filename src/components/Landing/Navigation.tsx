@@ -66,7 +66,7 @@ const Navigation = () => {
                     <a href="#investor-clone" className="text-white text-xl">Investor Clone</a>
                     <a href="#features" className="text-white text-xl">Features</a>
                     <a href="#valuation" className="text-white text-xl">Valuation</a>
-                    <a href="#alerts" className="text-white text-xl">Alerts</a>
+                    <a href="/team" className="text-white text-xl">Team</a>
                 </nav>
 
                 {/* Auth / Profile section */}
