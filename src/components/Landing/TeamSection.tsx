@@ -15,7 +15,7 @@ const TeamSection: React.FC = () => {
             id: '1',
             name: 'Ayushman Gupta',
             position: 'Founder & CEO',
-            imageUrl: './founder.jpeg',
+            imageUrl: '/founder.png',
             imageAlt: 'Profile picture of Ayushman Gupta'
         },
         {
