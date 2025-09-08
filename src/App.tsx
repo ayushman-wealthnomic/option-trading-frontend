@@ -89,11 +89,9 @@ const App = () => (
             <Route
               path="/technical"
               element={
-                <ProtectedRoute>
-                  <div className="w-screen h-screen">
-                    <TechnicalDashboard />
-                  </div>
-                </ProtectedRoute>
+                <div className="w-screen h-screen">
+                  <TechnicalDashboard />
+                </div>
               }
             />
             <Route

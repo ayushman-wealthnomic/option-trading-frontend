@@ -1,106 +1,183 @@
 import React, { useEffect, useState } from 'react';
 import { ChevronDown, BarChart3, Grid3X3, ChevronsLeft, ChevronLeft, ChevronsRight, ChevronRight } from 'lucide-react';
 import StockSidebar from '../../components/Technical/StockSidebar';
-import { baseURL } from '@/lib/baseURL';
-import { supabase } from '@/lib/supabase';
 
+
+// Single Stock type
 type Stock = {
+  id: number;
   symbol: string;
   company_name: string;
   market_cap: number | null;
   industry: string | null;
-  rev_growth?: string | null;       // e.g. "4.48%" (string since it has %)
-  mc_group?: string | null;         // e.g. "Large-Cap"
-  pe_ratio?: number | null;
-  pb_ratio?: number | null;
-  earnings_yield?: string | null;   // e.g. "3.43%"
-  rsi?: number | null;
-  "50_ma"?: number | null;
-  "20ma_chg"?: string | null;       // e.g. "5.46%"
-  "200_ma"?: number | null;
-  "20_ma"?: number | null;
-  sector?: string | null;
-  eps?: number | null;
-
-  // Returns (all percentages → keep string, since they contain %)
-  return_1y?: string | null;
-  return_5y?: string | null;
-  return_10y?: string | null;
-  return_1m?: string | null;
-  return_1w?: string | null;
-  return_3m?: string | null;
-  return_6m?: string | null;
-  return_ytd?: string | null;
-  return_3y?: string | null;
+  rev_growth: number | null;
+  mc_group: string | null;
+  pe_ratio: number | null;
+  pb_ratio: number | null;
+  earnings_yield: number | null;
+  rsi: number | null;
+  ma_50: number | null;
+  ma_20_chg_pct: number | null;
+  ma_200: number | null;
+  ma_20: number | null;
+  sector: string | null;
+  eps: number | null;
+  return_1y: number | null;
+  return_5y: number | null;
+  return_10y: number | null;
+  return_1m: number | null;
+  return_1w: number | null;
+  return_3m: number | null;
+  return_6m: number | null;
+  return_ytd: number | null;
+  return_3y: number | null;
+  stock_price: number | null;
+  pct_change: number | null;
+  avg_volume: number | null;
+  volume: number | null;
+  lynch_fv: number | null;
+  graham_pct: number | null;
+  graham_no: number | null;
+  lynch_pct: number | null;
+  z_score: number | null;
+  f_score: number | null;
 };
+
+// API Response type
+type StockResponse = {
+  page: number;
+  page_size: number;
+  total: number;
+  page_count: number;
+  sort_by: string;
+  sort_dir: "asc" | "desc";
+  items: Stock[];
+};
+
+
+
+const marketCaps = {
+  "Mega Cap": "Mega-Cap",
+  "Large Cap": "Large-Cap",
+  "Mid Cap": "Mid-Cap",
+  "Small Cap": "Small-Cap",
+  "Micro Cap": "Micro-Cap",
+  "Below 1B": "Below 1B",
+  "Over 1B": "Over 1B",
+  "Over 300M": "Over 300M",
+  "Over 100M": "Over 100M"
+};
+
 
 const StockMarketDashboard: React.FC = () => {
   const [selectedFilters, setSelectedFilters] = useState({
-    marketCap: 'Don\'t Show',
-    sector: 'Don\'t Show',
-    industry: 'Don\'t Show'
+    marketCap: '',
+    sector: '',
+    industry: '',
   });
+  const [filters, setFilters] = useState<{ [key: string]: string | boolean }>({});
   const [page, setPage] = useState(1);
   const [stocks, setStocks] = useState<Stock[]>([]);
   const [loading, setLoading] = useState(false);
+  const [totalPages, setTotalPages] = useState(0);
 
-  // Pagination constants
-  const totalResults = 19702; // This should come from API response
-  const resultsPerPage = 50; // Adjust based on your API
-  const totalPages = Math.ceil(totalResults / resultsPerPage);
+  // loader function (unchanged except return type safety)
 
+  console.log(filters);
+
+  const loadPage = async ({
+    page = 1,
+    pageSize = 25,
+    sortBy = "market_cap",
+    sortDir = "desc",
+    search = "",
+  }: {
+    page?: number;
+    pageSize?: number;
+    sortBy?: string;
+    sortDir?: "asc" | "desc";
+    search?: string;
+  }): Promise<StockResponse> => {
+    const params = new URLSearchParams({
+      page: String(page),
+      page_size: String(pageSize),
+      sort_by: sortBy,
+      sort_dir: sortDir,
+    });
+    if (search) params.append("search", search);
+
+    const res = await fetch(`http://13.61.67.248:8001/stocks?${params.toString()}`);
+    if (!res.ok) {
+      throw new Error("Failed to fetch stocks");
+    }
+    return res.json();
+  };
+
+  // react fetch call
   const fetchStocks = async (pageNum: number) => {
     setLoading(true);
-    const authToken = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      return session?.access_token;
-    };
-    const res = await fetch(`${baseURL}/filterapp-data?page=${pageNum}`, {
-      headers: {
-        Authorization: `Bearer ${await authToken()}`,
-        "Content-Type": "application/json",
-      },
-    });
-    const data: Stock[] = await res.json();
-    setStocks(data);
-    setLoading(false);
+    try {
+      const data = await loadPage({ page: pageNum, pageSize: 25 });
+
+      // unwrap "__root__" field
+      const normalizedItems = data.items.map((item: any) => item.__root__);
+
+      let filteredItems = normalizedItems;
+
+      if (selectedFilters.marketCap) {
+        filteredItems = normalizedItems.filter(
+          (stock) => stock.mc_group === selectedFilters.marketCap
+        );
+      }
+
+      if (filters["sma-SMA 20"]) {
+        const pos = filters["sma-SMA 20-pos"]; // "Above" or "Below"
+        filteredItems = filteredItems.filter((stock) => {
+          if (stock.stock_price === null || stock.ma_20 === null) return false;
+
+          if (pos === "Above") return stock.stock_price > stock.ma_20;
+          if (pos === "Below") return stock.stock_price < stock.ma_20;
+
+          return true; // fallback, shouldn't hit
+        });
+      }
+
+      // if (selectedFilters.sma20.enabled) {
+      //   filteredItems = filteredItems.filter(
+      //     (stock) => {
+      //       if (!stock.ma_20) return false;
+      //       return stock.ma_20 < selectedFilters.sma20.position;
+      //     }
+      //   );
+      // }
+      console.log(filteredItems);
+
+      setStocks(filteredItems);
+      setTotalPages(data.page_count);
+    } catch (err) {
+      console.error("Error fetching stocks:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
+
+  // initial + on page change
   useEffect(() => {
-    fetchStocks(page); // load initial page
-  }, [page]);
+    fetchStocks(page);
+  }, [page, selectedFilters.marketCap, filters]);
 
-  console.log(stocks);
-
-  // Pagination functions
-  const goToFirstPage = () => {
-    setPage(1);
-  };
-
-  const goToLastPage = () => {
-    setPage(totalPages);
-  };
-
-  const goToPreviousPage = () => {
-    if (page > 1) {
-      setPage(page - 1);
-    }
-  };
-
-  const goToNextPage = () => {
-    if (page < totalPages) {
-      setPage(page + 1);
-    }
-  };
-
-  const goToPage = (pageNum: number) => {
-    setPage(pageNum);
-  };
+  // Pagination helpers
+  const goToFirstPage = () => setPage(1);
+  const goToLastPage = () => setPage(totalPages);
+  const goToPreviousPage = () => page > 1 && setPage(page - 1);
+  const goToNextPage = () => page < totalPages && setPage(page + 1);
+  const goToPage = (pageNum: number) => setPage(pageNum);
 
   const getVisiblePageNumbers = (): (number | string)[] => {
-    const delta = 2; // Number of pages to show on each side of current page
-    const range = [];
-    const rangeWithDots = [];
+    const delta = 2;
+    const range: number[] = [];
+    const rangeWithDots: (number | string)[] = [];
 
     for (
       let i = Math.max(2, page - delta);
@@ -111,7 +188,7 @@ const StockMarketDashboard: React.FC = () => {
     }
 
     if (page - delta > 2) {
-      rangeWithDots.push(1, '...');
+      rangeWithDots.push(1, "...");
     } else {
       rangeWithDots.push(1);
     }
@@ -119,14 +196,14 @@ const StockMarketDashboard: React.FC = () => {
     rangeWithDots.push(...range);
 
     if (page + delta < totalPages - 1) {
-      rangeWithDots.push('...', totalPages);
+      rangeWithDots.push("...", totalPages);
     } else {
       if (totalPages > 1) {
         rangeWithDots.push(totalPages);
       }
     }
 
-    return rangeWithDots.filter((page, index, array) => array.indexOf(page) === index);
+    return [...new Set(rangeWithDots)];
   };
 
   const getReturnColor = (returnValue?: string): string => {
@@ -178,15 +255,28 @@ const StockMarketDashboard: React.FC = () => {
         {/* Filter Tabs */}
         <div className="flex space-x-8 mb-6">
           <div>
-            <label className="block text-sm text-gray-300 mb-3 font-medium">Market Cap</label>
+            <label className="block text-sm text-gray-300 mb-3 font-medium">
+              Market Cap
+            </label>
             <Select
               value={selectedFilters.marketCap}
-              onChange={(e: any) => setSelectedFilters({ ...selectedFilters, marketCap: e.target.value })}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                setSelectedFilters({
+                  ...selectedFilters,
+                  marketCap: e.target.value // store API string directly
+                })
+              }
               className="bg-gray-800 border text-center border-gray-600 rounded-md px-10 py-2 text-white w-64 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
-              <option value="All">All Market Caps</option>
+              <option value="">All Market Caps</option> {/* empty string = no filter */}
+              {Object.entries(marketCaps).map(([label, value]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
             </Select>
           </div>
+
           <div>
             <label className="block text-sm text-gray-300 mb-3 font-medium">Sector</label>
             <Select
@@ -332,6 +422,16 @@ const StockMarketDashboard: React.FC = () => {
                   <div className="w-20 flex items-center font-medium">3Y Return</div>
                   <div className="w-20 flex items-center font-medium">5Y Return</div>
                   <div className="w-20 flex items-center font-medium">10Y Return</div>
+                  <div className="w-20 flex items-center font-medium">Stock Price</div>
+                  <div className="w-20 flex items-center font-medium">% Change</div>
+                  <div className="w-24 flex items-center font-medium">Avg Volume</div>
+                  <div className="w-20 flex items-center font-medium">Volume</div>
+                  <div className="w-20 flex items-center font-medium">Lynch FV</div>
+                  <div className="w-20 flex items-center font-medium">Graham %</div>
+                  <div className="w-20 flex items-center font-medium">Graham No</div>
+                  <div className="w-20 flex items-center font-medium">Lynch %</div>
+                  <div className="w-16 flex items-center font-medium">Z-Score</div>
+                  <div className="w-16 flex items-center font-medium">F-Score</div>
                 </div>
               </div>
 
@@ -353,8 +453,8 @@ const StockMarketDashboard: React.FC = () => {
                           <div className="w-6 h-6 bg-white rounded opacity-90"></div>
                         </div> */}
                         <div className="min-w-0">
-                          <div className="text-blue-400 font-semibold text-sm">{stock.symbol}</div>
-                          <div className="text-xs text-gray-400 truncate">{stock.company_name}</div>
+                          <div className="text-white font-semibold text-sm">{stock.symbol}</div>
+                          <div className="text-xs text-gray-400 ">{stock.company_name}</div>
                         </div>
                       </div>
 
@@ -364,10 +464,10 @@ const StockMarketDashboard: React.FC = () => {
                       </div>
 
                       {/* Sector */}
-                      <div className="w-32 flex items-center text-white text-sm truncate pr-2">{stock.sector || '-'}</div>
+                      <div className="w-32 flex items-center text-white text-sm pr-2">{stock.sector || '-'}</div>
 
                       {/* Industry */}
-                      <div className="w-40 flex items-center text-white text-sm truncate pr-2">{stock.industry || '-'}</div>
+                      <div className="w-40 flex items-center text-white text-sm pr-2">{stock.industry || '-'}</div>
 
                       {/* MC Group */}
                       <div className="w-24 flex items-center text-white text-sm">{stock.mc_group || '-'}</div>
@@ -388,86 +488,114 @@ const StockMarketDashboard: React.FC = () => {
                       <div className="w-16 flex items-center text-white text-sm">{stock.rsi || '-'}</div>
 
                       {/* 50 MA */}
-                      <div className="w-20 flex items-center text-white text-sm">{stock["50_ma"] || '-'}</div>
+                      <div className="w-20 flex items-center text-white text-sm">{stock.ma_50 || '-'}</div>
 
                       {/* 20 MA */}
-                      <div className="w-20 flex items-center text-white text-sm">{stock["20_ma"] || '-'}</div>
+                      <div className="w-20 flex items-center text-white text-sm">{stock.ma_20 || '-'}</div>
 
                       {/* 200 MA */}
-                      <div className="w-20 flex items-center text-white text-sm">{stock["200_ma"] || '-'}</div>
+                      <div className="w-20 flex items-center text-white text-sm">{stock.ma_200 || '-'}</div>
 
                       {/* 20 MA Change */}
-                      <div className="w-20 flex items-center text-white text-sm">{stock["20ma_chg"] || '-'}</div>
+                      <div className="w-20 flex items-center text-white text-sm">{stock.ma_20_chg_pct ? `${stock.ma_20_chg_pct}%` : '-'}</div>
 
                       {/* Revenue Growth */}
                       <div
-                        className={`w-24 flex items-center font-medium text-sm ${getReturnColor(stock.rev_growth ?? undefined)}`}
+                        className={`w-24 flex items-center font-medium text-sm ${getReturnColor(stock.rev_growth?.toString() ?? undefined)}`}
                       >
                         {stock.rev_growth || '-'}
                       </div>
 
                       {/* 1W Return */}
                       <div
-                        className={`w-20 flex items-center font-medium text-sm ${getReturnColor(stock.return_1w ?? undefined)}`}
+                        className={`w-20 flex items-center font-medium text-sm ${getReturnColor(stock.return_1w?.toString() ?? undefined)}`}
                       >
                         {stock.return_1w || '-'}
                       </div>
 
                       {/* 1M Return */}
                       <div
-                        className={`w-20 flex items-center font-medium text-sm ${getReturnColor(stock.return_1m ?? undefined)}`}
+                        className={`w-20 flex items-center font-medium text-sm ${getReturnColor(stock.return_1m?.toString() ?? undefined)}`}
                       >
                         {stock.return_1m || '-'}
                       </div>
 
                       {/* 3M Return */}
                       <div
-                        className={`w-20 flex items-center font-medium text-sm ${getReturnColor(stock.return_3m ?? undefined)}`}
+                        className={`w-20 flex items-center font-medium text-sm ${getReturnColor(stock.return_3m?.toString() ?? undefined)}`}
                       >
                         {stock.return_3m || '-'}
                       </div>
 
                       {/* 6M Return */}
                       <div
-                        className={`w-20 flex items-center font-medium text-sm ${getReturnColor(stock.return_6m ?? undefined)}`}
+                        className={`w-20 flex items-center font-medium text-sm ${getReturnColor(stock.return_6m?.toString() ?? undefined)}`}
                       >
                         {stock.return_6m || '-'}
                       </div>
 
                       {/* YTD Return */}
                       <div
-                        className={`w-20 flex items-center font-medium text-sm ${getReturnColor(stock.return_ytd ?? undefined)}`}
+                        className={`w-20 flex items-center font-medium text-sm ${getReturnColor(stock.return_ytd?.toString() ?? undefined)}`}
                       >
                         {stock.return_ytd || '-'}
                       </div>
 
                       {/* 1Y Return */}
                       <div
-                        className={`w-20 flex items-center font-medium text-sm ${getReturnColor(stock.return_1y ?? undefined)}`}
+                        className={`w-20 flex items-center font-medium text-sm ${getReturnColor(stock.return_1y?.toString() ?? undefined)}`}
                       >
                         {stock.return_1y || '-'}
                       </div>
 
                       {/* 3Y Return */}
                       <div
-                        className={`w-20 flex items-center font-medium text-sm ${getReturnColor(stock.return_3y ?? undefined)}`}
+                        className={`w-20 flex items-center font-medium text-sm ${getReturnColor(stock.return_3y?.toString() ?? undefined)}`}
                       >
                         {stock.return_3y || '-'}
                       </div>
 
                       {/* 5Y Return */}
                       <div
-                        className={`w-20 flex items-center font-medium text-sm ${getReturnColor(stock.return_5y ?? undefined)}`}
+                        className={`w-20 flex items-center font-medium text-sm ${getReturnColor(stock.return_5y?.toString() ?? undefined)}`}
                       >
                         {stock.return_5y || '-'}
                       </div>
 
                       {/* 10Y Return */}
                       <div
-                        className={`w-20 flex items-center font-medium text-sm ${getReturnColor(stock.return_10y ?? undefined)}`}
+                        className={`w-20 flex items-center font-medium text-sm ${getReturnColor(stock.return_10y?.toString() ?? undefined)}`}
                       >
                         {stock.return_10y || '-'}
                       </div>
+                      <div className="w-20 flex items-center text-white text-sm">{stock.stock_price ?? '-'}</div>
+
+                      {/* % Change */}
+                      <div className="w-20 flex items-center text-white text-sm">{stock.pct_change ? `${stock.pct_change}%` : '-'}</div>
+
+                      {/* Avg Volume */}
+                      <div className="w-24 flex items-center text-white text-sm">{stock.avg_volume ?? '-'}</div>
+
+                      {/* Volume */}
+                      <div className="w-20 flex items-center text-white text-sm">{stock.volume ?? '-'}</div>
+
+                      {/* Lynch FV */}
+                      <div className="w-20 flex items-center text-white text-sm">{stock.lynch_fv ?? '-'}</div>
+
+                      {/* Graham % */}
+                      <div className="w-20 flex items-center text-white text-sm">{stock.graham_pct ? `${stock.graham_pct}%` : '-'}</div>
+
+                      {/* Graham Number */}
+                      <div className="w-20 flex items-center text-white text-sm">{stock.graham_no ?? '-'}</div>
+
+                      {/* Lynch % */}
+                      <div className="w-20 flex items-center text-white text-sm">{stock.lynch_pct ? `${stock.lynch_pct}%` : '-'}</div>
+
+                      {/* Z-Score */}
+                      <div className="w-16 flex items-center text-white text-sm">{stock.z_score ?? '-'}</div>
+
+                      {/* F-Score */}
+                      <div className="w-16 flex items-center text-white text-sm">{stock.f_score ?? '-'}</div>
                     </div>
                   ))
                 )}
@@ -480,7 +608,7 @@ const StockMarketDashboard: React.FC = () => {
         </div>
 
         {/* Right Sidebar */}
-        <StockSidebar />
+        <StockSidebar filters={filters} setFilters={setFilters} />
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import "keen-slider/keen-slider.min.css"
 import { useKeenSlider } from "keen-slider/react"
 import { useEffect } from "react"
+import { Link } from "react-router-dom"
 
 function AutoplayPlugin(ms: number) {
     return (slider: any) => {
@@ -165,7 +166,7 @@ const InvestmentPlatformSection = () => {
                     </div>
 
                     <div className="mt-6">
-                        <button className="text-green-400 hover:text-green-300 text-4xl font-light underline flex items-center gap-2 transition-colors group">
+                        <Link to="/technical" className="text-green-400 hover:text-green-300 text-4xl font-light underline flex items-center gap-2 transition-colors group">
                             Explore Ideas
                             <svg
                                 className="w-6 h-6 group-hover:translate-x-1 transition-transform"
@@ -180,7 +181,7 @@ const InvestmentPlatformSection = () => {
                                     d="M9 5l7 7-7 7"
                                 />
                             </svg>
-                        </button>
+                        </Link>
                     </div>
                 </div>
 
