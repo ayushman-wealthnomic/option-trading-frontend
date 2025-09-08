@@ -106,7 +106,7 @@ const StockMarketDashboard: React.FC = () => {
     });
     if (search) params.append("search", search);
 
-    const res = await fetch(`http://13.61.67.248:8001/stocks?${params.toString()}`);
+    const res = await fetch(`https://13.61.67.248:8001/stocks?${params.toString()}`);
     if (!res.ok) {
       throw new Error("Failed to fetch stocks");
     }
