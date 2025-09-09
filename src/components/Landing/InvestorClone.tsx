@@ -1,6 +1,7 @@
 import "keen-slider/keen-slider.min.css"
 import { useKeenSlider } from "keen-slider/react"
 import { useEffect, useState } from "react"
+import { Link } from "react-router-dom"
 
 function AutoplayPlugin(ms: number) {
     return (slider: any) => {
@@ -118,7 +119,7 @@ const InvestorClone = () => {
                     </p>
 
                     <div className="mt-24">
-                        <button className="text-[#EAFF00] hover:text-yellow-300 text-3xl font-light underline flex items-center gap-2 transition-colors group z-30">
+                        <Link to="/clone/AEGISLOG" className="text-[#EAFF00] hover:text-yellow-300 text-3xl font-light underline flex items-center gap-2 transition-colors group z-30">
                             Assemble Your Dream Team
                             <svg
                                 className="w-6 h-6 group-hover:translate-x-1 transition-transform"
@@ -133,7 +134,7 @@ const InvestorClone = () => {
                                     d="M9 5l7 7-7 7"
                                 />
                             </svg>
-                        </button>
+                        </Link>
                     </div>
                 </div>
             </div>

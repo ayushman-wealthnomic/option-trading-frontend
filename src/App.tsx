@@ -17,6 +17,7 @@ import StockStorytellingDashboard from "./pages/StockStory/SingleStockDashboard"
 import TechnicalDashboard from "./pages/Technical/TechnicalDashboard";
 import Landing from "./pages/Landing";
 import TeamSection from "./components/Landing/TeamSection";
+import CloneDashboard from "./pages/Clone/CloneApp";
 
 
 const App = () => (
@@ -107,6 +108,14 @@ const App = () => (
               element={
                 <div className="w-screen h-screen">
                   <TeamSection />
+                </div>
+              }
+            />
+            <Route
+              path="/clone/:urlTicker"
+              element={
+                <div className="w-screen h-screen">
+                  <CloneDashboard />
                 </div>
               }
             />
