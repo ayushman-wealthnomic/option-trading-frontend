@@ -18,6 +18,7 @@ import TechnicalDashboard from "./pages/Technical/TechnicalDashboard";
 import Landing from "./pages/Landing";
 import TeamSection from "./components/Landing/TeamSection";
 import CloneDashboard from "./pages/Clone/CloneApp";
+import CloneTable from "./pages/Clone/CloneTable";
 
 
 const App = () => (
@@ -116,6 +117,14 @@ const App = () => (
               element={
                 <div className="w-screen h-screen">
                   <CloneDashboard />
+                </div>
+              }
+            />
+            <Route
+              path="/clone"
+              element={
+                <div className="w-screen h-screen">
+                  <CloneTable />
                 </div>
               }
             />

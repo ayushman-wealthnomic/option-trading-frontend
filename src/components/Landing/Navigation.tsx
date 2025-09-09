@@ -57,7 +57,7 @@ const Navigation = () => {
                         <span className="text-white">WEALTH</span>
                         <span className="text-white">NOMICS</span>
                     </div>
-                    <img src="./logo.png" alt="Logo" className="w-[60px] h-[30px]" />
+                    <img src="./public/logo.png" alt="Logo" className="w-[60px] h-[30px]" />
                 </div>
 
                 {/* Nav links */}

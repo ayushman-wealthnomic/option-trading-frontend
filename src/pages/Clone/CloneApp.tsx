@@ -7,6 +7,8 @@ import { baseURL } from '@/lib/baseURL';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { Loader } from 'lucide-react';
+import Navigation from '@/components/Landing/Navigation';
+import CloneCharts from './CloneChart';
 
 interface StockMetrics {
     ticker: string;
@@ -135,250 +137,253 @@ const CloneDashboard: React.FC<DashboardProps> = () => {
     };
 
     return (
-        <div className="bg-black text-white min-h-screen p-6 md:p-10 lg:px-30">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
-                <Popover open={open} onOpenChange={setOpen}>
-                    <PopoverTrigger asChild>
-                        <Button
-                            variant="default"
-                            role="combobox"
-                            aria-expanded={open}
-                            className={`justify-between`}
+        <>
+            <Navigation />
+            <div className="bg-black text-white min-h-screen p-6 md:p-10 lg:px-30">
+                {/* Header */}
+                <div className="flex flex-col md:flex-row justify-end items-start md:items-center gap-6 mb-8">
+                    <Popover open={open} onOpenChange={setOpen}>
+                        <PopoverTrigger asChild>
+                            <Button
+                                variant="outline"
+                                role="combobox"
+                                aria-expanded={open}
+                                className={`justify-between`}
+                            >
+                                {selectedStock
+                                    ? `${selectedStock}: ${stockList[selectedStock as keyof typeof stockList]}`
+                                    : "Select stock..."}
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-64 p-0 bg-black">
+                            <div className="p-3">
+                                <Input
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    placeholder="Search stock..."
+                                    className="w-full border-none shadow-none focus:border-none focus:shadow-none focus:ring-0"
+                                />
+                                {/* Dropdown with results */}
+                                {filteredStocks.length > 0 && (
+                                    <div className="mt-1 w-full bg-background border rounded-md shadow-lg max-h-48 overflow-y-auto">
+                                        {filteredStocks.map((ticker) => (
+                                            <div
+                                                key={ticker}
+                                                className="px-3 py-2 hover:bg-muted cursor-pointer text-sm"
+                                                onClick={() => handleStockSelect(ticker)}
+                                            >
+                                                {ticker}: {stockList[ticker as keyof typeof stockList]}
+
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </PopoverContent>
+                    </Popover>
+
+                    <div className="flex flex-col gap-2 w-full md:w-auto">
+                        <span className="text-white text-lg">Select Methodology</span>
+                        <select
+                            value={selectedMethod}
+                            onChange={(e) => setSelectedMethod(e.target.value)}
+                            className="text-white border-2 border-gray-600 px-4 py-2 rounded bg-black"
                         >
-                            {selectedStock
-                                ? `${selectedStock}: ${stockList[selectedStock as keyof typeof stockList]}`
-                                : "Select stock..."}
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-64 p-0">
-                        <div className="p-3">
-                            <Input
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder="Search stock..."
-                                className="w-full"
-                            />
-                            {/* Dropdown with results */}
-                            {filteredStocks.length > 0 && (
-                                <div className="mt-1 w-full bg-background border rounded-md shadow-lg max-h-48 overflow-y-auto">
-                                    {filteredStocks.map((ticker) => (
-                                        <div
-                                            key={ticker}
-                                            className="px-3 py-2 hover:bg-muted cursor-pointer text-sm"
-                                            onClick={() => handleStockSelect(ticker)}
-                                        >
-                                            {ticker}: {stockList[ticker as keyof typeof stockList]}
-
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    </PopoverContent>
-                </Popover>
-
-                <div className="flex flex-col gap-2 w-full md:w-auto">
-                    <span className="text-gray-300">Select Methodology</span>
-                    <select
-                        value={selectedMethod}
-                        onChange={(e) => setSelectedMethod(e.target.value)}
-                        className="text-white border-2 border-gray-600 px-4 py-2 rounded bg-black"
-                    >
-                        <option>Warren Buffet</option>
-                        <option>Peter Lynch</option>
-                        <option>Benjamin Graham</option>
-                    </select>
+                            <option>Warren Buffet</option>
+                            <option>Peter Lynch</option>
+                            <option>Benjamin Graham</option>
+                        </select>
+                    </div>
                 </div>
+
+
+
+                {/* Company Header */}
+                {loading ? (
+                    <div className="flex justify-center items-center h-screen">
+                        <Loader
+                            className={`w-6 h-6 animate-spin`}
+                        />
+                    </div>
+                ) : (
+                    metrics && (
+                        <>
+                            <div className="mb-8">
+                                <h1 className="text-3xl md:text-4xl font-light mb-4">{metrics ? metrics[0].company_name : "-"}</h1>
+                                <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 text-md">
+                                    <div>
+                                        <span className="text-orange-500 mr-2">Industry</span>
+                                        <span className="text-gray-300">{metrics ? metrics[0].industry : "-"}</span>
+                                    </div>
+                                    <div>
+                                        <span className="text-orange-500 mr-2">Sector</span>
+                                        <span className="text-gray-300">{metrics ? metrics[0].sector : "-"}</span>
+                                    </div>
+                                    <div>
+                                        <span className="text-orange-500 mr-2">Symbol</span>
+                                        <span className="text-gray-300">{metrics ? metrics[0].ticker : "-"}</span>
+                                    </div>
+                                </div>
+                                <p className="text-gray-400 mt-4 max-w-4xl text-sm md:text-md leading-relaxed">
+                                    Dr. Lal PathLabs Limited operates laboratories for carrying out pathological investigations in India and internationally.
+                                    The company provides pathological investigations of various branches of bio-chemistry, hematology, histopathology,
+                                    microbiology, electrophoresis, immuno-chemistry, immunology, virology, cytology, and other pathological and radiological
+                                    investigations. It also offers phlebotomist training programs. The company was founded in 1949 and is based in Gurugram, India.
+                                </p>
+                            </div>
+                            {/* Top metrics grid */}
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-6 mb-16">
+                                <div>
+                                    <div className="text-2xl md:text-3xl font-medium mb-1">
+                                        {formatValue(metrics[0].roe_avg)}
+                                    </div>
+                                    <div className="text-gray-400 text-sm md:text-md">ROE (avg)</div>
+                                </div>
+                                <div>
+                                    <div className="text-2xl md:text-3xl font-medium mb-1">
+                                        {formatValue(metrics[0].roic_avg)}
+                                    </div>
+                                    <div className="text-gray-400 text-sm md:text-md">ROIC (avg)</div>
+                                </div>
+                                <div>
+                                    <div className="text-2xl md:text-3xl font-medium mb-1">
+                                        {formatValue(metrics[0].pos_fcf_rate, "%", 1)}
+                                    </div>
+                                    <div className="text-gray-400 text-sm md:text-md">
+                                        Positive FCF Years
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="text-2xl md:text-3xl font-medium mb-1">
+                                        {formatValue(metrics[0].netmargin_avg, "%", 1)}
+                                    </div>
+                                    <div className="text-gray-400 text-sm md:text-md">
+                                        Net Margin (avg)
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="text-2xl md:text-3xl font-medium mb-1">
+                                        {formatValue(metrics[0].pos_earnings_rate, "%", 1)}
+                                    </div>
+                                    <div className="text-gray-400 text-sm md:text-md">
+                                        Positive Earnings Years
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="text-2xl md:text-3xl font-medium mb-1">
+                                        {formatValue(metrics[0].currentratio, "x")}
+                                    </div>
+                                    <div className="text-gray-400 text-sm md:text-md">Current Ratio</div>
+                                </div>
+                                <div className="text-center bg-[#090909] py-5">
+                                    <div className="text-4xl md:text-6xl font-medium text-white mb-1">
+                                        {metrics[0].totalscore}
+                                    </div>
+                                    <div className="text-cyan-400 text-lg md:text-2xl">Total Score</div>
+                                </div>
+                                <div>
+                                    <div className="text-2xl md:text-3xl font-medium mb-1">
+                                        {formatValue(metrics[0].debt_equity_x, "x")}
+                                    </div>
+                                    <div className="text-gray-400 text-sm md:text-md">Debt/Equity</div>
+                                </div>
+                                <div>
+                                    <div className="text-2xl md:text-3xl font-medium mb-1">
+                                        {formatValue(metrics[0].debt_earnings_x, "x")}
+                                    </div>
+                                    <div className="text-gray-400 text-sm md:text-md">Debt/Earnings</div>
+                                </div>
+                                <div>
+                                    <div className="text-2xl md:text-3xl font-medium mb-1">
+                                        {formatValue(metrics[0].fcf_cagr)}
+                                    </div>
+                                    <div className="text-gray-400 text-sm md:text-md">FCF CAGR</div>
+                                </div>
+                                <div>
+                                    <div className="text-2xl md:text-3xl font-medium mb-1">
+                                        {formatValue(metrics[0].shares_cagr, "%", 1)}
+                                    </div>
+                                    <div className="text-gray-400 text-sm md:text-md">Shares CAGR</div>
+                                </div>
+                                <div>
+                                    <div className="text-2xl md:text-3xl font-medium mb-1">
+                                        {formatValue(metrics[0].fcf_margin_latest)}
+                                    </div>
+                                    <div className="text-gray-400 text-sm md:text-md">FCF Margin</div>
+                                </div>
+                                <div>
+                                    <div className="text-2xl md:text-3xl font-medium mb-1">
+                                        {formatValue(metrics[0].payout_ratio_latest)}
+                                    </div>
+                                    <div className="text-gray-400 text-sm md:text-md">Payout Ratio</div>
+                                </div>
+                                <div />
+                            </div>
+
+                            {/* Bottom metrics cards */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+                                <div className="flex items-start bg-[#090909] p-6">
+                                    <div className="text-4xl md:text-6xl font-light mt-2 md:mt-6 mr-4 md:mr-6">
+                                        {metrics[0].quality}
+                                    </div>
+                                    <div className="max-w-56">
+                                        <h3 className="text-blue-400 text-lg md:text-2xl">Quality</h3>
+                                        <p className="text-gray-400 text-sm md:text-md">
+                                            How efficiently the company turns profits from its capital and
+                                            operations.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="flex items-start bg-[#090909] p-6">
+                                    <div className="text-4xl md:text-6xl font-light mt-2 md:mt-6 mr-4 md:mr-6">
+                                        {metrics[0].conservatism}
+                                    </div>
+                                    <div className="max-w-56">
+                                        <h3 className="text-green-400 text-lg md:text-2xl mb-2">
+                                            Conservatism
+                                        </h3>
+                                        <p className="text-gray-400 text-sm md:text-md">
+                                            Shows how stable and predictable the company's earnings and cash
+                                            flow are over time.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="flex items-start bg-[#090909] p-6">
+                                    <div className="text-4xl md:text-6xl font-light mt-2 md:mt-6 mr-4 md:mr-6">
+                                        {metrics[0].ownerearnings}
+                                    </div>
+                                    <div className="max-w-56">
+                                        <h3 className="text-orange-400 text-lg md:text-2xl mb-2">
+                                            Owner Earnings
+                                        </h3>
+                                        <p className="text-gray-400 text-sm md:text-md">
+                                            Checks balance sheet strength, debt levels, and shareholder-friendly practices.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="flex items-start bg-[#090909] p-6">
+                                    <div className="text-4xl md:text-6xl font-light mt-2 md:mt-6 mr-4 md:mr-6">
+                                        {metrics[0].consistency}
+                                    </div>
+                                    <div className="max-w-56">
+                                        <h3 className="text-red-400 text-lg md:text-2xl mb-2">Consistency</h3>
+                                        <p className="text-gray-400 text-sm md:text-md">
+                                            Estimates the real cash left for shareholders after expenses,
+                                            debt, and reinvestments.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </>
+                    )
+                )}
+
+
+                <CloneCharts />
+
+
             </div>
-
-
-
-            {/* Company Header */}
-            {loading ? (
-                <div className="flex justify-center items-center h-screen">
-                    <Loader
-                        className={`w-6 h-6 animate-spin`}
-                    />
-                </div>
-            ) : (
-                metrics && (
-                    <>
-                        <div className="mb-8">
-                            <h1 className="text-3xl md:text-4xl font-light mb-4">{metrics ? metrics[0].company_name : "-"}</h1>
-                            <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 text-md">
-                                <div>
-                                    <span className="text-orange-500 mr-2">Industry</span>
-                                    <span className="text-gray-300">{metrics ? metrics[0].industry : "-"}</span>
-                                </div>
-                                <div>
-                                    <span className="text-orange-500 mr-2">Sector</span>
-                                    <span className="text-gray-300">{metrics ? metrics[0].sector : "-"}</span>
-                                </div>
-                                <div>
-                                    <span className="text-orange-500 mr-2">Symbol</span>
-                                    <span className="text-gray-300">{metrics ? metrics[0].ticker : "-"}</span>
-                                </div>
-                            </div>
-                            <p className="text-gray-400 mt-4 max-w-4xl text-sm md:text-md leading-relaxed">
-                                Dr. Lal PathLabs Limited operates laboratories for carrying out pathological investigations in India and internationally.
-                                The company provides pathological investigations of various branches of bio-chemistry, hematology, histopathology,
-                                microbiology, electrophoresis, immuno-chemistry, immunology, virology, cytology, and other pathological and radiological
-                                investigations. It also offers phlebotomist training programs. The company was founded in 1949 and is based in Gurugram, India.
-                            </p>
-                        </div>
-                        {/* Top metrics grid */}
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-6 mb-16">
-                            <div>
-                                <div className="text-2xl md:text-3xl font-medium mb-1">
-                                    {formatValue(metrics[0].roe_avg)}
-                                </div>
-                                <div className="text-gray-400 text-sm md:text-md">ROE (avg)</div>
-                            </div>
-                            <div>
-                                <div className="text-2xl md:text-3xl font-medium mb-1">
-                                    {formatValue(metrics[0].roic_avg)}
-                                </div>
-                                <div className="text-gray-400 text-sm md:text-md">ROIC (avg)</div>
-                            </div>
-                            <div>
-                                <div className="text-2xl md:text-3xl font-medium mb-1">
-                                    {formatValue(metrics[0].pos_fcf_rate, "%", 1)}
-                                </div>
-                                <div className="text-gray-400 text-sm md:text-md">
-                                    Positive FCF Years
-                                </div>
-                            </div>
-                            <div>
-                                <div className="text-2xl md:text-3xl font-medium mb-1">
-                                    {formatValue(metrics[0].netmargin_avg, "%", 1)}
-                                </div>
-                                <div className="text-gray-400 text-sm md:text-md">
-                                    Net Margin (avg)
-                                </div>
-                            </div>
-                            <div>
-                                <div className="text-2xl md:text-3xl font-medium mb-1">
-                                    {formatValue(metrics[0].pos_earnings_rate, "%", 1)}
-                                </div>
-                                <div className="text-gray-400 text-sm md:text-md">
-                                    Positive Earnings Years
-                                </div>
-                            </div>
-                            <div>
-                                <div className="text-2xl md:text-3xl font-medium mb-1">
-                                    {formatValue(metrics[0].currentratio, "x")}
-                                </div>
-                                <div className="text-gray-400 text-sm md:text-md">Current Ratio</div>
-                            </div>
-                            <div className="text-center bg-[#090909] py-5">
-                                <div className="text-4xl md:text-6xl font-medium text-white mb-1">
-                                    {metrics[0].totalscore}
-                                </div>
-                                <div className="text-cyan-400 text-lg md:text-2xl">Total Score</div>
-                            </div>
-                            <div>
-                                <div className="text-2xl md:text-3xl font-medium mb-1">
-                                    {formatValue(metrics[0].debt_equity_x, "x")}
-                                </div>
-                                <div className="text-gray-400 text-sm md:text-md">Debt/Equity</div>
-                            </div>
-                            <div>
-                                <div className="text-2xl md:text-3xl font-medium mb-1">
-                                    {formatValue(metrics[0].debt_earnings_x, "x")}
-                                </div>
-                                <div className="text-gray-400 text-sm md:text-md">Debt/Earnings</div>
-                            </div>
-                            <div>
-                                <div className="text-2xl md:text-3xl font-medium mb-1">
-                                    {formatValue(metrics[0].fcf_cagr)}
-                                </div>
-                                <div className="text-gray-400 text-sm md:text-md">FCF CAGR</div>
-                            </div>
-                            <div>
-                                <div className="text-2xl md:text-3xl font-medium mb-1">
-                                    {formatValue(metrics[0].shares_cagr, "%", 1)}
-                                </div>
-                                <div className="text-gray-400 text-sm md:text-md">Shares CAGR</div>
-                            </div>
-                            <div>
-                                <div className="text-2xl md:text-3xl font-medium mb-1">
-                                    {formatValue(metrics[0].fcf_margin_latest)}
-                                </div>
-                                <div className="text-gray-400 text-sm md:text-md">FCF Margin</div>
-                            </div>
-                            <div>
-                                <div className="text-2xl md:text-3xl font-medium mb-1">
-                                    {formatValue(metrics[0].payout_ratio_latest)}
-                                </div>
-                                <div className="text-gray-400 text-sm md:text-md">Payout Ratio</div>
-                            </div>
-                            <div />
-                        </div>
-
-                        {/* Bottom metrics cards */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-                            <div className="flex items-start bg-[#090909] p-6">
-                                <div className="text-4xl md:text-6xl font-light mt-2 md:mt-6 mr-4 md:mr-6">
-                                    {metrics[0].quality}
-                                </div>
-                                <div className="max-w-56">
-                                    <h3 className="text-blue-400 text-lg md:text-2xl">Quality</h3>
-                                    <p className="text-gray-400 text-sm md:text-md">
-                                        How efficiently the company turns profits from its capital and
-                                        operations.
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="flex items-start bg-[#090909] p-6">
-                                <div className="text-4xl md:text-6xl font-light mt-2 md:mt-6 mr-4 md:mr-6">
-                                    {metrics[0].conservatism}
-                                </div>
-                                <div className="max-w-56">
-                                    <h3 className="text-green-400 text-lg md:text-2xl mb-2">
-                                        Conservatism
-                                    </h3>
-                                    <p className="text-gray-400 text-sm md:text-md">
-                                        Shows how stable and predictable the company's earnings and cash
-                                        flow are over time.
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="flex items-start bg-[#090909] p-6">
-                                <div className="text-4xl md:text-6xl font-light mt-2 md:mt-6 mr-4 md:mr-6">
-                                    {metrics[0].ownerearnings}
-                                </div>
-                                <div className="max-w-56">
-                                    <h3 className="text-orange-400 text-lg md:text-2xl mb-2">
-                                        Owner Earnings
-                                    </h3>
-                                    <p className="text-gray-400 text-sm md:text-md">
-                                        Checks balance sheet strength, debt levels, and shareholder-friendly practices.
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="flex items-start bg-[#090909] p-6">
-                                <div className="text-4xl md:text-6xl font-light mt-2 md:mt-6 mr-4 md:mr-6">
-                                    {metrics[0].consistency}
-                                </div>
-                                <div className="max-w-56">
-                                    <h3 className="text-red-400 text-lg md:text-2xl mb-2">Consistency</h3>
-                                    <p className="text-gray-400 text-sm md:text-md">
-                                        Estimates the real cash left for shareholders after expenses,
-                                        debt, and reinvestments.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </>
-                )
-            )}
-
-
-
-
-
-        </div>
+        </>
     );
 };
 
