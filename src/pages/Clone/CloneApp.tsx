@@ -70,7 +70,7 @@ const CloneDashboard: React.FC<DashboardProps> = () => {
     const navigate = useNavigate();
     const [metrics, setMetrics] = useState<StockMetrics[]>();
     const [selectedMethod, setSelectedMethod] = useState('Warren Buffet');
-    const [selectedStock,] = useState<string>();
+    const [selectedStock, setSelectedStock] = useState<string>("AEGISLOG");
     const [open, setOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [filteredStocks, setFilteredStocks] = useState<string[]>([]);
@@ -95,7 +95,7 @@ const CloneDashboard: React.FC<DashboardProps> = () => {
         console.log(metrics);
 
 
-    }, [urlTicker, selectedStock]);
+    }, [urlTicker]);
 
     useEffect(() => {
         if (!searchQuery.trim()) {
@@ -121,8 +121,8 @@ const CloneDashboard: React.FC<DashboardProps> = () => {
     const handleStockSelect = (ticker: string) => {
         navigate(`/clone/${ticker}`);
         setSearchQuery('');
-        // setSelectedStock(ticker)
-        setFilteredStocks([]);
+        setSelectedStock(ticker)
+        // setFilteredStocks([]);
         setOpen(false);
     };
 
