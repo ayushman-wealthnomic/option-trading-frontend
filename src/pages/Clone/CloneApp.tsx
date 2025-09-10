@@ -36,8 +36,44 @@ interface StockMetrics {
     industry: string;
     sector: string;
 }
+
+type StockFinancialData = {
+    id: number;
+    stock_ticker: string;
+    report_date: string; // ISO date string
+    revenue: string;
+    revenue_growth_yoy: string;
+    cost_of_revenue: string;
+    gross_profit: string;
+    selling_general_admin: string;
+    other_operating_expenses: string;
+    operating_expenses: string;
+    operating_income: string;
+    interest_income: string;
+    interest_expense: string;
+    other_expense_income: string;
+    pretax_income: string;
+    income_tax: string;
+    net_income: string;
+    net_income_growth: string;
+    shares_outstanding_basic: string;
+    shares_outstanding_diluted: string;
+    shares_change: string;
+    eps_basic: string;
+    eps_diluted: string;
+    eps_growth: string;
+    gross_margin: string;
+    operating_margin: string;
+    profit_margin: string;
+    effective_tax_rate: string;
+    ebitda: string;
+    ebitda_margin: string;
+    ebit: string;
+    ebit_margin: string;
+};
 interface ApiResponse {
     data: StockMetrics[];
+    chartData: StockFinancialData[],
 }
 
 
@@ -69,6 +105,7 @@ interface DashboardProps {
 const CloneDashboard: React.FC<DashboardProps> = () => {
     const { urlTicker } = useParams();
     const [loading, setLoading] = useState(false);
+    const [stockData, setStockData] = useState<StockFinancialData[]>();
     const navigate = useNavigate();
     const [metrics, setMetrics] = useState<StockMetrics[]>();
     const [selectedMethod, setSelectedMethod] = useState('Warren Buffet');
@@ -84,6 +121,7 @@ const CloneDashboard: React.FC<DashboardProps> = () => {
                 const res = await fetch(`${baseURL}/clone-stock-data/${urlTicker}`);
                 if (!res.ok) throw new Error("Failed to fetch data");
                 const json: ApiResponse = await res.json();
+                setStockData(json.chartData)
                 setMetrics(json.data);
             } catch (err: any) {
                 console.error(err)
@@ -379,7 +417,7 @@ const CloneDashboard: React.FC<DashboardProps> = () => {
                 )}
 
 
-                <CloneCharts />
+                {stockData && <CloneCharts chartData={stockData} />}
 
 
             </div>

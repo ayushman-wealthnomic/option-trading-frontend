@@ -1,5 +1,45 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
+import FinancialDashboard from '@/components/Clone/IncomeGraph';
+
+type StockFinancialData = {
+    id: number;
+    stock_ticker: string;
+    report_date: string; // ISO date string
+    revenue: string;
+    revenue_growth_yoy: string;
+    cost_of_revenue: string;
+    gross_profit: string;
+    selling_general_admin: string;
+    other_operating_expenses: string;
+    operating_expenses: string;
+    operating_income: string;
+    interest_income: string;
+    interest_expense: string;
+    other_expense_income: string;
+    pretax_income: string;
+    income_tax: string;
+    net_income: string;
+    net_income_growth: string;
+    shares_outstanding_basic: string;
+    shares_outstanding_diluted: string;
+    shares_change: string;
+    eps_basic: string;
+    eps_diluted: string;
+    eps_growth: string;
+    gross_margin: string;
+    operating_margin: string;
+    profit_margin: string;
+    effective_tax_rate: string;
+    ebitda: string;
+    ebitda_margin: string;
+    ebit: string;
+    ebit_margin: string;
+};
+
+interface Params {
+    chartData: StockFinancialData[] | undefined
+}
 
 interface FinancialDataItem {
     category: string;
@@ -20,10 +60,12 @@ interface ProcessedDataItem {
     end: number;
 }
 
-const CloneCharts: React.FC = () => {
+const CloneCharts = ({ chartData }: Params) => {
     const chartRef = useRef<HTMLDivElement>(null);
     const [activeTab, setActiveTab] = useState<'GRAPH' | 'TABULAR'>('GRAPH');
     const [activeSection, setActiveSection] = useState<'Income Statement' | 'Balance Sheet' | 'Cash flow' | 'Ratios'>('Income Statement');
+    console.log(chartData);
+
 
     // Financial data
     const financialData: FinancialDataItem[] = [
@@ -288,7 +330,7 @@ const CloneCharts: React.FC = () => {
                 <div className="flex mb-4">
                     <button
                         onClick={() => setActiveTab('GRAPH')}
-                        className={`px-4 py-2 text-sm font-medium ${activeTab === 'GRAPH'
+                        className={`px-4 py-2 text-lg font-medium ${activeTab === 'GRAPH'
                             ? 'text-white border-b border-white'
                             : 'text-gray-400'
                             }`}
@@ -297,7 +339,7 @@ const CloneCharts: React.FC = () => {
                     </button>
                     <button
                         onClick={() => setActiveTab('TABULAR')}
-                        className={`px-4 py-2 text-sm font-medium ml-6 ${activeTab === 'TABULAR'
+                        className={`px-4 py-2 text-lg font-medium ml-6 ${activeTab === 'TABULAR'
                             ? 'text-white border-b border-white'
                             : 'text-gray-400'
                             }`}
@@ -307,23 +349,23 @@ const CloneCharts: React.FC = () => {
                 </div>
 
                 {/* Content Panel */}
-                <div className="border border-gray-600 rounded">
+                <div className="border border-gray-600 rounded w-full">
                     {/* Section Tabs */}
-                    <div className="flex">
+                    <div className="flex items-center justify-center w-full">
                         {[
                             { name: 'Income Statement', active: true },
                             { name: 'Balance Sheet', active: false },
-                            { name: 'Cash flow', active: false },
+                            { name: 'Cash Flow', active: false },
                             { name: 'Ratios', active: false }
-                        ].map((section, index) => (
+                        ].map((section) => (
                             <button
                                 key={section.name}
                                 onClick={() => setActiveSection(section.name as any)}
-                                className={`px-3 py-2 text-xs font-medium border-r border-gray-600 last:border-r-0 ${activeSection === section.name || section.active
-                                    ? 'bg-gray-700 text-white'
-                                    : 'bg-gray-800 text-gray-400'
+                                className={`flex-1 px-3 py-2 text-lg font-medium border-r border-gray-600 last:border-r-0
+        ${activeSection === section.name || section.active
+                                        ? 'bg-gray-700 text-white'
+                                        : 'bg-gray-800 text-gray-400'
                                     }`}
-                                style={index === 0 ? { backgroundColor: '#374151' } : {}}
                             >
                                 {section.name}
                             </button>
@@ -331,35 +373,17 @@ const CloneCharts: React.FC = () => {
                     </div>
 
                     {/* Chart Content */}
-                    <div className="p-4" style={{ backgroundColor: '#000000' }}>
+                    <div className="p-4 bg-black">
                         {activeTab === 'GRAPH' ? (
-                            <div ref={chartRef} className="w-full" style={{ minHeight: '300px' }}></div>
+                            <>
+                                {activeSection === 'Income Statement' && <FinancialDashboard chartData={chartData} />}
+                                {/* {activeSection === 'Balance Sheet' && <BalanceSheetGraph />}
+                                {activeSection === 'Cash Flow' && <CashFlowGraph />}
+                                {activeSection === 'Ratios' && <RatiosGraph />} */}
+                            </>
                         ) : (
                             renderTabularView()
                         )}
-                    </div>
-                </div>
-            </div>
-
-            {/* Right side with Pro/Cons */}
-            <div className="w-64 p-4 pl-0">
-                <div className="mb-8">
-                    <h3 className="text-sm font-medium text-white mb-3">Pro</h3>
-                    <div className="text-xs text-gray-400 space-y-1">
-                        <p>• Clear visualization of financial progression</p>
-                        <p>• Easy identification of positive/negative impacts</p>
-                        <p>• Year-over-year comparison capabilities</p>
-                        <p>• Delta analysis shows incremental changes</p>
-                    </div>
-                </div>
-
-                <div>
-                    <h3 className="text-sm font-medium text-white mb-3">Cons</h3>
-                    <div className="text-xs text-gray-400 space-y-1">
-                        <p>• Complex for non-financial audiences</p>
-                        <p>• Requires understanding of waterfall methodology</p>
-                        <p>• Limited to specific data structure</p>
-                        <p>• May not show all relevant context</p>
                     </div>
                 </div>
             </div>
