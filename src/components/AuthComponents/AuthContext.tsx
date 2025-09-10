@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'; // Still needed for client-side 
 import { supabase } from '@/lib/supabase'; // <--- IMPORTANT: Ensure this path is correct for your Supabase client
 import type { User, Session, AuthError } from '@supabase/supabase-js'; // Import Supabase types
 import { toast } from 'sonner';
+import { Loader } from 'lucide-react';
 
 
 interface AuthContextType {
@@ -69,7 +70,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     // Render a loading state while checking the initial session
     if (isLoading) {
-        return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', fontSize: '24px' }}>Loading user session...</div>;
+        return <div className="flex justify-center items-center h-full">
+            <Loader className={`w-6 h-6 animate-spin text-black`} />
+        </div>;
     }
 
     return (

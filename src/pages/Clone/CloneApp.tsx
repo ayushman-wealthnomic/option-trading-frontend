@@ -324,7 +324,7 @@ const CloneDashboard: React.FC<DashboardProps> = () => {
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
                                 <div className="flex items-start bg-[#090909] p-6">
                                     <div className="text-4xl md:text-6xl font-light mt-2 md:mt-6 mr-4 md:mr-6">
-                                        {metrics[0].quality}
+                                        {Math.round(metrics[0].quality)}
                                     </div>
                                     <div className="max-w-56">
                                         <h3 className="text-blue-400 text-lg md:text-2xl">Quality</h3>
@@ -336,7 +336,7 @@ const CloneDashboard: React.FC<DashboardProps> = () => {
                                 </div>
                                 <div className="flex items-start bg-[#090909] p-6">
                                     <div className="text-4xl md:text-6xl font-light mt-2 md:mt-6 mr-4 md:mr-6">
-                                        {metrics[0].conservatism}
+                                        {Math.round(metrics[0].conservatism)}
                                     </div>
                                     <div className="max-w-56">
                                         <h3 className="text-green-400 text-lg md:text-2xl mb-2">
@@ -350,7 +350,7 @@ const CloneDashboard: React.FC<DashboardProps> = () => {
                                 </div>
                                 <div className="flex items-start bg-[#090909] p-6">
                                     <div className="text-4xl md:text-6xl font-light mt-2 md:mt-6 mr-4 md:mr-6">
-                                        {metrics[0].ownerearnings}
+                                        {Math.round(metrics[0].ownerearnings)}
                                     </div>
                                     <div className="max-w-56">
                                         <h3 className="text-orange-400 text-lg md:text-2xl mb-2">
@@ -363,7 +363,7 @@ const CloneDashboard: React.FC<DashboardProps> = () => {
                                 </div>
                                 <div className="flex items-start bg-[#090909] p-6">
                                     <div className="text-4xl md:text-6xl font-light mt-2 md:mt-6 mr-4 md:mr-6">
-                                        {metrics[0].consistency}
+                                        {Math.round(metrics[0].consistency)}
                                     </div>
                                     <div className="max-w-56">
                                         <h3 className="text-red-400 text-lg md:text-2xl mb-2">Consistency</h3>

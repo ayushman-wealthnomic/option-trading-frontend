@@ -1,6 +1,6 @@
 import Navigation from '@/components/Landing/Navigation';
 import { baseURL } from '@/lib/baseURL';
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
+import { ChevronDown, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, ChevronUp } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -43,6 +43,7 @@ const CloneTable: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [totalPages,] = useState(47);
     const [page, setPage] = useState(1);
+    const [sortConfig, setSortConfig] = useState<{ key: keyof Stock; direction: "asc" | "desc" } | null>(null);
 
     const loadPage = async ({
         page = 1,
@@ -80,6 +81,24 @@ const CloneTable: React.FC = () => {
         console.log(stocks);
 
     }, [page]);
+
+    const sortedStocks = [...stocks].sort((a, b) => {
+        if (!sortConfig) return 0;
+        const { key, direction } = sortConfig;
+        const order = direction === "asc" ? 1 : -1;
+        return a[key] > b[key] ? order : a[key] < b[key] ? -order : 0;
+    });
+
+    const handleSort = (key: keyof Stock) => {
+        setSortConfig((prev) => {
+            if (prev?.key === key) {
+                // toggle asc/desc
+                return { key, direction: prev.direction === "asc" ? "desc" : "asc" };
+            }
+            return { key, direction: "asc" };
+        });
+    };
+
 
 
     const formatNumber = (value: number | null | undefined, decimals: number = 1): string => {
@@ -141,29 +160,301 @@ const CloneTable: React.FC = () => {
                         <div className="min-w-max text-left">
                             <div className="bg-black sticky top-0 z-10 border-b border-gray-700">
                                 <div className="flex text-sm text-white px-6 py-4">
-                                    <div className="w-64 flex items-center font-medium">Company</div>
-                                    <div className="w-32 flex items-center font-medium">Sector</div>
-                                    <div className="w-40 flex items-center font-medium">Industry</div>
-                                    <div className="w-20 flex items-center font-medium">Years</div>
-                                    <div className="w-20 flex items-center font-medium">Window</div>
-                                    <div className="w-24 flex items-center font-medium">Total Score</div>
-                                    <div className="w-20 flex items-center font-medium">Quality</div>
-                                    <div className="w-24 flex items-center font-medium">Consistency</div>
-                                    <div className="w-24 flex items-center font-medium">Conservatism</div>
-                                    <div className="w-24 flex items-center font-medium">Owner Earn</div>
-                                    <div className="w-20 flex items-center font-medium">ROE Avg</div>
-                                    <div className="w-20 flex items-center font-medium">ROIC Avg</div>
-                                    <div className="w-24 flex items-center font-medium">Net Margin</div>
-                                    <div className="w-24 flex items-center font-medium">FCF Rate</div>
-                                    <div className="w-24 flex items-center font-medium">Earn Rate</div>
-                                    <div className="w-24 flex items-center font-medium">Current Ratio</div>
-                                    <div className="w-20 flex items-center font-medium">D/E</div>
-                                    <div className="w-20 flex items-center font-medium">D/Earn</div>
-                                    <div className="w-20 flex items-center font-medium">D/FCF</div>
-                                    <div className="w-24 flex items-center font-medium">Shares CAGR</div>
-                                    <div className="w-20 flex items-center font-medium">FCF CAGR</div>
-                                    <div className="w-24 flex items-center font-medium">FCF Margin</div>
-                                    <div className="w-24 flex items-center font-medium">Payout Ratio</div>
+                                    <div className="w-64 flex items-center justify-baseline font-medium">Company</div>
+                                    <div className="w-40 flex items-center justify-baseline font-medium">Sector</div>
+                                    <div className="w-42 flex items-center justify-baseline font-medium">Industry</div>
+                                    <div className="w-24 flex items-center justify-center font-medium">Years</div>
+                                    <div className="w-24 flex items-center justify-center font-medium">Window</div>
+                                    <div
+                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        onClick={() => handleSort("totalscore")}
+                                    >
+                                        Total Score
+                                        {sortConfig?.key === "totalscore" && (
+                                            <span className="ml-1">{sortConfig.direction === "asc" ? <ChevronUp className='w-3 h-3' /> : <ChevronDown className='w-3 h-3' />}</span>
+                                        )}
+                                    </div>
+                                    <div
+                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        onClick={() => handleSort("quality")}
+                                    >
+                                        Quality
+                                        {sortConfig?.key === "quality" && (
+                                            <span className="ml-1">
+                                                {sortConfig.direction === "asc" ? (
+                                                    <ChevronUp className="w-3 h-3" />
+                                                ) : (
+                                                    <ChevronDown className="w-3 h-3" />
+                                                )}
+                                            </span>
+                                        )}
+                                    </div>
+                                    <div
+                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        onClick={() => handleSort("consistency")}
+                                    >
+                                        Consistency
+                                        {sortConfig?.key === "consistency" && (
+                                            <span className="ml-1">
+                                                {sortConfig.direction === "asc" ? (
+                                                    <ChevronUp className="w-3 h-3" />
+                                                ) : (
+                                                    <ChevronDown className="w-3 h-3" />
+                                                )}
+                                            </span>
+                                        )}
+                                    </div>
+                                    <div
+                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        onClick={() => handleSort("conservatism")}
+                                    >
+                                        Conservatism
+                                        {sortConfig?.key === "conservatism" && (
+                                            <span className="ml-1">
+                                                {sortConfig.direction === "asc" ? (
+                                                    <ChevronUp className="w-3 h-3" />
+                                                ) : (
+                                                    <ChevronDown className="w-3 h-3" />
+                                                )}
+                                            </span>
+                                        )}
+                                    </div>
+                                    <div
+                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        onClick={() => handleSort("ownerearnings")}
+                                    >
+                                        Owner Earnings
+                                        {sortConfig?.key === "ownerearnings" && (
+                                            <span className="ml-1">
+                                                {sortConfig.direction === "asc" ? (
+                                                    <ChevronUp className="w-3 h-3" />
+                                                ) : (
+                                                    <ChevronDown className="w-3 h-3" />
+                                                )}
+                                            </span>
+                                        )}
+                                    </div>
+                                    {/* ROE Avg */}
+                                    <div
+                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        onClick={() => handleSort("roe_avg")}
+                                    >
+                                        ROE Avg
+                                        {sortConfig?.key === "roe_avg" && (
+                                            <span className="ml-1">
+                                                {sortConfig.direction === "asc" ? (
+                                                    <ChevronUp className="w-3 h-3" />
+                                                ) : (
+                                                    <ChevronDown className="w-3 h-3" />
+                                                )}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    {/* ROIC Avg */}
+                                    <div
+                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        onClick={() => handleSort("roic_avg")}
+                                    >
+                                        ROIC Avg
+                                        {sortConfig?.key === "roic_avg" && (
+                                            <span className="ml-1">
+                                                {sortConfig.direction === "asc" ? (
+                                                    <ChevronUp className="w-3 h-3" />
+                                                ) : (
+                                                    <ChevronDown className="w-3 h-3" />
+                                                )}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    {/* Net Margin */}
+                                    <div
+                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        onClick={() => handleSort("netmargin_avg")}
+                                    >
+                                        Net Margin
+                                        {sortConfig?.key === "netmargin_avg" && (
+                                            <span className="ml-1">
+                                                {sortConfig.direction === "asc" ? (
+                                                    <ChevronUp className="w-3 h-3" />
+                                                ) : (
+                                                    <ChevronDown className="w-3 h-3" />
+                                                )}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    {/* FCF Rate */}
+                                    <div
+                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        onClick={() => handleSort("pos_fcf_rate")}
+                                    >
+                                        FCF Rate
+                                        {sortConfig?.key === "pos_fcf_rate" && (
+                                            <span className="ml-1">
+                                                {sortConfig.direction === "asc" ? (
+                                                    <ChevronUp className="w-3 h-3" />
+                                                ) : (
+                                                    <ChevronDown className="w-3 h-3" />
+                                                )}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    {/* Earn Rate */}
+                                    <div
+                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        onClick={() => handleSort("pos_earnings_rate")}
+                                    >
+                                        Earn Rate
+                                        {sortConfig?.key === "pos_earnings_rate" && (
+                                            <span className="ml-1">
+                                                {sortConfig.direction === "asc" ? (
+                                                    <ChevronUp className="w-3 h-3" />
+                                                ) : (
+                                                    <ChevronDown className="w-3 h-3" />
+                                                )}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    {/* Current Ratio */}
+                                    <div
+                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        onClick={() => handleSort("currentratio")}
+                                    >
+                                        Current Ratio
+                                        {sortConfig?.key === "currentratio" && (
+                                            <span className="ml-1">
+                                                {sortConfig.direction === "asc" ? (
+                                                    <ChevronUp className="w-3 h-3" />
+                                                ) : (
+                                                    <ChevronDown className="w-3 h-3" />
+                                                )}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    {/* D/E */}
+                                    <div
+                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        onClick={() => handleSort("debt_equity_x")}
+                                    >
+                                        D/E
+                                        {sortConfig?.key === "debt_equity_x" && (
+                                            <span className="ml-1">
+                                                {sortConfig.direction === "asc" ? (
+                                                    <ChevronUp className="w-3 h-3" />
+                                                ) : (
+                                                    <ChevronDown className="w-3 h-3" />
+                                                )}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    {/* D/Earn */}
+                                    <div
+                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        onClick={() => handleSort("debt_earnings_x")}
+                                    >
+                                        D/Earn
+                                        {sortConfig?.key === "debt_earnings_x" && (
+                                            <span className="ml-1">
+                                                {sortConfig.direction === "asc" ? (
+                                                    <ChevronUp className="w-3 h-3" />
+                                                ) : (
+                                                    <ChevronDown className="w-3 h-3" />
+                                                )}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    {/* D/FCF */}
+                                    <div
+                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        onClick={() => handleSort("debt_fcf_x")}
+                                    >
+                                        D/FCF
+                                        {sortConfig?.key === "debt_fcf_x" && (
+                                            <span className="ml-1">
+                                                {sortConfig.direction === "asc" ? (
+                                                    <ChevronUp className="w-3 h-3" />
+                                                ) : (
+                                                    <ChevronDown className="w-3 h-3" />
+                                                )}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    {/* Shares CAGR */}
+                                    <div
+                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        onClick={() => handleSort("shares_cagr")}
+                                    >
+                                        Shares CAGR
+                                        {sortConfig?.key === "shares_cagr" && (
+                                            <span className="ml-1">
+                                                {sortConfig.direction === "asc" ? (
+                                                    <ChevronUp className="w-3 h-3" />
+                                                ) : (
+                                                    <ChevronDown className="w-3 h-3" />
+                                                )}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    {/* FCF CAGR */}
+                                    <div
+                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        onClick={() => handleSort("fcf_cagr")}
+                                    >
+                                        FCF CAGR
+                                        {sortConfig?.key === "fcf_cagr" && (
+                                            <span className="ml-1">
+                                                {sortConfig.direction === "asc" ? (
+                                                    <ChevronUp className="w-3 h-3" />
+                                                ) : (
+                                                    <ChevronDown className="w-3 h-3" />
+                                                )}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    {/* FCF Margin */}
+                                    <div
+                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        onClick={() => handleSort("fcf_margin_latest")}
+                                    >
+                                        FCF Margin
+                                        {sortConfig?.key === "fcf_margin_latest" && (
+                                            <span className="ml-1">
+                                                {sortConfig.direction === "asc" ? (
+                                                    <ChevronUp className="w-3 h-3" />
+                                                ) : (
+                                                    <ChevronDown className="w-3 h-3" />
+                                                )}
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    {/* Payout Ratio */}
+                                    <div
+                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        onClick={() => handleSort("payout_ratio_latest")}
+                                    >
+                                        Payout Ratio
+                                        {sortConfig?.key === "payout_ratio_latest" && (
+                                            <span className="ml-1">
+                                                {sortConfig.direction === "asc" ? (
+                                                    <ChevronUp className="w-3 h-3" />
+                                                ) : (
+                                                    <ChevronDown className="w-3 h-3" />
+                                                )}
+                                            </span>
+                                        )}
+                                    </div>
+
                                 </div>
                             </div>
 
@@ -173,10 +464,10 @@ const CloneTable: React.FC = () => {
                                         <div className="text-gray-400">Loading stocks...</div>
                                     </div>
                                 ) : (
-                                    stocks.map((stock: Stock) => (
+                                    sortedStocks.map((stock: Stock) => (
                                         <Link to={`/clone/${stock.ticker}`}
                                             key={stock.ticker}
-                                            className="flex px-6 py-4 border-b border-gray-800 hover:bg-slate-800/50 transition-colors"
+                                            className="flex px-6 py-4 border-b border-gray-800 hover:bg-white/10 transition-colors"
                                         >
                                             <div className="w-64 flex items-center space-x-3">
                                                 <div className="min-w-0">
@@ -184,90 +475,89 @@ const CloneTable: React.FC = () => {
                                                     <div className="text-xs text-gray-400 truncate">{stock.company_name}</div>
                                                 </div>
                                             </div>
-                                            <div className="w-32 flex items-center text-white text-sm pr-2">
+                                            <div className="w-40 flex items-center justify-baseline text-left text-white text-sm pr-2">
                                                 {stock.sector || '-'}
                                             </div>
 
-                                            <div className="w-40 flex items-center text-white text-sm pr-2">
+                                            <div className="w-40 flex items-center justify-baseline text-left text-white text-sm pr-2">
                                                 {stock.industry || '-'}
                                             </div>
-                                            <div className="w-20 flex items-center text-white text-sm">
+                                            <div className="w-30 flex items-center justify-center text-white text-sm">
                                                 {stock.yearsused}
                                             </div>
 
-                                            <div className="w-20 flex items-center text-white text-sm">
+                                            <div className="w-30 flex items-center justify-baseline text-white text-sm">
                                                 {stock.window}
                                             </div>
-
-                                            <div className={`w-24 flex items-center font-medium text-sm`}>
+                                            <div className={`w-30 flex items-center justify-baseline font-medium text-sm`}>
                                                 {formatNumber(stock.totalscore)}
                                             </div>
 
-                                            <div className={`w-20 flex items-center font-medium text-sm`}>
+                                            <div className={`w-30 flex items-center justify-baseline font-medium text-sm`}>
                                                 {formatNumber(stock.quality)}
                                             </div>
 
-                                            <div className={`w-24 flex items-center font-medium text-sm`}>
+                                            <div className={`w-30 flex items-center justify-baseline font-medium text-sm`}>
                                                 {formatNumber(stock.consistency)}
                                             </div>
 
-                                            <div className={`w-24 flex items-center font-medium text-sm`}>
+                                            <div className={`w-30 flex items-center justify-baseline font-medium text-sm`}>
                                                 {formatNumber(stock.conservatism)}
                                             </div>
 
-                                            <div className={`w-24 flex items-center font-medium text-sm`}>
+                                            <div className={`w-30 flex items-center justify-baseline font-medium text-sm`}>
                                                 {formatNumber(stock.ownerearnings)}
                                             </div>
 
-                                            <div className="w-20 flex items-center text-white text-sm">
+                                            <div className="w-30 flex items-center justify-baseline text-white text-sm">
                                                 {formatPercent(stock.roe_avg)}
                                             </div>
 
-                                            <div className="w-20 flex items-center text-white text-sm">
+                                            <div className="w-30 flex items-center justify-baseline text-white text-sm">
                                                 {formatPercent(stock.roic_avg)}
                                             </div>
 
-                                            <div className="w-24 flex items-center text-white text-sm">
+                                            <div className="w-30 flex items-center justify-baseline text-white text-sm">
                                                 {formatPercent(stock.netmargin_avg)}
                                             </div>
 
-                                            <div className={`w-24 flex items-center font-medium text-sm}`}>
+                                            <div className={`w-30 flex items-center justify-baseline font-medium text-sm}`}>
                                                 {formatPercent(stock.pos_fcf_rate)}
                                             </div>
 
-                                            <div className={`w-24 flex items-center font-medium text-sm}`}>
+                                            <div className={`w-30 flex items-center justify-baseline font-medium text-sm}`}>
                                                 {formatPercent(stock.pos_earnings_rate)}
                                             </div>
 
-                                            <div className="w-24 flex items-center text-white text-sm">
+                                            <div className="w-30 flex items-center justify-baseline text-white text-sm">
                                                 {formatNumber(stock.currentratio, 2)}
                                             </div>
 
-                                            <div className="w-20 flex items-center text-white text-sm">
+                                            <div className="w-30 flex items-center justify-baseline text-white text-sm">
                                                 {formatNumber(stock.debt_equity_x, 2)}
                                             </div>
 
-                                            <div className="w-20 flex items-center text-white text-sm">
+                                            <div className="w-30 flex items-center justify-baseline text-white text-sm">
                                                 {formatNumber(stock.debt_earnings_x, 1)}
                                             </div>
 
-                                            <div className="w-20 flex items-center text-white text-sm">
+                                            <div className="w-30 flex items-center justify-baseline text-white text-sm">
                                                 {formatNumber(stock.debt_fcf_x, 1)}
                                             </div>
 
-                                            <div className={`w-24 flex items-center font-medium text-sm}`}>
+                                            <div className={`w-30 flex items-center justify-baseline font-medium text-sm}`}>
                                                 {formatPercent(stock.shares_cagr)}
                                             </div>
 
-                                            <div className={`w-20 flex items-center font-medium text-sm}`}>
+                                            <div className={`w-30 flex items-center justify-baseline font-medium text-sm}`}>
                                                 {formatPercent(stock.fcf_cagr)}
                                             </div>
 
-                                            <div className="w-24 flex items-center text-white text-sm">
+                                            <div className="w-30 flex items-center justify-baseline text-white text-sm">
                                                 {formatPercent(stock.fcf_margin_latest)}
                                             </div>
 
-                                            <div className="w-24 flex items-center text-white text-sm">
+                                            <div className="w-30 flex items-center justify-baseline text-white text-sm">
                                                 {formatPercent(stock.payout_ratio_latest)}
                                             </div>
                                         </Link>
