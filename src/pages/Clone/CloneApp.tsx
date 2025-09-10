@@ -37,6 +37,45 @@ interface StockMetrics {
     sector: string;
 }
 
+type BalanceSheetRow = {
+    id: number;
+    stock_ticker: string;
+    report_date: string; // formatted as YYYY-MM-DD
+    cash_and_equivalents: string;
+    short_term_investments: string;
+    cash_and_cash_equivalents: string;
+    cash_growth: string;
+    receivables: string;
+    inventory: string;
+    other_current_assets: string;
+    total_current_assets: string;
+    property_plant_equipment: string;
+    long_term_investments: string;
+    goodwill: string;
+    intangible_assets: string;
+    other_long_term_assets: string;
+    total_long_term_assets: string;
+    total_assets: string;
+    accounts_payable: string;
+    deferred_revenue: string;
+    current_debt: string;
+    total_current_liabilities: string;
+    other_current_liabilities: string;
+    long_term_debt: string;
+    total_long_term_liabilities: string;
+    other_long_term_liabilities: string;
+    total_liabilities: string;
+    total_debt: string;
+    debt_growth: string;
+    common_stock: string;
+    retained_earnings: string;
+    comprehensive_income: string;
+    shareholders_equity: string;
+    total_liabilities_and_equity: string;
+    net_cash_debt: string;
+};
+
+
 type StockFinancialData = {
     id: number;
     stock_ticker: string;
@@ -71,9 +110,58 @@ type StockFinancialData = {
     ebit: string;
     ebit_margin: string;
 };
+
+
+type CashFlowRow = {
+    id: number;
+    stock_ticker: string;
+    report_date: string; // YYYY-MM-DD
+    depreciation_amortization: string;
+    share_based_compensation: string;
+    other_operating_activities: string;
+    operating_cash_flow: string;
+    operating_cash_flow_growth: string;
+    capital_expenditures: string;
+    acquisitions: string;
+    change_in_investments: string;
+    other_investing_activities: string;
+    investing_cash_flow: string;
+    dividends_paid: string;
+    other_financing_activities: string;
+    financing_cash_flow: string;
+    net_cash_flow: string;
+    free_cash_flow: string;
+    free_cash_flow_growth: string;
+    unclassified_cashflow: string;
+};
+
+type RatiosRow = {
+    id: number;
+    stock_ticker: string;
+    report_date: string; // formatted as YYYY-MM-DD
+    market_capitalization: string;
+    market_cap_growth: string;
+    enterprise_value: string;
+    pe_ratio: string;
+    pb_ratio: string;
+    debt_equity_ratio: string;
+    interest_coverage: string;
+    quick_ratio: string;
+    current_ratio: string;
+    asset_turnover: string;
+    earnings_yield: string;
+    fcf_yield: string;
+    dividend_yield: string;
+    payout_ratio: string;
+    total_shareholder_return: string;
+};
+
 interface ApiResponse {
     data: StockMetrics[];
     chartData: StockFinancialData[],
+    balanceChart: BalanceSheetRow[],
+    cashFlowData: CashFlowRow[],
+    ratiosData: RatiosRow[],
 }
 
 
@@ -105,7 +193,10 @@ interface DashboardProps {
 const CloneDashboard: React.FC<DashboardProps> = () => {
     const { urlTicker } = useParams();
     const [loading, setLoading] = useState(false);
-    const [stockData, setStockData] = useState<StockFinancialData[]>();
+    const [incomeStockData, setIncomeStockData] = useState<StockFinancialData[]>();
+    const [balanceStockData, setBalanceStockData] = useState<BalanceSheetRow[]>();
+    const [cashFlowData, setCashFlowData] = useState<CashFlowRow[]>();
+    const [ratiosData, setRatiosData] = useState<RatiosRow[]>();
     const navigate = useNavigate();
     const [metrics, setMetrics] = useState<StockMetrics[]>();
     const [selectedMethod, setSelectedMethod] = useState('Warren Buffet');
@@ -121,7 +212,10 @@ const CloneDashboard: React.FC<DashboardProps> = () => {
                 const res = await fetch(`${baseURL}/clone-stock-data/${urlTicker}`);
                 if (!res.ok) throw new Error("Failed to fetch data");
                 const json: ApiResponse = await res.json();
-                setStockData(json.chartData)
+                setIncomeStockData(json.chartData)
+                setBalanceStockData(json.balanceChart);
+                setCashFlowData(json.cashFlowData);
+                setRatiosData(json.ratiosData);
                 setMetrics(json.data);
             } catch (err: any) {
                 console.error(err)
@@ -130,11 +224,7 @@ const CloneDashboard: React.FC<DashboardProps> = () => {
             }
         };
 
-        fetchData();
-
-        console.log(metrics);
-
-
+        fetchData()
     }, [urlTicker]);
 
     useEffect(() => {
@@ -417,7 +507,7 @@ const CloneDashboard: React.FC<DashboardProps> = () => {
                 )}
 
 
-                {stockData && <CloneCharts chartData={stockData} />}
+                {incomeStockData && <CloneCharts chartData={incomeStockData} balanceChart={balanceStockData} cashFlowData={cashFlowData} ratiosData={ratiosData} />}
 
 
             </div>

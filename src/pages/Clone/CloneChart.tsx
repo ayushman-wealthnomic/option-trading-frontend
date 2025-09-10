@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import FinancialDashboard from '@/components/Clone/IncomeGraph';
+import BalanceSheetAnalysis from '@/components/Clone/BalanceGraph';
+import FinancialRatiosAnalysis from '@/components/Clone/RatiosGraph';
+import CashFlowAnalysis from '@/components/Clone/CashFlowGraph';
 
 type StockFinancialData = {
     id: number;
@@ -37,8 +40,93 @@ type StockFinancialData = {
     ebit_margin: string;
 };
 
+type BalanceSheetRow = {
+    id: number;
+    stock_ticker: string;
+    report_date: string; // formatted as YYYY-MM-DD
+    cash_and_equivalents: string;
+    short_term_investments: string;
+    cash_and_cash_equivalents: string;
+    cash_growth: string;
+    receivables: string;
+    inventory: string;
+    other_current_assets: string;
+    total_current_assets: string;
+    property_plant_equipment: string;
+    long_term_investments: string;
+    goodwill: string;
+    intangible_assets: string;
+    other_long_term_assets: string;
+    total_long_term_assets: string;
+    total_assets: string;
+    accounts_payable: string;
+    deferred_revenue: string;
+    current_debt: string;
+    total_current_liabilities: string;
+    other_current_liabilities: string;
+    long_term_debt: string;
+    total_long_term_liabilities: string;
+    other_long_term_liabilities: string;
+    total_liabilities: string;
+    total_debt: string;
+    debt_growth: string;
+    common_stock: string;
+    retained_earnings: string;
+    comprehensive_income: string;
+    shareholders_equity: string;
+    total_liabilities_and_equity: string;
+    net_cash_debt: string;
+};
+
+type CashFlowRow = {
+    id: number;
+    stock_ticker: string;
+    report_date: string; // YYYY-MM-DD
+    depreciation_amortization: string;
+    share_based_compensation: string;
+    other_operating_activities: string;
+    operating_cash_flow: string;
+    operating_cash_flow_growth: string;
+    capital_expenditures: string;
+    acquisitions: string;
+    change_in_investments: string;
+    other_investing_activities: string;
+    investing_cash_flow: string;
+    dividends_paid: string;
+    other_financing_activities: string;
+    financing_cash_flow: string;
+    net_cash_flow: string;
+    free_cash_flow: string;
+    free_cash_flow_growth: string;
+    unclassified_cashflow: string;
+};
+
+type RatiosRow = {
+    id: number;
+    stock_ticker: string;
+    report_date: string; // formatted as YYYY-MM-DD
+    market_capitalization: string;
+    market_cap_growth: string;
+    enterprise_value: string;
+    pe_ratio: string;
+    pb_ratio: string;
+    debt_equity_ratio: string;
+    interest_coverage: string;
+    quick_ratio: string;
+    current_ratio: string;
+    asset_turnover: string;
+    earnings_yield: string;
+    fcf_yield: string;
+    dividend_yield: string;
+    payout_ratio: string;
+    total_shareholder_return: string;
+};
+
 interface Params {
-    chartData: StockFinancialData[] | undefined
+    chartData: StockFinancialData[] | undefined;
+    balanceChart: BalanceSheetRow[] | undefined;
+    cashFlowData: CashFlowRow[] | undefined;
+    ratiosData: RatiosRow[] | undefined;
 }
 
 interface FinancialDataItem {
@@ -60,12 +148,12 @@ interface ProcessedDataItem {
     end: number;
 }
 
-const CloneCharts = ({ chartData }: Params) => {
+
+
+const CloneCharts = ({ chartData, balanceChart, cashFlowData, ratiosData }: Params) => {
     const chartRef = useRef<HTMLDivElement>(null);
     const [activeTab, setActiveTab] = useState<'GRAPH' | 'TABULAR'>('GRAPH');
-    const [activeSection, setActiveSection] = useState<'Income Statement' | 'Balance Sheet' | 'Cash flow' | 'Ratios'>('Income Statement');
-    console.log(chartData);
-
+    const [activeSection, setActiveSection] = useState<'Income Statement' | 'Balance Sheet' | 'Cash Flow' | 'Ratios'>('Income Statement');
 
     // Financial data
     const financialData: FinancialDataItem[] = [
@@ -362,9 +450,9 @@ const CloneCharts = ({ chartData }: Params) => {
                                 key={section.name}
                                 onClick={() => setActiveSection(section.name as any)}
                                 className={`flex-1 px-3 py-2 text-lg font-medium border-r border-gray-600 last:border-r-0
-        ${activeSection === section.name || section.active
-                                        ? 'bg-gray-700 text-white'
-                                        : 'bg-gray-800 text-gray-400'
+        ${activeSection === section.name
+                                        ? 'bg-orange-500 text-white'
+                                        : 'bg-[#090909] text-white'
                                     }`}
                             >
                                 {section.name}
@@ -373,13 +461,13 @@ const CloneCharts = ({ chartData }: Params) => {
                     </div>
 
                     {/* Chart Content */}
-                    <div className="p-4 bg-black">
+                    <div className="bg-black">
                         {activeTab === 'GRAPH' ? (
                             <>
                                 {activeSection === 'Income Statement' && <FinancialDashboard chartData={chartData} />}
-                                {/* {activeSection === 'Balance Sheet' && <BalanceSheetGraph />}
-                                {activeSection === 'Cash Flow' && <CashFlowGraph />}
-                                {activeSection === 'Ratios' && <RatiosGraph />} */}
+                                {activeSection === 'Balance Sheet' && <BalanceSheetAnalysis balanceChart={balanceChart} />}
+                                {activeSection === 'Cash Flow' && <CashFlowAnalysis cashFlowData={cashFlowData} />}
+                                {activeSection === 'Ratios' && <FinancialRatiosAnalysis ratiosData={ratiosData} />}
                             </>
                         ) : (
                             renderTabularView()

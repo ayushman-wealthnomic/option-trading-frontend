@@ -578,7 +578,7 @@ const FinancialDashboard = ({ chartData }: Params) => {
         ) => {
             const colorSet = chartColors[colorIndex % chartColors.length];
             const chartWrapper = document.createElement('div');
-            chartWrapper.className = 'bg-gray-800 border border-gray-700 rounded p-2 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg';
+            chartWrapper.className = 'bg-black border border-gray-700 border-none p-2 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg';
 
             const chartTitle = document.createElement('h2');
             chartTitle.className = 'text-base font-semibold mb-2 text-center text-gray-200';
@@ -599,7 +599,7 @@ const FinancialDashboard = ({ chartData }: Params) => {
             colorIndex++;
         };
 
-        addSectionHeader('Monetary Values');
+        // addSectionHeader('Monetary Values');
         metricsCategorized.monetary.forEach(metric => {
             createChartWrapper(metric, 'Amount (in millions)', (context) => {
                 if (context.parsed.y === null) return null;
@@ -685,7 +685,7 @@ const FinancialDashboard = ({ chartData }: Params) => {
                 }
             });
         };
-    }, []);
+    }, [chartData]);
 
     return (
         <>
@@ -712,17 +712,8 @@ const FinancialDashboard = ({ chartData }: Params) => {
         `}
             </style>
 
-            <div className="bg-black text-gray-50 min-h-screen font-['Inter',sans-serif] antialiased">
+            <div className="bg-black text-gray-50 min-h-screen font-['Inter',sans-serif] antialiased mt-4">
                 <div className="container mx-auto p-1 sm:p-2">
-                    <header className="text-center mb-6">
-                        <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                            Income Statement Analysis
-                        </h1>
-                        <p className="mt-2 text-base text-gray-400">
-                            Visualizing key financial metrics over the last 10 years.
-                        </p>
-                    </header>
-
                     {isLoading && (
                         <div className="text-center">
                             <p className="text-xl font-semibold">Loading Financial Data...</p>
