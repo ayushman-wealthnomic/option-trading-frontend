@@ -437,7 +437,7 @@ const CloneCharts = ({ chartData, balanceChart, cashFlowData, ratiosData }: Para
                 </div>
 
                 {/* Content Panel */}
-                <div className="border border-gray-600 rounded w-full">
+                <div className="border border-gray-700 rounded w-full">
                     {/* Section Tabs */}
                     <div className="flex items-center justify-center w-full">
                         {[
@@ -449,7 +449,7 @@ const CloneCharts = ({ chartData, balanceChart, cashFlowData, ratiosData }: Para
                             <button
                                 key={section.name}
                                 onClick={() => setActiveSection(section.name as any)}
-                                className={`flex-1 px-3 py-2 text-lg font-medium border-r border-gray-600 last:border-r-0
+                                className={`flex-1 px-3 py-2 text-lg font-medium border-r border-gray-700 last:border-r-0
         ${activeSection === section.name
                                         ? 'bg-orange-500 text-white'
                                         : 'bg-[#090909] text-white'

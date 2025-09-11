@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { useLocation } from "react-router-dom";
 
 type Profile = {
     id: string;
@@ -10,9 +11,14 @@ type Profile = {
 };
 
 const Navigation = () => {
+    const location = useLocation();
     const [, setUser] = useState<any>(null);
     const [profile, setProfile] = useState<Profile | null>(null);
     const [loading, setLoading] = useState(true);
+
+    const isHomePage = location.pathname == "/";
+    console.log(location);
+
 
     useEffect(() => {
         const getUser = async () => {
@@ -49,7 +55,7 @@ const Navigation = () => {
     };
 
     return (
-        <div className="sticky top-0 backdrop-blur-md bg-black bg-opacity-60 border-b border-gray-900 border-opacity-5 z-40">
+        <div className={`sticky top-0 backdrop-blur-md bg-black bg-opacity-60 border-b border-gray-900 border-opacity-5 z-40${isHomePage ? " " : " px-20"}`}>
             <div className="mx-auto px-10 flex items-center justify-between h-16">
                 {/* Logo */}
                 <div className="flex items-center justify-center space-x-3">

@@ -12,9 +12,7 @@ const CloneStockSearch = () => {
 
     useEffect(() => {
         if (!searchQuery.trim()) {
-            // Show first 30 stocks when no search query
-            const allStocks = Object.keys(stockList).slice(0, 30);
-            setFilteredStocks(allStocks);
+            setFilteredStocks([]);
             return;
         }
 
@@ -55,25 +53,32 @@ const CloneStockSearch = () => {
                         <div><CountryDropdown /></div>
                     </div>
 
-
-                    {filteredStocks.length > 0 ? (
-                        <div className="bg-black border border-gray-700 rounded-md shadow-lg max-h-64 overflow-y-auto">
-                            {filteredStocks.map((ticker) => (
-                                <div
-                                    key={ticker}
-                                    className="px-4 py-2 hover:bg-muted cursor-pointer text-lg text-white transition-colors"
-                                    onClick={() => navigate(`/clone/${ticker}`)}
-                                >
-                                    <span className="font-medium">{ticker}</span>:{" "}
-                                    {stockList[ticker as keyof typeof stockList]}
-                                </div>
-                            ))}
-                        </div>
-                    ) : searchQuery.trim() ? (
-                        <div className="text-gray-400 text-sm text-center py-4">
-                            No stocks found matching "{searchQuery}"
-                        </div>
-                    ) : null}
+                    <div className="
+        absolute w-full max-w-2xl
+        bg-black rounded-md shadow-lg
+        h-64 overflow-y-auto
+        mt-2
+        z-50
+      ">
+                        {filteredStocks.length > 0 ? (
+                            <div className="bg-black border border-gray-700 rounded-md shadow-lg h-64 overflow-y-auto">
+                                {filteredStocks.map((ticker) => (
+                                    <div
+                                        key={ticker}
+                                        className="px-4 py-2 hover:bg-muted cursor-pointer text-lg text-white transition-colors"
+                                        onClick={() => navigate(`/clone/${ticker}`)}
+                                    >
+                                        <span className="font-medium">{ticker}</span>:{" "}
+                                        {stockList[ticker as keyof typeof stockList]}
+                                    </div>
+                                ))}
+                            </div>
+                        ) : searchQuery.trim() ? (
+                            <div className="text-gray-400 text-sm text-center py-4">
+                                No stocks found matching "{searchQuery}"
+                            </div>
+                        ) : null}
+                    </div>
                 </div>
             </div>
         </div>

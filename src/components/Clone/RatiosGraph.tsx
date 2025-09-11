@@ -170,6 +170,10 @@ const FinancialRatiosAnalysis = ({ ratiosData }: Param) => {
                         datasets: [{
                             label: ratioKey,
                             data: chartData,
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            pointRadius: 3,
+                            pointHoverRadius: 5,
                             borderColor: color.border,
                             backgroundColor: ratioKey.includes('growth')
                                 ? chartData.map(d => d && d >= 0 ? '#28a745' : '#dc3545')

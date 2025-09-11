@@ -1,17 +1,14 @@
 import { transformBalanceChart } from '@/lib/balanceChartDataTransform';
-import React from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar } from 'recharts';
+import React, { useRef, useEffect } from 'react';
 
-interface DataPoint {
-    year: string;
-    [key: string]: number | string | null;
+// Declare Chart.js global
+declare global {
+    interface Window {
+        Chart: any;
+    }
 }
 
-interface Dataset {
-    label: string;
-    data: (number | null)[];
-    color: string;
-}
+
 
 type BalanceSheetRow = {
     id: number;
@@ -55,11 +52,148 @@ interface Params {
     balanceChart: BalanceSheetRow[] | undefined
 }
 
+interface MetricChartProps {
+    dataset: Dataset;
+    labels: string[];
+    height?: number;
+}
+
+type Dataset = {
+    label: string;
+    data: (number | null)[];
+    color: string;
+};
+
+interface MetricChartProps {
+    dataset: Dataset;
+    labels: string[];
+    height?: number;
+}
+
+const MetricChart: React.FC<MetricChartProps> = ({ dataset, labels, height = 250 }) => {
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const chartInstanceRef = useRef<any>(null);
+
+    const formatLabel = (label: string) =>
+        label.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase());
+
+    useEffect(() => {
+        const initChart = () => {
+            if (!canvasRef.current || !window.Chart) return;
+
+            // Destroy existing chart
+            if (chartInstanceRef.current) {
+                chartInstanceRef.current.destroy();
+            }
+
+            const ctx = canvasRef.current.getContext('2d');
+            if (!ctx) return;
+
+            chartInstanceRef.current = new window.Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: formatLabel(dataset.label),
+                            data: dataset.data,
+                            backgroundColor: `${dataset.color}20`,
+                            borderColor: dataset.color,
+                            borderWidth: 2,
+                            pointBackgroundColor: dataset.color,
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            pointRadius: 3,
+                            pointHoverRadius: 5,
+                            fill: false,
+                            tension: 0.4,
+                            spanGaps: false,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: '#000',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: '#ccc',
+                            borderWidth: 0,
+                            cornerRadius: 8,
+                            displayColors: false,
+                            callbacks: {
+                                label: function (context: any) {
+                                    const value = context.parsed.y;
+                                    return value != null
+                                        ? `${formatLabel(dataset.label)}: ${value.toLocaleString()}`
+                                        : 'N/A';
+                                },
+                                title: function (tooltipItems: any) {
+                                    return `Year: ${tooltipItems[0].label}`;
+                                },
+                            },
+                        },
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: '#808080', drawOnChartArea: false },
+                            ticks: { color: '#808080', font: { size: 12 } },
+                        },
+                        y: {
+                            grid: { color: '#808080' },
+                            ticks: { color: '#808080', font: { size: 12 } },
+                        },
+                    },
+                },
+            });
+        };
+
+        const loadChartJS = () => {
+            if (window.Chart) {
+                initChart();
+            } else {
+                const script = document.createElement('script');
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js';
+                script.onload = () => setTimeout(initChart, 50);
+                document.head.appendChild(script);
+            }
+        };
+
+        loadChartJS();
+
+        return () => {
+            if (chartInstanceRef.current) chartInstanceRef.current.destroy();
+        };
+    }, [dataset, labels]);
+
+    return (
+        <div className="bg-black rounded-xl shadow-lg p-6 border-none hover:shadow-xl transition-shadow duration-300">
+            <h3 className="text-lg text-white font-semibold mb-4 text-center">
+                {formatLabel(dataset.label)}
+            </h3>
+            <div style={{ position: 'relative', height, width: '100%' }}>
+                <canvas ref={canvasRef} />
+            </div>
+        </div>
+    );
+};
+
+
+
 const BalanceSheetAnalysis = ({ balanceChart }: Params) => {
     const { labels, datasets } = React.useMemo(
         () => transformBalanceChart(balanceChart ?? []),
         [balanceChart]
     );
+
+    console.log(labels);
+    console.log(datasets);
+
 
 
     const latestValues = React.useMemo(() => {
@@ -70,29 +204,228 @@ const BalanceSheetAnalysis = ({ balanceChart }: Params) => {
         return values;
     }, [datasets]);
 
-    const formatLabel = (label: string): string => {
-        return label.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    // Custom Pie Chart Component using Chart.js
+    const PieChartComponent: React.FC<{ data: any[], title: string }> = ({ data, title }) => {
+        const canvasRef = useRef<HTMLCanvasElement>(null);
+        const chartInstanceRef = useRef<any>(null);
+
+        useEffect(() => {
+            const initChart = () => {
+                if (!canvasRef.current || !window.Chart) return;
+
+                if (chartInstanceRef.current) {
+                    chartInstanceRef.current.destroy();
+                }
+
+                const ctx = canvasRef.current.getContext('2d');
+                if (!ctx) return;
+
+                chartInstanceRef.current = new window.Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: data.map(d => d.name),
+                        datasets: [{
+                            data: data.map(d => d.value),
+                            backgroundColor: data.map(d => d.color),
+                            borderWidth: 2,
+                            borderColor: '#000'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    color: '#fff',
+                                    padding: 20,
+                                    usePointStyle: true
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: '#000',
+                                titleColor: '#fff',
+                                bodyColor: '#fff',
+                                borderWidth: 0,
+                                cornerRadius: 8,
+                                callbacks: {
+                                    label: function (context: any) {
+                                        const value = context.parsed;
+                                        const total = context.dataset.data.reduce((a: number, b: number) => a + b, 0);
+                                        const percentage = ((value / total) * 100).toFixed(1);
+                                        return `${context.label}: ${value.toLocaleString()} (${percentage}%)`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            };
+
+            const loadChart = () => {
+                if (window.Chart) {
+                    initChart();
+                } else {
+                    const script = document.createElement('script');
+                    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js';
+                    script.onload = () => {
+                        setTimeout(initChart, 100);
+                    };
+                    document.head.appendChild(script);
+                }
+            };
+
+            loadChart();
+
+            return () => {
+                if (chartInstanceRef.current) {
+                    chartInstanceRef.current.destroy();
+                }
+            };
+        }, [data]);
+
+        return (
+            <div className="bg-black rounded-xl shadow-lg p-6 border border-none hover:shadow-xl transition-shadow duration-300">
+                <h3 className="text-xl font-semibold text-white mb-4 text-center">
+                    {title}
+                </h3>
+                <div style={{ position: 'relative', height: '300px', width: '100%' }}>
+                    <canvas ref={canvasRef} />
+                </div>
+            </div>
+        );
     };
 
-    const createChartData = (dataset: Dataset): DataPoint[] => {
-        return labels.map((year, index) => ({
-            year: year.split('-')[0], // Just show the year
-            value: dataset.data[index]
-        }));
+    // Custom Bar Chart Component using Chart.js
+    const BarChartComponent: React.FC<{ data: any[], title: string }> = ({ data, title }) => {
+        const canvasRef = useRef<HTMLCanvasElement>(null);
+        const chartInstanceRef = useRef<any>(null);
+
+        useEffect(() => {
+            const initChart = () => {
+                if (!canvasRef.current || !window.Chart) return;
+
+                if (chartInstanceRef.current) {
+                    chartInstanceRef.current.destroy();
+                }
+
+                const ctx = canvasRef.current.getContext('2d');
+                if (!ctx) return;
+
+                const colors = ['#17a2b8', '#6610f2', '#6f42c1'];
+
+                chartInstanceRef.current = new window.Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.map(d => d.name),
+                        datasets: [{
+                            data: data.map(d => d.value),
+                            backgroundColor: colors,
+                            borderColor: colors,
+                            borderWidth: 1,
+                            borderRadius: 4,
+                            borderSkipped: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                backgroundColor: '#000',
+                                titleColor: '#fff',
+                                bodyColor: '#fff',
+                                borderWidth: 0,
+                                cornerRadius: 8,
+                                callbacks: {
+                                    label: function (context: any) {
+                                        return `Amount: ${context.parsed.y.toLocaleString()}`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: {
+                                    color: '#f0f0f0',
+                                    drawOnChartArea: false
+                                },
+                                ticks: {
+                                    color: '#fff',
+                                    font: {
+                                        size: 12
+                                    },
+                                    maxRotation: 45,
+                                    minRotation: 45
+                                }
+                            },
+                            y: {
+                                grid: {
+                                    color: '#f0f0f0'
+                                },
+                                ticks: {
+                                    color: '#fff',
+                                    font: {
+                                        size: 12
+                                    },
+                                    callback: function (value: any) {
+                                        return value.toLocaleString();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            };
+
+            const loadChart = () => {
+                if (window.Chart) {
+                    initChart();
+                } else {
+                    const script = document.createElement('script');
+                    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js';
+                    script.onload = () => {
+                        setTimeout(initChart, 100);
+                    };
+                    document.head.appendChild(script);
+                }
+            };
+
+            loadChart();
+
+            return () => {
+                if (chartInstanceRef.current) {
+                    chartInstanceRef.current.destroy();
+                }
+            };
+        }, [data]);
+
+        return (
+            <div className="bg-black rounded-xl shadow-lg p-6 border border-none hover:shadow-xl transition-shadow duration-300 lg:col-span-2 xl:col-span-2">
+                <h3 className="text-xl font-semibold text-white mb-4 text-center">
+                    {title}
+                </h3>
+                <div style={{ position: 'relative', height: '500px', width: '100%' }}>
+                    <canvas ref={canvasRef} />
+                </div>
+            </div>
+        );
     };
-
-
 
     const assetCompositionData = [
         {
             name: "Current Assets",
             value: latestValues["total_current_assets"],
-            color: "#22D3EE", // cyan
+            color: "#22D3EE",
         },
         {
             name: "Long-Term Assets",
             value: latestValues["total_long_term_assets"],
-            color: "#EF4444", // red
+            color: "#EF4444",
         },
     ];
 
@@ -100,12 +433,12 @@ const BalanceSheetAnalysis = ({ balanceChart }: Params) => {
         {
             name: "Shareholders' Equity",
             value: latestValues["shareholders_equity"],
-            color: "#A3E635", // lime
+            color: "#A3E635",
         },
         {
             name: "Total Liabilities",
             value: latestValues["total_liabilities"],
-            color: "#6366F1", // indigo
+            color: "#6366F1",
         },
     ];
 
@@ -124,62 +457,14 @@ const BalanceSheetAnalysis = ({ balanceChart }: Params) => {
         },
     ];
 
-
-    const MetricChart: React.FC<{ dataset: Dataset }> = ({ dataset }) => {
-        const data = createChartData(dataset);
-
-        return (
-            <div className="bg-black rounded-xl shadow-lg p-6 border-none border-gray-200 hover:shadow-xl transition-shadow duration-300">
-                <h3 className="text-lg text-white font-semibold mb-4 text-center">
-                    {formatLabel(dataset.label)}
-                </h3>
-                <ResponsiveContainer width="100%" height={250}>
-                    <LineChart data={data}>
-                        <CartesianGrid stroke="#808080" horizontal={true}
-                            vertical={false} />
-                        <XAxis
-                            dataKey="year"
-                            tick={{ fontSize: 12 }}
-                            stroke="#808080"
-                        />
-                        <YAxis
-                            tick={{ fontSize: 12 }}
-                            stroke="#808080"
-                        />
-                        <Tooltip
-                            formatter={(value: number) => [value?.toLocaleString() || 'N/A', formatLabel(dataset.label)]}
-                            labelFormatter={(label) => `Year: ${label}`}
-                            contentStyle={{
-                                backgroundColor: '#000',
-                                border: '0px solid #ccc',
-                                borderRadius: '8px',
-                                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-                            }}
-                        />
-                        <Line
-                            type="monotone"
-                            dataKey="value"
-                            stroke={dataset.color}
-                            strokeWidth={2}
-                            dot={{ r: 3, fill: dataset.color }}
-                            connectNulls={false}
-                        />
-                    </LineChart>
-                </ResponsiveContainer>
-            </div>
-        );
-    };
-
     return (
         <div className="min-h-screen bg-gradient-to-br bg-black py-8 px-4">
             <div className="max-w-7xl mx-auto">
-                {/* Header */}
-
                 {/* Historical Trends Section */}
                 <div className="mb-12">
                     <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-6">
                         {datasets.map((dataset) => (
-                            <MetricChart key={dataset.label} dataset={dataset} />
+                            <MetricChart key={dataset.label} dataset={dataset} labels={labels} />
                         ))}
                     </div>
                 </div>
@@ -190,105 +475,9 @@ const BalanceSheetAnalysis = ({ balanceChart }: Params) => {
                         Financial Snapshot for 2025
                     </h2>
                     <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-8">
-                        {/* Asset Composition */}
-                        <div className="bg-black rounded-xl shadow-lg p-6 border border-none hover:shadow-xl transition-shadow duration-300">
-                            <h3 className="text-xl font-semibold text-white mb-4 text-center">
-                                Asset Composition
-                            </h3>
-                            <ResponsiveContainer width="100%" height={300}>
-                                <PieChart
-                                    style={{// optional dark bg
-                                        borderRadius: 8,
-                                        padding: 8,
-                                    }}
-                                >
-                                    <Pie
-                                        data={assetCompositionData}
-                                        cx="50%"
-                                        cy="50%"
-                                        outerRadius={80}
-                                        dataKey="value"
-                                        label={({ name, percent }) =>
-                                            `${name}: ${((percent ?? 0) * 100).toFixed(1)}%`
-                                        }
-                                    // labelStyle={{ fill: "#fff", fontSize: 12 }}
-                                    >
-                                        {assetCompositionData.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={entry.color} />
-                                        ))}
-                                    </Pie>
-
-                                    <Tooltip
-                                        contentStyle={{
-                                            backgroundColor: "#000",
-                                            border: "none",
-                                            color: "#fff",
-                                        }}
-                                        formatter={(value: number) => value.toLocaleString()}
-                                        itemStyle={{ color: "#fff" }}
-                                        labelStyle={{ color: "#fff" }}
-                                    />
-                                </PieChart>
-                            </ResponsiveContainer>
-                        </div>
-
-                        {/* Liabilities vs Equity */}
-                        <div className="bg-black rounded-xl shadow-lg p-6 border border-none hover:shadow-xl transition-shadow duration-300">
-                            <h3 className="text-xl font-semibold text-white mb-4 text-center">
-                                Liabilities vs. Equity
-                            </h3>
-                            <ResponsiveContainer width="100%" height={300}>
-                                <PieChart>
-                                    <Pie
-                                        data={liabilityEquityData}
-                                        cx="50%"
-                                        cy="50%"
-                                        outerRadius={80}
-                                        dataKey="value"
-                                        label={({ name, percent }) => `${name}: ${(percent ?? 0 * 100).toFixed(1)}%`}
-                                    >
-                                        {liabilityEquityData.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={entry.color} />
-                                        ))}
-                                    </Pie>
-                                    <Tooltip formatter={(value: number) => value.toLocaleString()} />
-                                </PieChart>
-                            </ResponsiveContainer>
-                        </div>
-
-                        {/* Key Metrics Bar Chart */}
-                        <div className="bg-black rounded-xl shadow-lg p-6 border border-none hover:shadow-xl transition-shadow duration-300 lg:col-span-2 xl:col-span-2">
-                            <h3 className="text-xl font-semibold text-white mb-4 text-center">
-                                Core Financials Breakdown
-                            </h3>
-                            <ResponsiveContainer width="100%" height={500}>
-                                <BarChart data={keyMetricsData}>
-                                    <CartesianGrid stroke="#f0f0f0" horizontal={true} vertical={false} />
-                                    <XAxis
-                                        dataKey="name"
-                                        tick={{ fontSize: 12 }}
-                                        stroke="#fff"
-                                        angle={-45}
-                                        textAnchor="end"
-                                        height={100}
-                                    />
-                                    <YAxis
-                                        tick={{ fontSize: 12 }}
-                                        stroke="#fff"
-                                    />
-                                    <Tooltip formatter={(value: number) => [value.toLocaleString(), 'Amount']} contentStyle={{
-                                        backgroundColor: "#000",
-                                        border: "none",
-                                        color: "#fff",
-                                    }} />
-                                    <Bar dataKey="value" radius={[4, 4, 0, 0]}>
-                                        <Cell fill="#17a2b8" />
-                                        <Cell fill="#6610f2" />
-                                        <Cell fill="#6f42c1" />
-                                    </Bar>
-                                </BarChart>
-                            </ResponsiveContainer>
-                        </div>
+                        <PieChartComponent data={assetCompositionData} title="Asset Composition" />
+                        <PieChartComponent data={liabilityEquityData} title="Liabilities vs. Equity" />
+                        <BarChartComponent data={keyMetricsData} title="Core Financials Breakdown" />
                     </div>
                 </div>
             </div>

@@ -272,7 +272,6 @@ const CashFlowAnalysis = ({ cashFlowData }: Param) => {
         }
       `}</style>
             <div style={{
-                fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
                 margin: '20px',
                 backgroundColor: '#000000',
                 color: '#343a40'
@@ -292,7 +291,8 @@ const CashFlowAnalysis = ({ cashFlowData }: Param) => {
                         boxShadow: '0 0.125rem 0.25rem rgba(0, 0, 0, 0.075)',
                         flex: '1 1 48%',
                         minWidth: '400px',
-                        width: '100%'
+                        width: '100%',
+                        height: '650px'
                     }}>
                         <h3 style={{ color: '#ffffff', fontWeight: 'bold' }}>Operating, Investing & Financing Cash Flow</h3>
                         <p style={{ fontSize: '0.8em', textAlign: 'center', color: '#6c757d' }}>
@@ -307,7 +307,8 @@ const CashFlowAnalysis = ({ cashFlowData }: Param) => {
                         borderRadius: '0.0rem',
                         boxShadow: '0 0.125rem 0.25rem rgba(0, 0, 0, 0.075)',
                         flex: '1 1 48%',
-                        minWidth: '400px'
+                        minWidth: '400px',
+                        height: '650px'
                     }}>
                         <h3 style={{ color: '#ffffff', fontWeight: 'bold' }}>Operating Cash Flow vs. Free Cash Flow</h3>
                         <p style={{ fontSize: '0.8em', textAlign: 'center', color: '#6c757d' }}>

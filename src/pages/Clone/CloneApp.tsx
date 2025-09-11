@@ -269,14 +269,16 @@ const CloneDashboard: React.FC<DashboardProps> = () => {
             <Navigation />
             <div className="bg-black text-white min-h-screen p-6 md:p-10 lg:px-30">
                 {/* Header */}
-                <div className="flex flex-col md:flex-row justify-end items-center md:items-center gap-6 mb-8">
+
+                <div className="flex flex-col md:flex-row justify-end items-end gap-6 mb-8 w-full">
+                    {/* Stock Dropdown */}
                     <Popover open={open} onOpenChange={setOpen}>
                         <PopoverTrigger asChild>
                             <Button
                                 variant="outline"
                                 role="combobox"
                                 aria-expanded={open}
-                                className={`justify-between`}
+                                className="justify-between w-64"
                             >
                                 {selectedStock
                                     ? `${selectedStock}: ${stockList[selectedStock as keyof typeof stockList]}`
@@ -291,9 +293,8 @@ const CloneDashboard: React.FC<DashboardProps> = () => {
                                     placeholder="Search stock..."
                                     className="w-full border-none shadow-none focus:border-none focus:shadow-none focus:ring-0"
                                 />
-                                {/* Dropdown with results */}
                                 {filteredStocks.length > 0 && (
-                                    <div className="mt-1 w-full bg-background border rounded-md shadow-lg max-h-48 overflow-y-auto">
+                                    <div className="mt-2 w-full bg-black border rounded-md shadow-lg max-h-48 overflow-y-auto">
                                         {filteredStocks.map((ticker) => (
                                             <div
                                                 key={ticker}
@@ -301,7 +302,6 @@ const CloneDashboard: React.FC<DashboardProps> = () => {
                                                 onClick={() => handleStockSelect(ticker)}
                                             >
                                                 {ticker}: {stockList[ticker as keyof typeof stockList]}
-
                                             </div>
                                         ))}
                                     </div>
@@ -310,19 +310,52 @@ const CloneDashboard: React.FC<DashboardProps> = () => {
                         </PopoverContent>
                     </Popover>
 
-                    <div className="flex flex-col gap-2 w-full md:w-auto">
-                        <span className="text-white text-lg">Select Methodology</span>
-                        <select
-                            value={selectedMethod}
-                            onChange={(e) => setSelectedMethod(e.target.value)}
-                            className="text-white border-2 border-gray-600 px-4 py-2 rounded bg-black"
-                        >
-                            <option>Warren Buffet</option>
-                            <option>Peter Lynch</option>
-                            <option>Benjamin Graham</option>
-                        </select>
+                    {/* Methodology Dropdown */}
+
+                    <div className='flex flex-col gap-2'>
+                        <label className="text-white text-l=md">Select Methodology</label>
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    role="combobox"
+                                    className="justify-between w-64"
+                                >
+                                    {selectedMethod || "Select Methodology"}
+                                    <svg
+                                        className="w-4 h-4 ml-2 transition-transform"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M19 9l-7 7-7-7"
+                                        />
+                                    </svg>
+                                </Button>
+                            </PopoverTrigger>
+
+                            <PopoverContent className="w-64 p-0 bg-black">
+                                <div className="flex flex-col">
+                                    {["Warren Buffet", "Peter Lynch", "Benjamin Graham"].map((method) => (
+                                        <div
+                                            key={method}
+                                            className="px-4 py-2 hover:bg-muted cursor-pointer text-white rounded transition-colors"
+                                            onClick={() => setSelectedMethod(method)}
+                                        >
+                                            {method}
+                                        </div>
+                                    ))}
+                                </div>
+                            </PopoverContent>
+                        </Popover>
                     </div>
+
                 </div>
+
 
 
 
