@@ -72,7 +72,7 @@ const IncomeTable: React.FC<TabularViewProps> = ({ chartData }) => {
 
     return (
         <div className="overflow-x-auto mt-10 border border-gray-700 rounded-lg">
-            <table className="min-w-max w-full text-lg table-auto border-collapse">
+            <table className="min-w-max w-full text-sm table-auto border-collapse">
                 <thead className="bg-muted">
                     <tr>
                         <th className="py-2 px-3 font-medium text-gray-300 border-r border-gray-700 text-left sticky left-0 bg-muted z-10 min-w-40">
