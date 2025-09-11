@@ -119,8 +119,8 @@ const InvestorClone = () => {
                     </p>
 
                     <div className="mt-24">
-                        <Link to="/clone/AEGISLOG" className="text-[#EAFF00] hover:text-yellow-300 text-3xl font-light underline flex items-center gap-2 transition-colors group z-30">
-                            Assemble Your Dream Team
+                        <Link to="/clone" className="text-[#EAFF00] hover:text-yellow-300 text-3xl font-light underline flex items-center gap-2 transition-colors group z-30">
+                            Our AI Screener
                             <svg
                                 className="w-6 h-6 group-hover:translate-x-1 transition-transform"
                                 fill="none"

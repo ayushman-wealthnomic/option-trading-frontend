@@ -37,7 +37,7 @@ const CloneStockSearch = () => {
             <div className="min-h-screen bg-black flex items-center justify-center">
 
                 <div className="w-full max-w-2xl">
-                    <div className="flex items-baseline justify-center">
+                    <div className="flex items-baseline justify-center gap-2">
                         <Input
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}

@@ -150,8 +150,8 @@ const BalanceSheetAnalysis = ({ balanceChart }: Params) => {
                             formatter={(value: number) => [value?.toLocaleString() || 'N/A', formatLabel(dataset.label)]}
                             labelFormatter={(label) => `Year: ${label}`}
                             contentStyle={{
-                                backgroundColor: '#fff',
-                                border: '1px solid #ccc',
+                                backgroundColor: '#000',
+                                border: '0px solid #ccc',
                                 borderRadius: '8px',
                                 boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
                             }}
@@ -220,13 +220,13 @@ const BalanceSheetAnalysis = ({ balanceChart }: Params) => {
 
                                     <Tooltip
                                         contentStyle={{
-                                            backgroundColor: "#fff",
+                                            backgroundColor: "#000",
                                             border: "none",
                                             color: "#fff",
                                         }}
                                         formatter={(value: number) => value.toLocaleString()}
-                                        itemStyle={{ color: "#000000" }}
-                                        labelStyle={{ color: "#000000" }}
+                                        itemStyle={{ color: "#fff" }}
+                                        labelStyle={{ color: "#fff" }}
                                     />
                                 </PieChart>
                             </ResponsiveContainer>
@@ -270,13 +270,17 @@ const BalanceSheetAnalysis = ({ balanceChart }: Params) => {
                                         stroke="#fff"
                                         angle={-45}
                                         textAnchor="end"
-                                        height={80}
+                                        height={100}
                                     />
                                     <YAxis
                                         tick={{ fontSize: 12 }}
                                         stroke="#fff"
                                     />
-                                    <Tooltip formatter={(value: number) => [value.toLocaleString(), 'Amount']} />
+                                    <Tooltip formatter={(value: number) => [value.toLocaleString(), 'Amount']} contentStyle={{
+                                        backgroundColor: "#000",
+                                        border: "none",
+                                        color: "#fff",
+                                    }} />
                                     <Bar dataKey="value" radius={[4, 4, 0, 0]}>
                                         <Cell fill="#17a2b8" />
                                         <Cell fill="#6610f2" />
