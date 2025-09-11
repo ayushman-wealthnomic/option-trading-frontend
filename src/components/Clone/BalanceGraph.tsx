@@ -87,62 +87,64 @@ const BalanceSheetAnalysis = ({ balanceChart }: Params) => {
         {
             name: "Current Assets",
             value: latestValues["total_current_assets"],
-            color: "#007bff"
+            color: "#22D3EE", // cyan
         },
         {
             name: "Long-Term Assets",
             value: latestValues["total_long_term_assets"],
-            color: "#dc3545"
-        }
+            color: "#EF4444", // red
+        },
     ];
 
     const liabilityEquityData = [
         {
             name: "Shareholders' Equity",
             value: latestValues["shareholders_equity"],
-            color: "#28a745"
+            color: "#A3E635", // lime
         },
         {
             name: "Total Liabilities",
             value: latestValues["total_liabilities"],
-            color: "#ffc107"
-        }
+            color: "#6366F1", // indigo
+        },
     ];
 
     const keyMetricsData = [
         {
             name: "Total Assets",
-            value: latestValues["total_assets"]
+            value: latestValues["total_assets"],
         },
         {
             name: "Total Liabilities",
-            value: latestValues["total_liabilities"]
+            value: latestValues["total_liabilities"],
         },
         {
             name: "Shareholders' Equity",
-            value: latestValues["shareholders_equity"]
-        }
+            value: latestValues["shareholders_equity"],
+        },
     ];
+
 
     const MetricChart: React.FC<{ dataset: Dataset }> = ({ dataset }) => {
         const data = createChartData(dataset);
 
         return (
-            <div className="bg-black rounded-xl shadow-lg p-6 border border-gray-200 hover:shadow-xl transition-shadow duration-300">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4 text-center">
+            <div className="bg-black rounded-xl shadow-lg p-6 border-none border-gray-200 hover:shadow-xl transition-shadow duration-300">
+                <h3 className="text-lg text-white font-semibold mb-4 text-center">
                     {formatLabel(dataset.label)}
                 </h3>
                 <ResponsiveContainer width="100%" height={250}>
                     <LineChart data={data}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                        <CartesianGrid stroke="#808080" horizontal={true}
+                            vertical={false} />
                         <XAxis
                             dataKey="year"
                             tick={{ fontSize: 12 }}
-                            stroke="#666"
+                            stroke="#808080"
                         />
                         <YAxis
                             tick={{ fontSize: 12 }}
-                            stroke="#666"
+                            stroke="#808080"
                         />
                         <Tooltip
                             formatter={(value: number) => [value?.toLocaleString() || 'N/A', formatLabel(dataset.label)]}
@@ -184,37 +186,55 @@ const BalanceSheetAnalysis = ({ balanceChart }: Params) => {
 
                 {/* Summary Section */}
                 <div className="mb-8">
-                    <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
+                    <h2 className="text-3xl font-bold text-center text-white mb-8">
                         Financial Snapshot for 2025
                     </h2>
                     <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-8">
                         {/* Asset Composition */}
-                        <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 hover:shadow-xl transition-shadow duration-300">
-                            <h3 className="text-xl font-semibold text-gray-800 mb-4 text-center">
+                        <div className="bg-black rounded-xl shadow-lg p-6 border border-none hover:shadow-xl transition-shadow duration-300">
+                            <h3 className="text-xl font-semibold text-white mb-4 text-center">
                                 Asset Composition
                             </h3>
                             <ResponsiveContainer width="100%" height={300}>
-                                <PieChart>
+                                <PieChart
+                                    style={{// optional dark bg
+                                        borderRadius: 8,
+                                        padding: 8,
+                                    }}
+                                >
                                     <Pie
                                         data={assetCompositionData}
                                         cx="50%"
                                         cy="50%"
                                         outerRadius={80}
                                         dataKey="value"
-                                        label={({ name, percent }) => `${name}: ${(percent ?? 0 * 100).toFixed(1)}%`}
+                                        label={({ name, percent }) =>
+                                            `${name}: ${((percent ?? 0) * 100).toFixed(1)}%`
+                                        }
+                                    // labelStyle={{ fill: "#fff", fontSize: 12 }}
                                     >
                                         {assetCompositionData.map((entry, index) => (
                                             <Cell key={`cell-${index}`} fill={entry.color} />
                                         ))}
                                     </Pie>
-                                    <Tooltip formatter={(value: number) => value.toLocaleString()} />
+
+                                    <Tooltip
+                                        contentStyle={{
+                                            backgroundColor: "#fff",
+                                            border: "none",
+                                            color: "#fff",
+                                        }}
+                                        formatter={(value: number) => value.toLocaleString()}
+                                        itemStyle={{ color: "#000000" }}
+                                        labelStyle={{ color: "#000000" }}
+                                    />
                                 </PieChart>
                             </ResponsiveContainer>
                         </div>
 
                         {/* Liabilities vs Equity */}
-                        <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 hover:shadow-xl transition-shadow duration-300">
-                            <h3 className="text-xl font-semibold text-gray-800 mb-4 text-center">
+                        <div className="bg-black rounded-xl shadow-lg p-6 border border-none hover:shadow-xl transition-shadow duration-300">
+                            <h3 className="text-xl font-semibold text-white mb-4 text-center">
                                 Liabilities vs. Equity
                             </h3>
                             <ResponsiveContainer width="100%" height={300}>
@@ -237,24 +257,24 @@ const BalanceSheetAnalysis = ({ balanceChart }: Params) => {
                         </div>
 
                         {/* Key Metrics Bar Chart */}
-                        <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 hover:shadow-xl transition-shadow duration-300 lg:col-span-2 xl:col-span-2">
-                            <h3 className="text-xl font-semibold text-gray-800 mb-4 text-center">
+                        <div className="bg-black rounded-xl shadow-lg p-6 border border-none hover:shadow-xl transition-shadow duration-300 lg:col-span-2 xl:col-span-2">
+                            <h3 className="text-xl font-semibold text-white mb-4 text-center">
                                 Core Financials Breakdown
                             </h3>
                             <ResponsiveContainer width="100%" height={500}>
                                 <BarChart data={keyMetricsData}>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                                    <CartesianGrid stroke="#f0f0f0" horizontal={true} vertical={false} />
                                     <XAxis
                                         dataKey="name"
                                         tick={{ fontSize: 12 }}
-                                        stroke="#666"
+                                        stroke="#fff"
                                         angle={-45}
                                         textAnchor="end"
                                         height={80}
                                     />
                                     <YAxis
                                         tick={{ fontSize: 12 }}
-                                        stroke="#666"
+                                        stroke="#fff"
                                     />
                                     <Tooltip formatter={(value: number) => [value.toLocaleString(), 'Amount']} />
                                     <Bar dataKey="value" radius={[4, 4, 0, 0]}>

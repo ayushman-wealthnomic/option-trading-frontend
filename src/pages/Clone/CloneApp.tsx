@@ -269,7 +269,7 @@ const CloneDashboard: React.FC<DashboardProps> = () => {
             <Navigation />
             <div className="bg-black text-white min-h-screen p-6 md:p-10 lg:px-30">
                 {/* Header */}
-                <div className="flex flex-col md:flex-row justify-end items-start md:items-center gap-6 mb-8">
+                <div className="flex flex-col md:flex-row justify-end items-center md:items-center gap-6 mb-8">
                     <Popover open={open} onOpenChange={setOpen}>
                         <PopoverTrigger asChild>
                             <Button
@@ -405,7 +405,7 @@ const CloneDashboard: React.FC<DashboardProps> = () => {
                                 </div>
                                 <div className="text-center bg-[#090909] py-5">
                                     <div className="text-4xl md:text-6xl font-medium text-white mb-1">
-                                        {metrics[0].totalscore}
+                                        {Math.round(metrics[0].totalscore)}
                                     </div>
                                     <div className="text-cyan-400 text-lg md:text-2xl">Total Score</div>
                                 </div>

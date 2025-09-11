@@ -99,8 +99,16 @@ const CashFlowAnalysis = ({ cashFlowData }: Param) => {
             options: {
                 responsive: true,
                 scales: {
-                    x: { stacked: true },
-                    y: { stacked: true, title: { display: true, text: 'Amount' } }
+                    x: {
+                        stacked: true, ticks: {
+                            color: '#fff'
+                        },
+                    },
+                    y: {
+                        stacked: true, title: { display: true, text: 'Amount' }, ticks: {
+                            color: '#fff'        // <-- X-axis tick labels white
+                        },
+                    }
                 },
                 plugins: { title: { display: false } }
             }
@@ -121,7 +129,28 @@ const CashFlowAnalysis = ({ cashFlowData }: Param) => {
             },
             options: {
                 responsive: true,
-                scales: { y: { title: { display: true, text: 'Amount' } } },
+                scales: {
+                    x: {
+                        ticks: {
+                            color: '#fff'        // <-- X-axis tick labels white
+                        },
+                        title: {
+                            display: true,
+                            text: 'Year',
+                            color: '#fff'
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            color: '#fff'        // <-- Y-axis tick labels white
+                        },
+                        title: {
+                            display: true,
+                            text: 'Amount',
+                            color: '#fff'
+                        },
+                    }
+                },
                 plugins: { title: { display: false } }
             }
         });
@@ -131,34 +160,49 @@ const CashFlowAnalysis = ({ cashFlowData }: Param) => {
         // --- Detailed Line Charts ---
         detailedChartsRef.current!.innerHTML = '';
 
-        datasets.forEach(dataset => {
-            const color_hash = Math.abs(dataset.label.split("").reduce((a, b) => { a = ((a << 5) - a) + b.charCodeAt(0); return a & a }, 0));
-            const r = color_hash % 255;
-            const g = (color_hash >> 8) % 255;
-            const b = (color_hash >> 16) % 255;
+        const chartColors: { background: string; border: string }[] = [
+            { background: 'rgba(34, 211, 238, 0.1)', border: 'rgba(34, 211, 238, 1)' },    // Cyan
+            { background: 'rgba(236, 72, 153, 0.1)', border: 'rgba(236, 72, 153, 1)' },    // Pink
+            { background: 'rgba(163, 230, 53, 0.1)', border: 'rgba(163, 230, 53, 1)' },    // Lime
+            { background: 'rgba(251, 146, 60, 0.1)', border: 'rgba(251, 146, 60, 1)' },    // Orange
+            { background: 'rgba(139, 92, 246, 0.1)', border: 'rgba(139, 92, 246, 1)' },    // Violet
+            { background: 'rgba(244, 63, 94, 0.1)', border: 'rgba(244, 63, 94, 1)' },      // Rose
+            { background: 'rgba(16, 185, 129, 0.1)', border: 'rgba(16, 185, 129, 1)' },    // Emerald
+            { background: 'rgba(245, 158, 11, 0.1)', border: 'rgba(245, 158, 11, 1)' },    // Amber
+            { background: 'rgba(99, 102, 241, 0.1)', border: 'rgba(99, 102, 241, 1)' },    // Indigo
+            { background: 'rgba(239, 68, 68, 0.1)', border: 'rgba(239, 68, 68, 1)' },      // Red
+        ];
+
+        datasets.forEach((dataset, index) => {
+            const color = chartColors[index % chartColors.length];
 
             const chartId = dataset.label + 'Chart';
             const chartWrapper = document.createElement('div');
             chartWrapper.className = 'chart';
             chartWrapper.style.backgroundColor = '#000000';
-            chartWrapper.style.border = '1px solid #dee2e6';
+            chartWrapper.style.border = '0px solid #dee2e6';
             chartWrapper.style.padding = '20px';
             chartWrapper.style.borderRadius = '0.5rem';
             chartWrapper.style.boxShadow = '0 0.125rem 0.25rem rgba(0, 0, 0, 0.075)';
             chartWrapper.innerHTML = `<canvas id="${chartId}"></canvas>`;
+
             detailedChartsRef.current!.appendChild(chartWrapper);
             const canvas = document.getElementById(chartId) as HTMLCanvasElement;
+
             const detailedChart = new window.Chart(canvas.getContext('2d')!, {
                 type: 'line',
                 data: {
                     labels: labels,
-                    datasets: [{
-                        label: dataset.label,
-                        data: dataset.data,
-                        borderColor: `rgba(${r}, ${g}, ${b}, 1)`,
-                        fill: false,
-                        tension: 0.1
-                    }]
+                    datasets: [
+                        {
+                            label: dataset.label,
+                            data: dataset.data,
+                            borderColor: color.border,
+                            backgroundColor: color.background,
+                            fill: true,             // so the area under the line is tinted
+                            tension: 0.1,
+                        },
+                    ],
                 },
                 options: {
                     responsive: true,
@@ -166,15 +210,25 @@ const CashFlowAnalysis = ({ cashFlowData }: Param) => {
                         legend: { display: false },
                         title: {
                             display: true,
-                            text: dataset.label.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-                            font: { size: 16 }
-                        }
+                            text: dataset.label
+                                .replace(/_/g, ' ')
+                                .replace(/\b\w/g, (l) => l.toUpperCase()),
+                            font: { size: 16 },
+                            color: '#fff',          // white title text
+                        },
                     },
                     scales: {
-                        x: { title: { display: true, text: 'Year' } },
-                        y: { title: { display: true, text: 'Value' } }
-                    }
-                }
+                        x: {
+                            title: { display: true, text: 'Year', color: '#fff' },
+                            ticks: { color: '#808080' },
+                        },
+                        y: {
+                            title: { display: true, text: 'Value', color: '#fff' },
+                            ticks: { color: '#808080' },
+                            grid: { drawOnChartArea: true, color: 'rgba(200,200,200,0.3)' },
+                        },
+                    },
+                },
             });
 
             chartsRef.current.push(detailedChart);
@@ -185,17 +239,7 @@ const CashFlowAnalysis = ({ cashFlowData }: Param) => {
         <>
             <style>{`
         body { 
-          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-          margin: 20px; 
           background-color: #000000; 
-          color: #343a40; 
-        }
-        h1, h2 { 
-          text-align: center; 
-          color: #28a745; 
-        }
-        h3 { 
-          color: #495057; 
         }
         .main-charts-container {
           display: flex;
@@ -233,9 +277,9 @@ const CashFlowAnalysis = ({ cashFlowData }: Param) => {
                 backgroundColor: '#000000',
                 color: '#343a40'
             }}>
-                <h2 style={{ textAlign: 'center', color: '#28a745' }}>Cash Flow Summary</h2>
                 <div style={{
                     display: 'grid',
+                    gridTemplateColumns: '1fr',
                     justifyContent: 'space-around',
                     marginTop: '20px',
                     gap: '20px'
@@ -244,12 +288,13 @@ const CashFlowAnalysis = ({ cashFlowData }: Param) => {
                         backgroundColor: '#000000',
                         border: '1px solid #dee2e6',
                         padding: '20px',
-                        borderRadius: '0.5rem',
+                        borderRadius: '0.0rem',
                         boxShadow: '0 0.125rem 0.25rem rgba(0, 0, 0, 0.075)',
                         flex: '1 1 48%',
-                        minWidth: '400px'
+                        minWidth: '400px',
+                        width: '100%'
                     }}>
-                        <h3 style={{ color: '#495057' }}>Operating, Investing & Financing Cash Flow</h3>
+                        <h3 style={{ color: '#ffffff', fontWeight: 'bold' }}>Operating, Investing & Financing Cash Flow</h3>
                         <p style={{ fontSize: '0.8em', textAlign: 'center', color: '#6c757d' }}>
                             This stacked bar chart shows how different activities contribute to the net change in cash each year.
                         </p>
@@ -259,12 +304,12 @@ const CashFlowAnalysis = ({ cashFlowData }: Param) => {
                         backgroundColor: '#000000',
                         border: '1px solid #dee2e6',
                         padding: '20px',
-                        borderRadius: '0.5rem',
+                        borderRadius: '0.0rem',
                         boxShadow: '0 0.125rem 0.25rem rgba(0, 0, 0, 0.075)',
                         flex: '1 1 48%',
                         minWidth: '400px'
                     }}>
-                        <h3 style={{ color: '#495057' }}>Operating Cash Flow vs. Free Cash Flow</h3>
+                        <h3 style={{ color: '#ffffff', fontWeight: 'bold' }}>Operating Cash Flow vs. Free Cash Flow</h3>
                         <p style={{ fontSize: '0.8em', textAlign: 'center', color: '#6c757d' }}>
                             This chart compares cash generated from operations with the cash left after paying for capital expenditures.
                         </p>
@@ -272,7 +317,6 @@ const CashFlowAnalysis = ({ cashFlowData }: Param) => {
                     </div>
                 </div>
 
-                <h2 style={{ textAlign: 'center', color: '#28a745' }}>Detailed Trend Analysis</h2>
                 <div
                     ref={detailedChartsRef}
                     id="detailed-charts"

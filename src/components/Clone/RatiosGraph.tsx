@@ -131,6 +131,8 @@ const FinancialRatiosAnalysis = ({ ratiosData }: Param) => {
             categoryTitle.style.paddingBottom = '10px';
             categoryTitle.style.borderBottom = '2px solid #000000';
             categoryTitle.style.color = '#FFFFFF';
+            categoryTitle.style.fontWeight = 'semibold';
+            categoryTitle.style.fontSize = '20px';
             chartsContainerRef.current!.appendChild(categoryTitle);
 
             const grid = document.createElement('div');
@@ -145,7 +147,7 @@ const FinancialRatiosAnalysis = ({ ratiosData }: Param) => {
                 const card = document.createElement('div');
                 card.className = 'chart-card';
                 card.style.backgroundColor = '#000000';
-                card.style.border = '1px solid #dee2e6';
+                card.style.border = '0px solid #dee2e6';
                 card.style.padding = '20px';
                 card.style.borderRadius = '0.5rem';
                 card.style.boxShadow = '0 0.125rem 0.25rem rgba(0, 0, 0, 0.075)';
@@ -183,7 +185,8 @@ const FinancialRatiosAnalysis = ({ ratiosData }: Param) => {
                             title: {
                                 display: true,
                                 text: ratioKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-                                font: { size: 16 }
+                                font: { size: 16 },
+                                color: '#FFFFFF'
                             },
                             tooltip: {
                                 callbacks: {
@@ -201,13 +204,33 @@ const FinancialRatiosAnalysis = ({ ratiosData }: Param) => {
                             }
                         },
                         scales: {
+                            x: {
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    color: '#808080'
+                                }
+                            },
                             y: {
+                                grid: {
+                                    drawOnChartArea: true,
+                                    color: 'rgba(200, 200, 200, 0.3)',
+                                },
                                 ticks: {
                                     callback: function (value: any) {
                                         return value + (isPercentage ? '%' : '');
-                                    }
-                                }
-                            }
+                                    },
+                                    color: '#808080'
+                                },
+                            },
+                            // y: {
+                            //     ticks: {
+                            //         callback: function (value: any) {
+                            //             return value + (isPercentage ? '%' : '');
+                            //         }
+                            //     }
+                            // }
                         }
                     }
                 });
@@ -223,13 +246,6 @@ const FinancialRatiosAnalysis = ({ ratiosData }: Param) => {
         body { 
           margin: 20px; 
           color: #343a40; 
-        }
-        h1, h2 { 
-          text-align: center; 
-          color: #6f42c1; 
-        }
-        h3 { 
-          color: #495057; 
         }
         .chart-grid {
           display: grid;
