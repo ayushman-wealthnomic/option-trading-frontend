@@ -4,6 +4,7 @@ import FinancialDashboard from '@/components/Clone/IncomeGraph';
 import BalanceSheetAnalysis from '@/components/Clone/BalanceGraph';
 import FinancialRatiosAnalysis from '@/components/Clone/RatiosGraph';
 import CashFlowAnalysis from '@/components/Clone/CashFlowGraph';
+import IncomeTable from '@/components/Clone/IncomeTable';
 
 type StockFinancialData = {
     id: number;
@@ -205,6 +206,9 @@ const CloneCharts = ({ chartData, balanceChart, cashFlowData, ratiosData }: Para
         });
     };
 
+    console.log(chartData);
+
+
     useEffect(() => {
         if (!chartRef.current || activeTab !== 'GRAPH') return;
 
@@ -371,47 +375,8 @@ const CloneCharts = ({ chartData, balanceChart, cashFlowData, ratiosData }: Para
 
     }, [activeTab, financialData, delta2017Data]);
 
-    const renderTabularView = () => {
-        const years = ['2015', '2016', '2017'];
-
-        return (
-            <div className="overflow-x-auto mt-10">
-                <table className="w-full text-lg">
-                    <thead>
-                        <tr className="border-b border-gray-700">
-                            <th className="text-left py-2 px-3 font-medium text-gray-300">Category</th>
-                            {years.map(year => (
-                                <th key={year} className="text-center py-2 px-3 font-medium text-gray-300">{year}</th>
-                            ))}
-                            <th className="text-center py-2 px-3 font-medium text-gray-300">Δ 2017</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {financialData.map((item, index) => (
-                            <tr key={item.category} className={`border-b border-gray-800 ${item.type === 'total' ? 'bg-gray-800/30' : ''}`}>
-                                <td className={`py-2 px-3 ${item.type === 'total' ? 'font-semibold text-gray-200' : 'text-gray-300'}`}>
-                                    {item.category}
-                                </td>
-                                {item.values.map((value, yearIndex) => (
-                                    <td key={yearIndex} className="text-center py-2 px-3 font-mono text-gray-300">
-                                        {value.toFixed(1)}
-                                    </td>
-                                ))}
-                                <td className="text-center py-2 px-3 font-mono text-gray-300">
-                                    <span className={delta2017Data[index]?.value > 0 ? 'text-green-400' : 'text-pink-400'}>
-                                        {delta2017Data[index]?.value.toFixed(1)}
-                                    </span>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-        );
-    };
-
     return (
-        <div className="min-h-screen bg-black text-white flex mt-20">
+        <div className="min-h-screen bg-black text-white mt-20">
             {/* Left side with chart */}
             <div className="flex-1 p-4">
                 {/* Main Tabs */}
@@ -470,7 +435,7 @@ const CloneCharts = ({ chartData, balanceChart, cashFlowData, ratiosData }: Para
                                 {activeSection === 'Ratios' && <FinancialRatiosAnalysis ratiosData={ratiosData} />}
                             </>
                         ) : (
-                            renderTabularView()
+                            <IncomeTable chartData={chartData} />
                         )}
                     </div>
                 </div>

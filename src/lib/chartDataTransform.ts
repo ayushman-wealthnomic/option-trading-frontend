@@ -75,3 +75,58 @@ export function transformChartData(rows: RawChartRow[]): TransformedChartData {
   return formatted;
 }
 
+export function transformFinancialData(rawData: RawChartRow[] | undefined) {
+  if (!rawData || rawData.length === 0) return [];
+
+  // 1️⃣ Extract years from `report_date`
+  const years = rawData.map(item =>
+    item.report_date
+  );
+
+  // 2️⃣ Metrics mapping — all fields you listed
+  const metrics = [
+    { key: "revenue", label: "Revenue" },
+    { key: "revenue_growth_yoy", label: "Revenue Growth YoY (%)" },
+    { key: "cost_of_revenue", label: "Cost of Revenue" },
+    { key: "gross_profit", label: "Gross Profit" },
+    { key: "selling_general_admin", label: "Selling, General & Admin" },
+    { key: "other_operating_expenses", label: "Other Operating Expenses" },
+    { key: "operating_expenses", label: "Operating Expenses" },
+    { key: "operating_income", label: "Operating Income" },
+    { key: "interest_income", label: "Interest Income" },
+    { key: "interest_expense", label: "Interest Expense" },
+    { key: "other_expense_income", label: "Other Expense / Income" },
+    { key: "pretax_income", label: "Pre-Tax Income" },
+    { key: "income_tax", label: "Income Tax" },
+    { key: "net_income", label: "Net Income" },
+    { key: "net_income_growth", label: "Net Income Growth (%)" },
+    { key: "shares_outstanding_basic", label: "Shares Outstanding (Basic)" },
+    { key: "shares_outstanding_diluted", label: "Shares Outstanding (Diluted)" },
+    { key: "shares_change", label: "Shares Change (%)" },
+    { key: "eps_basic", label: "EPS (Basic)" },
+    { key: "eps_diluted", label: "EPS (Diluted)" },
+    { key: "eps_growth", label: "EPS Growth (%)" },
+    { key: "gross_margin", label: "Gross Margin (%)" },
+    { key: "operating_margin", label: "Operating Margin (%)" },
+    { key: "profit_margin", label: "Profit Margin (%)" },
+    { key: "effective_tax_rate", label: "Effective Tax Rate (%)" },
+    { key: "ebitda", label: "EBITDA" },
+    { key: "ebitda_margin", label: "EBITDA Margin (%)" },
+    { key: "ebit", label: "EBIT" },
+    { key: "ebit_margin", label: "EBIT Margin (%)" },
+  ];
+
+  // 3️⃣ Build rows
+  const tableData = metrics.map(m => ({
+  category: m.label,
+  values: rawData.map(r =>
+    r[m.key as keyof RawChartRow] !== undefined && r[m.key as keyof RawChartRow] !== null
+      ? Number(r[m.key as keyof RawChartRow])
+      : null
+  ),
+}));
+
+  return { years, tableData };
+}
+
+

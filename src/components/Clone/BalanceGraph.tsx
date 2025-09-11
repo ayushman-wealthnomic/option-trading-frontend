@@ -70,6 +70,7 @@ interface MetricChartProps {
     height?: number;
 }
 
+
 const MetricChart: React.FC<MetricChartProps> = ({ dataset, labels, height = 250 }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const chartInstanceRef = useRef<any>(null);
@@ -97,7 +98,7 @@ const MetricChart: React.FC<MetricChartProps> = ({ dataset, labels, height = 250
                         {
                             label: formatLabel(dataset.label),
                             data: dataset.data,
-                            backgroundColor: `${dataset.color}20`,
+                            backgroundColor: dataset.color,
                             borderColor: dataset.color,
                             borderWidth: 2,
                             pointBackgroundColor: dataset.color,
@@ -107,7 +108,7 @@ const MetricChart: React.FC<MetricChartProps> = ({ dataset, labels, height = 250
                             pointHoverRadius: 5,
                             fill: false,
                             tension: 0.4,
-                            spanGaps: false,
+                            spanGaps: true,
                         },
                     ],
                 },

@@ -9,6 +9,8 @@ import { useNavigate } from 'react-router-dom';
 import { Loader } from 'lucide-react';
 import Navigation from '@/components/Landing/Navigation';
 import CloneCharts from './CloneChart';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import ProsConsComponent from '@/components/Clone/ProCons';
 
 interface StockMetrics {
     ticker: string;
@@ -382,32 +384,40 @@ const CloneDashboard: React.FC<DashboardProps> = () => {
                                     </div>
                                     <div>
                                         <span className="text-orange-500 mr-2">Symbol</span>
-                                        <span className="text-gray-300">{metrics ? metrics[0].ticker : "-"}</span>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <span className="text-gray-300 cursor-pointer hover:text-orange-400 transition-colors border-b border-dotted border-gray-500 hover:border-orange-400">
+                                                    {metrics ? metrics[0].ticker : "-"}
+                                                </span>
+                                            </TooltipTrigger>
+                                            <TooltipContent className='bg-black'>
+                                                <div className="max-w-sm p-2 text-white">
+                                                    Dr. Lal PathLabs Limited operates laboratories for carrying out pathological investigations in India and internationally.
+                                                    The company provides pathological investigations of various branches of bio-chemistry, hematology, histopathology,
+                                                    microbiology, electrophoresis, immuno-chemistry, immunology, virology, cytology, and other pathological and radiological
+                                                    investigations. It also offers phlebotomist training programs. The company was founded in 1949 and is based in Gurugram, India.
+                                                </div>
+                                            </TooltipContent>
+                                        </Tooltip>
                                     </div>
                                 </div>
-                                <p className="text-gray-400 mt-4 max-w-4xl text-sm md:text-md leading-relaxed">
-                                    Dr. Lal PathLabs Limited operates laboratories for carrying out pathological investigations in India and internationally.
-                                    The company provides pathological investigations of various branches of bio-chemistry, hematology, histopathology,
-                                    microbiology, electrophoresis, immuno-chemistry, immunology, virology, cytology, and other pathological and radiological
-                                    investigations. It also offers phlebotomist training programs. The company was founded in 1949 and is based in Gurugram, India.
-                                </p>
                             </div>
                             {/* Top metrics grid */}
-                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-6 mb-16">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 -space-y-8 mb-16">
                                 <div>
-                                    <div className="text-2xl md:text-3xl font-medium mb-1">
+                                    <div className="text-2xl md:text-3xl font-medium">
                                         {formatValue(metrics[0].roe_avg)}
                                     </div>
                                     <div className="text-gray-400 text-sm md:text-md">ROE (avg)</div>
                                 </div>
                                 <div>
-                                    <div className="text-2xl md:text-3xl font-medium mb-1">
+                                    <div className="text-2xl md:text-3xl font-medium">
                                         {formatValue(metrics[0].roic_avg)}
                                     </div>
                                     <div className="text-gray-400 text-sm md:text-md">ROIC (avg)</div>
                                 </div>
                                 <div>
-                                    <div className="text-2xl md:text-3xl font-medium mb-1">
+                                    <div className="text-2xl md:text-3xl font-medium">
                                         {formatValue(metrics[0].pos_fcf_rate, "%", 1)}
                                     </div>
                                     <div className="text-gray-400 text-sm md:text-md">
@@ -415,7 +425,7 @@ const CloneDashboard: React.FC<DashboardProps> = () => {
                                     </div>
                                 </div>
                                 <div>
-                                    <div className="text-2xl md:text-3xl font-medium mb-1">
+                                    <div className="text-2xl md:text-3xl font-medium">
                                         {formatValue(metrics[0].netmargin_avg, "%", 1)}
                                     </div>
                                     <div className="text-gray-400 text-sm md:text-md">
@@ -423,7 +433,7 @@ const CloneDashboard: React.FC<DashboardProps> = () => {
                                     </div>
                                 </div>
                                 <div>
-                                    <div className="text-2xl md:text-3xl font-medium mb-1">
+                                    <div className="text-2xl md:text-3xl font-medium ">
                                         {formatValue(metrics[0].pos_earnings_rate, "%", 1)}
                                     </div>
                                     <div className="text-gray-400 text-sm md:text-md">
@@ -431,49 +441,49 @@ const CloneDashboard: React.FC<DashboardProps> = () => {
                                     </div>
                                 </div>
                                 <div>
-                                    <div className="text-2xl md:text-3xl font-medium mb-1">
+                                    <div className="text-2xl md:text-3xl font-medium ">
                                         {formatValue(metrics[0].currentratio, "x")}
                                     </div>
                                     <div className="text-gray-400 text-sm md:text-md">Current Ratio</div>
                                 </div>
                                 <div className="text-center bg-[#090909] py-5">
-                                    <div className="text-4xl md:text-6xl font-medium text-white mb-1">
+                                    <div className="text-4xl md:text-6xl font-medium text-white ">
                                         {Math.round(metrics[0].totalscore)}
                                     </div>
                                     <div className="text-cyan-400 text-lg md:text-2xl">Total Score</div>
                                 </div>
                                 <div>
-                                    <div className="text-2xl md:text-3xl font-medium mb-1">
+                                    <div className="text-2xl md:text-3xl font-medium">
                                         {formatValue(metrics[0].debt_equity_x, "x")}
                                     </div>
                                     <div className="text-gray-400 text-sm md:text-md">Debt/Equity</div>
                                 </div>
                                 <div>
-                                    <div className="text-2xl md:text-3xl font-medium mb-1">
+                                    <div className="text-2xl md:text-3xl font-medium">
                                         {formatValue(metrics[0].debt_earnings_x, "x")}
                                     </div>
                                     <div className="text-gray-400 text-sm md:text-md">Debt/Earnings</div>
                                 </div>
                                 <div>
-                                    <div className="text-2xl md:text-3xl font-medium mb-1">
+                                    <div className="text-2xl md:text-3xl font-medium">
                                         {formatValue(metrics[0].fcf_cagr)}
                                     </div>
                                     <div className="text-gray-400 text-sm md:text-md">FCF CAGR</div>
                                 </div>
                                 <div>
-                                    <div className="text-2xl md:text-3xl font-medium mb-1">
+                                    <div className="text-2xl md:text-3xl font-medium">
                                         {formatValue(metrics[0].shares_cagr, "%", 1)}
                                     </div>
                                     <div className="text-gray-400 text-sm md:text-md">Shares CAGR</div>
                                 </div>
                                 <div>
-                                    <div className="text-2xl md:text-3xl font-medium mb-1">
+                                    <div className="text-2xl md:text-3xl font-medium">
                                         {formatValue(metrics[0].fcf_margin_latest)}
                                     </div>
                                     <div className="text-gray-400 text-sm md:text-md">FCF Margin</div>
                                 </div>
                                 <div>
-                                    <div className="text-2xl md:text-3xl font-medium mb-1">
+                                    <div className="text-2xl md:text-3xl font-medium">
                                         {formatValue(metrics[0].payout_ratio_latest)}
                                     </div>
                                     <div className="text-gray-400 text-sm md:text-md">Payout Ratio</div>
@@ -482,7 +492,7 @@ const CloneDashboard: React.FC<DashboardProps> = () => {
                             </div>
 
                             {/* Bottom metrics cards */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 mb-10">
                                 <div className="flex items-start bg-[#090909] p-6">
                                     <div className="text-4xl md:text-6xl font-light mt-2 md:mt-6 mr-4 md:mr-6">
                                         {Math.round(metrics[0].quality)}
@@ -535,6 +545,7 @@ const CloneDashboard: React.FC<DashboardProps> = () => {
                                     </div>
                                 </div>
                             </div>
+                            <ProsConsComponent />
                         </>
                     )
                 )}
