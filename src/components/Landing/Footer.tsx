@@ -70,7 +70,7 @@ const Footer: React.FC<FooterProps> = ({ className = "" }) => {
                                     placeholder="Enter email address"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="flex-1 px-4 py-3 bg-gray-800 border border-gray-600 rounded-l-md text-white placeholder-gray-400 focus:outline-none focus:border-[#6C7CFF]"
+                                    className="flex-1 px-4 py-3 bg-black border border-gray-600 rounded-l-md text-white placeholder-gray-400 focus:outline-none focus:border-[#6C7CFF]"
                                 />
                                 <button
                                     onClick={handleSubscribe}

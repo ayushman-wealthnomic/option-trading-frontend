@@ -1,40 +1,5 @@
-import "keen-slider/keen-slider.min.css"
-import { useKeenSlider } from "keen-slider/react"
-import { useEffect, useState } from "react"
-import { Link } from "react-router-dom"
-
-function AutoplayPlugin(ms: number) {
-    return (slider: any) => {
-        let timeout: any
-        let mouseOver = false
-
-        function clearNextTimeout() {
-            clearTimeout(timeout)
-        }
-        function nextTimeout() {
-            clearTimeout(timeout)
-            if (mouseOver) return
-            timeout = setTimeout(() => {
-                slider.next()
-            }, ms)
-        }
-
-        slider.on("created", () => {
-            slider.container.addEventListener("mouseover", () => {
-                mouseOver = true
-                clearNextTimeout()
-            })
-            slider.container.addEventListener("mouseout", () => {
-                mouseOver = false
-                nextTimeout()
-            })
-            nextTimeout()
-        })
-        slider.on("dragStarted", clearNextTimeout)
-        slider.on("animationEnded", nextTimeout)
-        slider.on("updated", nextTimeout)
-    }
-}
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const slides = [
     {
@@ -61,19 +26,6 @@ const slides = [
 ];
 
 const InvestorClone = () => {
-    const [, headline] = useKeenSlider<HTMLDivElement>(
-        {
-            loop: true,
-        },
-        [AutoplayPlugin(2500)]
-    )
-
-    const [, icon] = useKeenSlider<HTMLDivElement>(
-        {
-            loop: true,
-        }
-    )
-
     const [current, setCurrent] = useState(0);
 
     // Cycle slides every 4 seconds
@@ -84,45 +36,134 @@ const InvestorClone = () => {
         return () => clearInterval(interval);
     }, []);
 
-    useEffect(() => {
-        if (!headline.current || !icon.current) return;
-
-        const syncIcon = (s: any) => {
-            icon.current?.moveToIdx(s.track.details.rel);
-        };
-
-        const unsubscribe = headline.current.on("slideChanged", syncIcon);
-
-        // Clean up on unmount
-        return unsubscribe;
-    }, [headline, icon]);
-
-
     return (
-        <div className="relative bg-black text-white p-8 lg:p-24">
-            <div className="absolute inset-0 m-10 bg-white/10 opacity-50 rounded-xl"></div>
-
-            {/* Main content container with text on the left */}
-            <div className="relative z-30 p-10">
-                {/* Text content */}
-                <div className="flex flex-col justify-between max-w-xl">
-                    <div className="mb-20">
-                        <h2 className="text-4xl lg:text-6xl font-medium text-[#EAFF00]">The AI Investor Clones</h2>
-                        <div>
-                            <p className="text-4xl font-light text-[#8E8E8E]">
-                                Why settle for one opinion when you can consult a virtual hall of fame?
-                            </p>
+        <div className="relative bg-black text-white p-4 sm:p-8 lg:p-24 overflow-hidden">
+            {/* Desktop Version - Visible only on large screens and up */}
+            <div className="hidden lg:block">
+                <div className="absolute inset-0 mx-4 sm:mx-6 md:mx-10 my-6 sm:my-8 md:my-10 bg-white/10 opacity-50 rounded-xl"></div>
+                {/* Main content container with text on the left */}
+                <div className="relative z-30 sm:p-10 p-2">
+                    {/* Text content */}
+                    <div className="flex flex-col justify-between max-w-xl">
+                        <div className="mb-20">
+                            <h2 className="text-4xl lg:text-6xl font-medium text-[#EAFF00]">The AI Investor Clones</h2>
+                            <div>
+                                <p className="text-4xl font-light text-[#8E8E8E]">
+                                    Why settle for one opinion when you can consult a virtual hall of fame?
+                                </p>
+                            </div>
+                        </div>
+                        <p className="text-white text-2xl leading-relaxed">
+                            Our groundbreaking Agentic AI goes beyond basic analysis. We have meticulously cloned the philosophies, strategies, and analytical frameworks of the world's most legendary investors and financial experts.
+                        </p>
+                        <div className="mt-24">
+                            <Link to="/clone" className="text-[#EAFF00] hover:text-yellow-300 text-3xl font-light underline flex items-center gap-2 transition-colors group z-30">
+                                Our AI Screener
+                                <svg
+                                    className="w-6 h-6 group-hover:translate-x-1 transition-transform"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M9 5l7 7-7 7"
+                                    />
+                                </svg>
+                            </Link>
                         </div>
                     </div>
-                    <p className="text-white text-2xl leading-relaxed">
-                        Our groundbreaking Agentic AI goes beyond basic analysis. We have meticulously cloned the philosophies, strategies, and analytical frameworks of the world's most legendary investors and financial experts.
-                    </p>
+                </div>
+                {/* Absolute positioned image and text */}
+                <div className="absolute inset-0 w-full h-full">
+                    {slides.map((slide, index) => {
+                        const isActive = index === current;
+                        return (
+                            <div
+                                key={index}
+                                className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ${isActive ? "opacity-100 z-10" : "opacity-0 z-0"
+                                    }`}
+                            >
+                                <img
+                                    src={slide.image}
+                                    alt={slide.title}
+                                    className="absolute right-0 top-0 object-contain pointer-events-none w-[929px] h-[929px] opacity-70"
+                                />
+                                {/* Positioned text, centered over the image */}
+                                <div
+                                    className="absolute text-center"
+                                    style={{
+                                        right: '464.5px', // Half of the image's width
+                                        top: '70%',
+                                        transform: 'translate(50%, -50%)',
+                                    }}
+                                >
+                                    <p className="text-2xl lg:text-3xl font-bold text-white pointer-events-none">
+                                        {slide.title}
+                                    </p>
+                                    <p className="text-gray-300 text-sm mt-2 leading-relaxed max-w-sm">
+                                        {slide.description}
+                                    </p>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
 
-                    <div className="mt-24">
-                        <Link to="/clone" className="text-[#EAFF00] hover:text-yellow-300 text-3xl font-light underline flex items-center gap-2 transition-colors group z-30">
+            {/* Mobile Version - Visible on screens smaller than large */}
+            <div className="lg:hidden relative">
+                <div className="absolute inset-0 mx-2 my-4 bg-white/10 opacity-50 rounded-xl"></div>
+                <div className="relative z-30 text-center flex flex-col items-center p-2 sm:p-4">
+                    {/* Header */}
+                    <div className="mb-8">
+                        <h2 className="text-2xl sm:text-3xl font-medium text-[#EAFF00] mb-2 mt-10">The AI Investor Clones</h2>
+                        <p className="text-lg sm:text-xl font-light text-[#8E8E8E]">
+                            Why settle for one opinion when you can consult a virtual hall of fame?
+                        </p>
+                    </div>
+
+                    {/* Slideshow with Image and Text */}
+                    <div className="relative w-full h-[500px] sm:h-[600px]">
+                        {slides.map((slide, index) => {
+                            const isActive = index === current;
+                            return (
+                                <div
+                                    key={index}
+                                    className={`absolute inset-0 flex flex-col items-center justify-start pt-10 transition-opacity duration-1000 ${isActive ? "opacity-100 z-10" : "opacity-0 z-0"
+                                        }`}
+                                >
+                                    <img
+                                        src={slide.image}
+                                        alt={slide.title}
+                                        className="w-full h-auto max-w-[300px] sm:max-w-[300px] object-contain opacity-70 mb-4"
+                                    />
+                                    <div className="text-center">
+                                        <p className="text-lg sm:text-xl font-bold text-white mb-1">
+                                            {slide.title}
+                                        </p>
+                                        <p className="text-gray-300 text-xs sm:text-sm leading-relaxed max-w-xs px-2">
+                                            {slide.description}
+                                        </p>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    {/* Main Text */}
+                    <div className="mb-8">
+                        <p className="text-white text-md sm:text-lg leading-relaxed">
+                            Our groundbreaking Agentic AI goes beyond basic analysis. We have meticulously cloned the philosophies, strategies, and analytical frameworks of the world's most legendary investors and financial experts.
+                        </p>
+                    </div>
+                    {/* Link Button */}
+                    <div>
+                        <Link to="/clone" className="text-[#EAFF00] hover:text-yellow-300 text-xl sm:text-xl font-light mb-10 underline flex items-center gap-2 transition-colors group z-30">
                             Our AI Screener
                             <svg
-                                className="w-6 h-6 group-hover:translate-x-1 transition-transform"
+                                className="w-5 h-5 sm:w-6 sm:h-6 group-hover:translate-x-1 transition-transform"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -137,43 +178,6 @@ const InvestorClone = () => {
                         </Link>
                     </div>
                 </div>
-            </div>
-
-            {/* Absolute positioned image and text */}
-            <div className="absolute inset-0 w-full h-full">
-                {slides.map((slide, index) => {
-                    const isActive = index === current;
-                    return (
-                        <div
-                            key={index}
-                            className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ${isActive ? "opacity-100 z-10" : "opacity-0 z-0"
-                                }`}
-                        >
-                            <img
-                                src={slide.image}
-                                alt={slide.title}
-                                className="absolute right-0 top-0 object-contain pointer-events-none w-[929px] h-[929px] opacity-70"
-                            />
-
-                            {/* Positioned text, centered over the image */}
-                            <div
-                                className="absolute text-center"
-                                style={{
-                                    right: '464.5px', // Half of the image's width
-                                    top: '70%',
-                                    transform: 'translate(50%, -50%)',
-                                }}
-                            >
-                                <p className="text-2xl lg:text-3xl font-bold text-white pointer-events-none">
-                                    {slide.title}
-                                </p>
-                                <p className="text-gray-300 text-sm mt-2 leading-relaxed max-w-sm">
-                                    {slide.description}
-                                </p>
-                            </div>
-                        </div>
-                    );
-                })}
             </div>
         </div>
     );
