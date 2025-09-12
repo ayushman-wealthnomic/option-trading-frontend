@@ -197,6 +197,7 @@ const BalanceSheetAnalysis = ({ balanceChart }: Params) => {
 
 
 
+
     const latestValues = React.useMemo(() => {
         const values: Record<string, number> = {};
         datasets.forEach(ds => {

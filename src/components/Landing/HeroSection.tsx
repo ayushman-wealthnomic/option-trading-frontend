@@ -1,5 +1,6 @@
-import React from 'react'
-import Badge from './Badge';
+import Badge from "./Badge";
+
+
 const theme = {
     colors: {
         bgTop: '#EAF0FF',
@@ -20,83 +21,66 @@ const theme = {
     },
 };
 
-const MockDashboard: React.FC = () => (
+const MockDashboard = () => (
     <div className="border border-gray-600 rounded-md shadow-lg p-2">
-        {/* <div className="h-8 rounded-lg bg-white bg-opacity-10 mb-3"></div> */}
-        <img src="./chart_demo.png" alt="Chart" className='object-cover' />
-        {/* <div
-            className="h-72 rounded-lg opacity-90"
-            style={{
-                background: 'conic-gradient(from 270deg at 75% 35%, #2BD88F, #6C7CFF, #7C4DFF, #2BD88F)'
-            }}
-        ></div> */}
+        <img src="./chart_demo.png" alt="Chart" className="w-full h-auto object-cover rounded" />
     </div>
 );
 
 const HeroSection = () => {
-    // const icons = [
-    //     {
-    //         icon: "./image 2.png",
-    //         title: "Portfolio Intelligence",
-    //         url: "/"
-    //     },
-    //     {
-    //         icon: "./image 3.png",
-    //         title: "Charts",
-    //         url: "/charts"
-    //     },
-    //     {
-    //         icon: "./image 4.png",
-    //         title: "Screener",
-    //         url: "/technical"
-    //     },
-    //     {
-    //         icon: "./image 5.png",
-    //         title: "Smart Insights & Alerts",
-    //         url: "/"
-    //     },
-    // ];
     return (
-        <header className="pt-20 pb-6 bg-black">
-            <div className="absolute inset-0 m-10 bg-white/10 opacity-50 rounded-xl"></div>
-            <div className="mx-auto px-34 grid gap-8 lg:grid-cols-[1.2fr_0.9fr] items-center z-30">
-                <div className='z-30'>
-                    <Badge>AI-driven Fintech for Investors</Badge>
-                    <div className="text-5xl lg:text-6xl font-bold leading-tight tracking-tight mt-4 mb-4 flex flex-col space-y-2">
-                        <span>Smarter</span><span>Investing Starts</span><span>with AI</span>
+        <header className="relative min-h-screen bg-black text-white overflow-hidden">
+            {/* Background overlay */}
+            <div className="absolute inset-0 mx-4 sm:mx-6 md:mx-10 my-6 sm:my-8 md:my-10 bg-white/10 opacity-50 rounded-xl"></div>
+
+            {/* Main content container */}
+            <div className="relative z-10 pt-16 sm:pt-20 md:pt-24 pb-8 sm:pb-12 px-4 sm:px-6 lg:px-38">
+                <div className="mx-auto">
+                    {/* Hero grid */}
+                    <div className="grid gap-8 lg:gap-12 xl:gap-16 lg:grid-cols-[1.2fr_0.9fr] items-center">
+                        {/* Left content */}
+                        <div className="text-center lg:text-left">
+                            <Badge>AI-driven Fintech for Investors</Badge>
+
+                            <h2 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight tracking-tight mt-4 mb-6">
+                                <div className="flex flex-col space-y-1 sm:space-y-2">
+                                    <span>Smarter</span>
+                                    <span>Investing Starts</span>
+                                    <span>with AI</span>
+                                </div>
+                            </h2>
+
+                            <p className="text-gray-300 text-lg sm:text-xl lg:text-2xl leading-relaxed sm:max-w-2xl lg:max-w-3xl mx-auto lg:mx-0">
+                                At <strong className="text-white">WEALTHNOMICS</strong>, we merge fintech innovation with AI-powered intelligence.
+                                Accelerate research, optimize portfolios, and uncover winning stocks—without the noise.
+                            </p>
+                        </div>
+
+                        {/* Right content - Dashboard */}
+                        <div>
+                            <MockDashboard />
+                        </div>
                     </div>
-                    <p className="text-gray-300 text-2xl leading-relaxed pr-20">
-                        At <strong>WEALTHNOMICS</strong>, we merge fintech innovation with AI-powered intelligence.
-                        Accelerate research, optimize portfolios, and uncover winning stocks—without the noise.
-                    </p>
-                    {/* <div className="flex flex-wrap gap-4 mb-5">
-                        <Button className='font-medium text-lg'>Life Time Free</Button>
-                        <Button className='font-medium text-lg' variant="ghost">See How It Works</Button>
-                    </div> */}
-                    {/* <div className="text-sm text-gray-600">
-                        ⭐️⭐️⭐️⭐️⭐️ Rated by global investors • Trusted worldwide • Built with AI
-                    </div> */}
+
+                    {/* Bottom section */}
+                    <div className="text-center mt-16 sm:mt-20 lg:mt-24">
+                        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-light leading-tight tracking-tight mb-2">
+                            Zero Guesswork.{' '}
+                            <span style={{ color: theme.colors.brand }} className="block sm:inline">
+                                Only Intelligent Decisions.
+                            </span>
+                        </h2>
+
+                        <p className="text-gray-400 text-base sm:text-lg lg:text-xls max-w-4xl mx-auto px-4">
+                            WEALTHNOMICS combines technical and fundamental analysis with AI models to deliver research,
+                            valuation, and portfolio insights—all in one place.
+                        </p>
+                    </div>
                 </div>
-                <MockDashboard />
             </div>
-            <div className="mx-auto px-5 text-center mt-20">
-                <h2 className="text-4xl lg:text-5xl font-light leading-tight tracking-tight mb-4">
-                    Zero Guesswork. <span style={{ color: theme.colors.brand }}>Only Intelligent Decisions.</span>
-                </h2>
-                <p className="text-gray-400 text-lg mb-8 px-96">
-                    WEALTHNOMICS combines technical and fundamental analysis with AI models to deliver research,
-                    valuation, and portfolio insights—all in one place.
-                </p>
-            </div>
-            {/* <div className="flex justify-between items-center max-w-6xl mx-auto mt-20 z-30 space-x-20">
-                {icons.map((item, index) => (
-                    <a href={item.url} className='flex flex-col items-center justify-center z-30'>
-                        <img key={index} src={item.icon} className="w-[80px] h-[80px] rounded-lg bg-transparent flex items-center justify-center font-extrabold">
-                        </img>
-                        <div className="font-medium text-white mt-4">{item.title}</div>
-                    </a>
-                ))}
-            </div> */}
+
+            {/* Gradient background effect */}
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/40 pointer-events-none"></div>
         </header>
     )
 }

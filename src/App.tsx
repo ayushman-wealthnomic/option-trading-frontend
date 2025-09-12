@@ -20,6 +20,7 @@ import TeamSection from "./components/Landing/TeamSection";
 import CloneDashboard from "./pages/Clone/CloneApp";
 // import CloneTable from "./pages/Clone/CloneTable";
 import CloneStockSearch from "./pages/Clone/CloneStockSearch";
+import CloneTable from "./pages/Clone/CloneTable";
 
 
 const App = () => (
@@ -126,6 +127,14 @@ const App = () => (
               element={
                 <div className="w-screen h-screen">
                   <CloneStockSearch />
+                </div>
+              }
+            />
+            <Route
+              path="/table"
+              element={
+                <div className="w-screen h-screen bg-black">
+                  <CloneTable />
                 </div>
               }
             />

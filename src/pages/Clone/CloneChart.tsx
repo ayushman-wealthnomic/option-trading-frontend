@@ -5,6 +5,9 @@ import BalanceSheetAnalysis from '@/components/Clone/BalanceGraph';
 import FinancialRatiosAnalysis from '@/components/Clone/RatiosGraph';
 import CashFlowAnalysis from '@/components/Clone/CashFlowGraph';
 import IncomeTable from '@/components/Clone/IncomeTable';
+import BalnceSheetTable from '@/components/Clone/BalnceSheetTable';
+import CashFlowTabel from '@/components/Clone/CashFlowTabel';
+import RatiosTable from '@/components/Clone/RatiosTable';
 
 type StockFinancialData = {
     id: number;
@@ -435,7 +438,12 @@ const CloneCharts = ({ chartData, balanceChart, cashFlowData, ratiosData }: Para
                                 {activeSection === 'Ratios' && <FinancialRatiosAnalysis ratiosData={ratiosData} />}
                             </>
                         ) : (
-                            <IncomeTable chartData={chartData} />
+                            <>
+                                {activeSection === "Income Statement" && <IncomeTable chartData={chartData} />}
+                                {activeSection === "Balance Sheet" && <BalnceSheetTable balanceChart={balanceChart} />}
+                                {activeSection === "Cash Flow" && <CashFlowTabel cashFlowData={cashFlowData} />}
+                                {activeSection === "Ratios" && <RatiosTable ratiosData={ratiosData} />}
+                            </>
                         )}
                     </div>
                 </div>

@@ -40,8 +40,12 @@ interface Param {
 const FinancialRatiosAnalysis = ({ ratiosData }: Param) => {
     const chartsContainerRef = useRef<HTMLDivElement>(null);
     const chartsRef = useRef<any[]>([]);
+    console.log(ratiosData);
 
     const originalRatiosData = transformRatiosData(ratiosData)
+
+    console.log(originalRatiosData);
+
 
     useEffect(() => {
         // Load Chart.js

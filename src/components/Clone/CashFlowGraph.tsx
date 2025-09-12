@@ -49,6 +49,9 @@ const CashFlowAnalysis = ({ cashFlowData }: Param) => {
 
     const transformedData: CashFlowData = transformCashFlowData(cashFlowData);
 
+    console.log(transformedData);
+
+
     useEffect(() => {
         // Load Chart.js
         const script = document.createElement('script');

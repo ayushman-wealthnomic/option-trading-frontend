@@ -1,4 +1,4 @@
-import Footer from "./Footer";
+// import Review from "./Review";
 import Testimonial from "./Testimonial";
 
 const SocialProofSection = () => {
@@ -20,7 +20,7 @@ const SocialProofSection = () => {
                     ))}
                 </div>
             </div>
-            <Footer />
+            {/* <Review /> */}
         </section>
     );
 }

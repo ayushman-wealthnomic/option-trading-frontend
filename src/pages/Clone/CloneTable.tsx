@@ -1,8 +1,8 @@
 import Navigation from '@/components/Landing/Navigation';
 import { baseURL } from '@/lib/baseURL';
-import { ChevronDown, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, ChevronUp } from 'lucide-react';
+import { ArrowUpRight, ChevronDown, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, ChevronUp, Loader } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 // Type definitions
 interface Stock {
@@ -44,6 +44,7 @@ const CloneTable: React.FC = () => {
     const [totalPages,] = useState(47);
     const [page, setPage] = useState(1);
     const [sortConfig, setSortConfig] = useState<{ key: keyof Stock; direction: "asc" | "desc" } | null>(null);
+    const navigate = useNavigate();
 
     const loadPage = async ({
         page = 1,
@@ -151,31 +152,39 @@ const CloneTable: React.FC = () => {
         return [...new Set(rangeWithDots)];
     };
 
+    if (loading) {
+        return <div className="flex justify-center items-center h-full">
+            <Loader className={`w-6 h-6 animate-spin text-white`} />
+        </div>;
+    }
+
     return (
         <div className='bg-black'>
             <Navigation />
-            <div className="flex flex-col flex-1 bg-black">
+            <h2 className="text-7xl lg:text-8xl font-medium mb-4 text-center mt-20">STOCK Analysis</h2>
+            <div className="flex flex-col flex-1 bg-black px-30 mt-20">
                 <div className="flex-1 bg-black h-screen overflow-hidden">
-                    <div className="overflow-x-auto overflow-y-auto h-full">
+                    <div className="overflow-x-auto overflow-y-auto h-full border-r border-l border-gray-700">
                         <div className="min-w-max text-left">
-                            <div className="bg-black sticky top-0 z-10 border-b border-gray-700">
+                            <div className="bg-black sticky top-0 z-10 border border-gray-700">
                                 <div className="flex text-sm text-white px-6 py-4">
-                                    <div className="w-64 flex items-center justify-baseline font-medium">Company</div>
-                                    <div className="w-40 flex items-center justify-baseline font-medium">Sector</div>
-                                    <div className="w-42 flex items-center justify-baseline font-medium">Industry</div>
-                                    <div className="w-24 flex items-center justify-center font-medium">Years</div>
-                                    <div className="w-24 flex items-center justify-center font-medium">Window</div>
+                                    <div className="w-40 text-[#FF5D00] flex items-center justify-baseline font-medium">Company</div>
+                                    <div className="w-24 text-[#FF5D00] flex items-center justify-center font-medium"></div>
+                                    <div className="w-40 text-[#FF5D00] flex items-center justify-baseline font-medium">Sector</div>
+                                    <div className="w-40 text-[#FF5D00] flex items-center justify-baseline font-medium">Industry</div>
+                                    <div className="w-24 text-[#FF5D00] flex items-center justify-center font-medium">Years</div>
+                                    <div className="w-24 text-[#FF5D00] flex items-center justify-center font-medium">Window</div>
                                     <div
-                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        className="w-24 text-[#FF5D00] flex items-center justify-center font-medium cursor-pointer select-none"
                                         onClick={() => handleSort("totalscore")}
                                     >
                                         Total Score
                                         {sortConfig?.key === "totalscore" && (
-                                            <span className="ml-1">{sortConfig.direction === "asc" ? <ChevronUp className='w-3 h-3' /> : <ChevronDown className='w-3 h-3' />}</span>
+                                            <span className="ml-1 text-white">{sortConfig.direction === "asc" ? <ChevronUp className='w-3 h-3' /> : <ChevronDown className='w-3 h-3' />}</span>
                                         )}
                                     </div>
                                     <div
-                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        className="w-24 text-[#FF5D00] flex items-center justify-center font-medium cursor-pointer select-none"
                                         onClick={() => handleSort("quality")}
                                     >
                                         Quality
@@ -190,7 +199,7 @@ const CloneTable: React.FC = () => {
                                         )}
                                     </div>
                                     <div
-                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        className="w-24 text-[#FF5D00] flex items-center justify-center font-medium cursor-pointer select-none"
                                         onClick={() => handleSort("consistency")}
                                     >
                                         Consistency
@@ -205,7 +214,7 @@ const CloneTable: React.FC = () => {
                                         )}
                                     </div>
                                     <div
-                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        className="w-24 text-[#FF5D00] flex items-center justify-center font-medium cursor-pointer select-none pl-5"
                                         onClick={() => handleSort("conservatism")}
                                     >
                                         Conservatism
@@ -220,10 +229,10 @@ const CloneTable: React.FC = () => {
                                         )}
                                     </div>
                                     <div
-                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        className="w-24 text-[#FF5D00] flex items-center justify-center font-medium cursor-pointer select-none"
                                         onClick={() => handleSort("ownerearnings")}
                                     >
-                                        Owner Earnings
+                                        OE
                                         {sortConfig?.key === "ownerearnings" && (
                                             <span className="ml-1">
                                                 {sortConfig.direction === "asc" ? (
@@ -236,7 +245,7 @@ const CloneTable: React.FC = () => {
                                     </div>
                                     {/* ROE Avg */}
                                     <div
-                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        className="w-24 text-[#FF5D00] flex items-center justify-center font-medium cursor-pointer select-none"
                                         onClick={() => handleSort("roe_avg")}
                                     >
                                         ROE Avg
@@ -253,7 +262,7 @@ const CloneTable: React.FC = () => {
 
                                     {/* ROIC Avg */}
                                     <div
-                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        className="w-24 text-[#FF5D00] flex items-center justify-center font-medium cursor-pointer select-none"
                                         onClick={() => handleSort("roic_avg")}
                                     >
                                         ROIC Avg
@@ -270,7 +279,7 @@ const CloneTable: React.FC = () => {
 
                                     {/* Net Margin */}
                                     <div
-                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        className="w-24 text-[#FF5D00] flex items-center justify-center font-medium cursor-pointer select-none"
                                         onClick={() => handleSort("netmargin_avg")}
                                     >
                                         Net Margin
@@ -287,7 +296,7 @@ const CloneTable: React.FC = () => {
 
                                     {/* FCF Rate */}
                                     <div
-                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        className="w-24 text-[#FF5D00] flex items-center justify-center font-medium cursor-pointer select-none"
                                         onClick={() => handleSort("pos_fcf_rate")}
                                     >
                                         FCF Rate
@@ -304,7 +313,7 @@ const CloneTable: React.FC = () => {
 
                                     {/* Earn Rate */}
                                     <div
-                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        className="w-24 text-[#FF5D00] flex items-center justify-center font-medium cursor-pointer select-none"
                                         onClick={() => handleSort("pos_earnings_rate")}
                                     >
                                         Earn Rate
@@ -321,7 +330,7 @@ const CloneTable: React.FC = () => {
 
                                     {/* Current Ratio */}
                                     <div
-                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        className="w-24 text-[#FF5D00] flex items-center justify-center font-medium cursor-pointer select-none"
                                         onClick={() => handleSort("currentratio")}
                                     >
                                         Current Ratio
@@ -338,7 +347,7 @@ const CloneTable: React.FC = () => {
 
                                     {/* D/E */}
                                     <div
-                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        className="w-24 text-[#FF5D00] flex items-center justify-center font-medium cursor-pointer select-none"
                                         onClick={() => handleSort("debt_equity_x")}
                                     >
                                         D/E
@@ -355,7 +364,7 @@ const CloneTable: React.FC = () => {
 
                                     {/* D/Earn */}
                                     <div
-                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        className="w-24 text-[#FF5D00] flex items-center justify-center font-medium cursor-pointer select-none"
                                         onClick={() => handleSort("debt_earnings_x")}
                                     >
                                         D/Earn
@@ -372,7 +381,7 @@ const CloneTable: React.FC = () => {
 
                                     {/* D/FCF */}
                                     <div
-                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        className="w-24 text-[#FF5D00] flex items-center justify-center font-medium cursor-pointer select-none"
                                         onClick={() => handleSort("debt_fcf_x")}
                                     >
                                         D/FCF
@@ -389,7 +398,7 @@ const CloneTable: React.FC = () => {
 
                                     {/* Shares CAGR */}
                                     <div
-                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        className="w-24 text-[#FF5D00] flex items-center justify-center font-medium cursor-pointer select-none"
                                         onClick={() => handleSort("shares_cagr")}
                                     >
                                         Shares CAGR
@@ -406,7 +415,7 @@ const CloneTable: React.FC = () => {
 
                                     {/* FCF CAGR */}
                                     <div
-                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        className="w-24 text-[#FF5D00] flex items-center justify-center font-medium cursor-pointer select-none"
                                         onClick={() => handleSort("fcf_cagr")}
                                     >
                                         FCF CAGR
@@ -423,7 +432,7 @@ const CloneTable: React.FC = () => {
 
                                     {/* FCF Margin */}
                                     <div
-                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        className="w-24 text-[#FF5D00] flex items-center justify-center font-medium cursor-pointer select-none"
                                         onClick={() => handleSort("fcf_margin_latest")}
                                     >
                                         FCF Margin
@@ -440,7 +449,7 @@ const CloneTable: React.FC = () => {
 
                                     {/* Payout Ratio */}
                                     <div
-                                        className="w-30 flex items-center justify-center font-medium cursor-pointer select-none"
+                                        className="w-24 text-[#FF5D00] flex items-center justify-center font-medium cursor-pointer select-none"
                                         onClick={() => handleSort("payout_ratio_latest")}
                                     >
                                         Payout Ratio
@@ -465,15 +474,18 @@ const CloneTable: React.FC = () => {
                                     </div>
                                 ) : (
                                     sortedStocks.map((stock: Stock) => (
-                                        <Link to={`/clone/${stock.ticker}`}
+                                        <div
                                             key={stock.ticker}
-                                            className="flex px-6 py-4 border-b border-gray-800 hover:bg-white/10 transition-colors"
+                                            className="flex px-6 py-4 border border-gray-800 transition-colors"
                                         >
-                                            <div className="w-64 flex items-center space-x-3">
+                                            <div className="w-40 flex items-center space-x-3">
                                                 <div className="min-w-0">
                                                     <div className="text-white font-semibold text-sm">{stock.ticker}</div>
-                                                    <div className="text-xs text-gray-400 truncate">{stock.company_name}</div>
+                                                    <div className="text-xs text-gray-400-">{stock.company_name}</div>
                                                 </div>
+                                            </div>
+                                            <div className='w-24 pl-2 flex items-center justify-baseline'>
+                                                <button className='bg-[#fc701f] p-1 rounded z-50 cursor-pointer hover:scale-105' onClick={() => navigate(`/clone/${stock.ticker}`)}><ArrowUpRight className='text-2xl' /></button>
                                             </div>
                                             <div className="w-40 flex items-center justify-baseline text-left text-white text-sm pr-2">
                                                 {stock.sector || '-'}
@@ -482,85 +494,85 @@ const CloneTable: React.FC = () => {
                                             <div className="w-40 flex items-center justify-baseline text-left text-white text-sm pr-2">
                                                 {stock.industry || '-'}
                                             </div>
-                                            <div className="w-30 flex items-center justify-center text-white text-sm">
+                                            <div className="w-24 flex items-center justify-center text-white text-sm">
                                                 {stock.yearsused}
                                             </div>
 
-                                            <div className="w-30 flex items-center justify-baseline text-white text-sm">
+                                            <div className="w-24 flex items-center justify-center text-white text-sm">
                                                 {stock.window}
                                             </div>
-                                            <div className={`w-30 flex items-center justify-baseline font-medium text-sm`}>
+                                            <div className={`w-24 flex items-center justify-center font-medium text-sm`}>
                                                 {formatNumber(stock.totalscore)}
                                             </div>
 
-                                            <div className={`w-30 flex items-center justify-baseline font-medium text-sm`}>
+                                            <div className={`w-24 flex items-center justify-center font-medium text-sm`}>
                                                 {formatNumber(stock.quality)}
                                             </div>
 
-                                            <div className={`w-30 flex items-center justify-baseline font-medium text-sm`}>
+                                            <div className={`w-24 flex items-center justify-center font-medium text-sm`}>
                                                 {formatNumber(stock.consistency)}
                                             </div>
 
-                                            <div className={`w-30 flex items-center justify-baseline font-medium text-sm`}>
+                                            <div className={`w-24 flex items-center justify-center font-medium text-sm`}>
                                                 {formatNumber(stock.conservatism)}
                                             </div>
 
-                                            <div className={`w-30 flex items-center justify-baseline font-medium text-sm`}>
+                                            <div className={`w-24 flex items-center justify-center font-medium text-sm`}>
                                                 {formatNumber(stock.ownerearnings)}
                                             </div>
 
-                                            <div className="w-30 flex items-center justify-baseline text-white text-sm">
+                                            <div className="w-24 flex items-center justify-center text-white text-sm">
                                                 {formatPercent(stock.roe_avg)}
                                             </div>
 
-                                            <div className="w-30 flex items-center justify-baseline text-white text-sm">
+                                            <div className="w-24 flex items-center justify-center text-white text-sm">
                                                 {formatPercent(stock.roic_avg)}
                                             </div>
 
-                                            <div className="w-30 flex items-center justify-baseline text-white text-sm">
+                                            <div className="w-24 flex items-center justify-center text-white text-sm">
                                                 {formatPercent(stock.netmargin_avg)}
                                             </div>
 
-                                            <div className={`w-30 flex items-center justify-baseline font-medium text-sm}`}>
+                                            <div className={`w-24 flex items-center justify-center font-medium text-sm}`}>
                                                 {formatPercent(stock.pos_fcf_rate)}
                                             </div>
 
-                                            <div className={`w-30 flex items-center justify-baseline font-medium text-sm}`}>
+                                            <div className={`w-24 flex items-center justify-center font-medium text-sm}`}>
                                                 {formatPercent(stock.pos_earnings_rate)}
                                             </div>
 
-                                            <div className="w-30 flex items-center justify-baseline text-white text-sm">
+                                            <div className="w-24 flex items-center justify-center text-white text-sm">
                                                 {formatNumber(stock.currentratio, 2)}
                                             </div>
 
-                                            <div className="w-30 flex items-center justify-baseline text-white text-sm">
+                                            <div className="w-24 flex items-center justify-center text-white text-sm">
                                                 {formatNumber(stock.debt_equity_x, 2)}
                                             </div>
 
-                                            <div className="w-30 flex items-center justify-baseline text-white text-sm">
+                                            <div className="w-24 flex items-center justify-center text-white text-sm">
                                                 {formatNumber(stock.debt_earnings_x, 1)}
                                             </div>
 
-                                            <div className="w-30 flex items-center justify-baseline text-white text-sm">
+                                            <div className="w-24 flex items-center justify-center text-white text-sm">
                                                 {formatNumber(stock.debt_fcf_x, 1)}
                                             </div>
 
-                                            <div className={`w-30 flex items-center justify-baseline font-medium text-sm}`}>
+                                            <div className={`w-24 flex items-center justify-center font-medium text-sm}`}>
                                                 {formatPercent(stock.shares_cagr)}
                                             </div>
 
-                                            <div className={`w-30 flex items-center justify-baseline font-medium text-sm}`}>
+                                            <div className={`w-24 flex items-center justify-center font-medium text-sm}`}>
                                                 {formatPercent(stock.fcf_cagr)}
                                             </div>
 
-                                            <div className="w-30 flex items-center justify-baseline text-white text-sm">
+                                            <div className="w-24 flex items-center justify-center text-white text-sm">
                                                 {formatPercent(stock.fcf_margin_latest)}
                                             </div>
 
-                                            <div className="w-30 flex items-center justify-baseline text-white text-sm">
+                                            <div className="w-24 flex items-center justify-center text-white text-sm">
                                                 {formatPercent(stock.payout_ratio_latest)}
                                             </div>
-                                        </Link>
+                                        </div>
                                     ))
                                 )}
                             </div>

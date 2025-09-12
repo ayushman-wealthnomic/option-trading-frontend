@@ -9,6 +9,7 @@ import IdeaSection from '@/components/Landing/IdeaSection';
 import InvestorClone from '@/components/Landing/InvestorClone';
 import OptionsSection from '@/components/Landing/OptionsSection';
 import WatchlistSection from '@/components/Landing/WatchlistSection';
+import Footer from '@/components/Landing/Footer';
 
 
 const theme = {
@@ -81,6 +82,7 @@ const Landing = () => {
                 <AlertsSection />
                 <SocialProofSection /> */}
                 <SocialProofSection />
+                <Footer />
             </div>
 
             {/* Custom styles for shimmer animation */}
