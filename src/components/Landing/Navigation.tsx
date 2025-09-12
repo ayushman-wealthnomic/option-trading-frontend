@@ -1,14 +1,7 @@
 "use client";
 
+import { supabase } from "@/lib/supabase";
 import { useEffect, useState } from "react";
-
-// Mock implementations for demonstration
-const supabase = {
-    auth: {
-        getUser: async () => ({ data: { user: null } }),
-        signOut: async () => { }
-    }
-};
 
 const useLocation = () => ({ pathname: "/" });
 
@@ -25,6 +18,9 @@ const Navigation = () => {
     const [loading, setLoading] = useState(true);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+    console.log(profile);
+
+
     const isHomePage = location.pathname == "/";
     console.log(location);
 
@@ -36,21 +32,20 @@ const Navigation = () => {
             setUser(user);
 
             if (user) {
-                // Mock profile data for demonstration
-                // const { data, error } = await supabase
-                //     .from("users")
-                //     .select("id, email, name")
-                //     .eq("id", user.id)
-                //     .single();
+                const { data, error } = await supabase
+                    .from("users")
+                    .select("id, email, name")
+                    .eq("id", user.id)
+                    .single();
 
-                // if (!error) {
-                //     setProfile(data);
-                // } else {
-                //     console.error("Error fetching profile:", error);
-                // }
+                if (!error) {
+                    setProfile(data);
+                } else {
+                    console.error("Error fetching profile:", error);
+                }
             }
 
-            setLoading(false);
+            setLoading(false); // ✅ stop loading once done
         };
 
         getUser();
