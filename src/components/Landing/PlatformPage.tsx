@@ -13,7 +13,7 @@ const InvestmentPlatform: React.FC = () => {
                 <p className='font-semibold text-2xl'>AI Clone</p>
             </div>
             <div className='flex flex-col justify-center items-center gap-8'>
-                <img src="polygon_1.png" alt="Logo" />
+                <img src="/polygon_1.png" alt="Logo" />
                 <p className='font-semibold text-2xl'>Market Watch</p>
             </div>
             <div className='flex flex-col justify-center items-center gap-4'>
