@@ -36,37 +36,42 @@ interface APIResponse {
     data: Stock[];
 }
 
-
-
 const CloneTable: React.FC = () => {
     const [stocks, setStocks] = useState<Stock[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [totalPages,] = useState(47);
     const [page, setPage] = useState(1);
-    const [sortConfig, setSortConfig] = useState<{ key: keyof Stock; direction: "asc" | "desc" } | null>(null);
+    const [sortConfig, setSortConfig] = useState<{ key: keyof Stock; direction: "asc" | "desc" } | null>({ key: "totalscore", direction: "asc" });
     const navigate = useNavigate();
 
     const loadPage = async ({
         page = 1,
+        sortBy,
+        order,
     }: {
         page?: number;
+        sortBy?: keyof Stock;
+        order?: "asc" | "desc";
     }): Promise<APIResponse> => {
-        const params = new URLSearchParams({
-            page: String(page),
-        });
+        const params = new URLSearchParams({ page: String(page) });
+        if (sortBy) params.set("sortBy", sortBy);
+        if (order) params.set("order", order);
+
         const res = await fetch(`${baseURL}/clone-stock-data?${params.toString()}`);
-        if (!res.ok) {
-            throw new Error("Failed to fetch stocks");
-        }
+        if (!res.ok) throw new Error("Failed to fetch stocks");
         return res.json();
     };
 
+
     // react fetch call
-    const fetchStocks = async (pageNum: number) => {
+    const fetchStocks = async (pageNum: number, config?: typeof sortConfig) => {
         setLoading(true);
         try {
-            const data = await loadPage({ page: pageNum });
-
+            const data = await loadPage({
+                page: pageNum,
+                sortBy: config?.key,
+                order: config?.direction,
+            });
             setStocks(data.data);
         } catch (err) {
             console.error("Error fetching stocks:", err);
@@ -76,24 +81,15 @@ const CloneTable: React.FC = () => {
     };
 
 
+
     // initial + on page change
     useEffect(() => {
-        fetchStocks(page);
-        console.log(stocks);
-
-    }, [page]);
-
-    const sortedStocks = [...stocks].sort((a, b) => {
-        if (!sortConfig) return 0;
-        const { key, direction } = sortConfig;
-        const order = direction === "asc" ? 1 : -1;
-        return a[key] > b[key] ? order : a[key] < b[key] ? -order : 0;
-    });
+        fetchStocks(page, sortConfig);
+    }, [page, sortConfig]);
 
     const handleSort = (key: keyof Stock) => {
         setSortConfig((prev) => {
             if (prev?.key === key) {
-                // toggle asc/desc
                 return { key, direction: prev.direction === "asc" ? "desc" : "asc" };
             }
             return { key, direction: "asc" };
@@ -157,6 +153,9 @@ const CloneTable: React.FC = () => {
             <Loader className={`w-6 h-6 animate-spin text-white`} />
         </div>;
     }
+
+    console.log(sortConfig);
+
 
     return (
         <div className='bg-black'>
@@ -473,7 +472,7 @@ const CloneTable: React.FC = () => {
                                         <div className="text-gray-400">Loading stocks...</div>
                                     </div>
                                 ) : (
-                                    sortedStocks.map((stock: Stock) => (
+                                    stocks.map((stock: Stock) => (
                                         <div
                                             key={stock.ticker}
                                             className="flex px-6 py-4 border border-gray-800 transition-colors"
