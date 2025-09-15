@@ -2,6 +2,7 @@
 
 import { supabase } from "@/lib/supabase";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const useLocation = () => ({ pathname: "/" });
 
@@ -17,12 +18,11 @@ const Navigation = () => {
     const [profile, setProfile] = useState<Profile | null>(null);
     const [loading, setLoading] = useState(true);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
+    const navigate = useNavigate();
     console.log(profile);
 
 
     const isHomePage = location.pathname == "/";
-    console.log(location);
 
     useEffect(() => {
         const getUser = async () => {
@@ -67,11 +67,11 @@ const Navigation = () => {
     };
 
     return (
-        <div className={`sticky top-0 backdrop-blur-md bg-black bg-opacity-60 border-b border-gray-900 border-opacity-5 z-40${isHomePage ? " " : " px-4 sm:px-10 lg:px-20"}`}>
-            <div className="mx-auto px-4 sm:px-10 flex items-center justify-between h-16">
+        <div className={`sticky top-0 backdrop-blur-md bg-black bg-opacity-60 border-b border-gray-900 border-opacity-5 z-1000${isHomePage ? " " : " px-4 sm:px-10 lg:px-20"}`}>
+            <div className=" sticky mx-auto px-4 sm:px-10 flex items-center justify-between h-16">
                 {/* Logo */}
                 <div className="flex items-center justify-center space-x-3">
-                    <div className="text-black text-2xl sm:text-3xl font-semibold tracking-wide">
+                    <div className="text-black text-2xl sm:text-3xl font-semibold tracking-wide cursor-pointer" onClick={() => { navigate("/") }}>
                         <span className="text-white">WEALTH</span>
                         <span className="text-white">NOMICS</span>
                     </div>
@@ -80,10 +80,7 @@ const Navigation = () => {
 
                 {/* Desktop Nav links */}
                 <nav className="hidden lg:flex gap-5 items-center">
-                    <a href="#ideas" className="text-white text-xl">Ideas</a>
-                    <a href="#investor-clone" className="text-white text-xl">Investor Clone</a>
-                    <a href="#features" className="text-white text-xl">Features</a>
-                    <a href="#valuation" className="text-white text-xl">Valuation</a>
+                    <a href="#about_us" className="text-white text-xl">About Us</a>
                     <a href="/team" className="text-white text-xl">Team</a>
                 </nav>
 
@@ -103,7 +100,8 @@ const Navigation = () => {
                         </div>
                     ) : (
                         <div className="flex items-center gap-5">
-                            <a href="/login" className="text-white font-medium text-xl underline">Login</a>
+                            <a href="/platform" className="text-white font-medium text-xl underline">Platform Table</a>
+                            <a href="/login" className="text-white font-medium text-xl underline">Investor Login</a>
                             <a href="/signup" className="text-white font-medium text-xl underline">Signup</a>
                         </div>
                     )}

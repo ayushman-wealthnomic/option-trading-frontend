@@ -21,6 +21,7 @@ import CloneDashboard from "./pages/Clone/CloneApp";
 // import CloneTable from "./pages/Clone/CloneTable";
 import CloneStockSearch from "./pages/Clone/CloneStockSearch";
 import CloneTable from "./pages/Clone/CloneTable";
+import InvestmentPlatform from "./components/Landing/PlatformPage";
 
 
 const App = () => (
@@ -135,6 +136,14 @@ const App = () => (
               element={
                 <div className="w-screen h-screen bg-black">
                   <CloneTable />
+                </div>
+              }
+            />
+            <Route
+              path="/platform"
+              element={
+                <div className="w-screen h-screen bg-black">
+                  <InvestmentPlatform />
                 </div>
               }
             />

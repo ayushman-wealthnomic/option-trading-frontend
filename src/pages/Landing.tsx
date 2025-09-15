@@ -58,8 +58,10 @@ const Landing = () => {
             />
 
             {/* Content */}
-            <div className="relative z-10 overflow-x-hidden">
+            <div className="relative z-10">
+
                 <Navigation />
+
                 <section className='bg-black'>
                     <HeroSection />
                 </section>

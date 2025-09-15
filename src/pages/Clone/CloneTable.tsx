@@ -1,7 +1,7 @@
 import Navigation from '@/components/Landing/Navigation';
 import { baseURL } from '@/lib/baseURL';
-import { ArrowUpRight, ChevronDown, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, ChevronUp, Loader } from 'lucide-react';
-import React, { useState, useEffect } from 'react';
+import { ArrowUpRight, ChevronDown, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, ChevronUp, Loader, Search, X } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // Type definitions
@@ -41,6 +41,8 @@ const CloneTable: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [totalPages,] = useState(47);
     const [page, setPage] = useState(1);
+    const [filteredStocks, setFilteredStocks] = useState<Stock[]>([]);
+    const [searchQuery, setSearchQuery] = useState<string>('');
     const [sortConfig, setSortConfig] = useState<{ key: keyof Stock; direction: "asc" | "desc" } | null>({ key: "totalscore", direction: "asc" });
     const navigate = useNavigate();
 
@@ -80,6 +82,26 @@ const CloneTable: React.FC = () => {
         }
     };
 
+    const filterStocks = useCallback(() => {
+        if (!searchQuery.trim()) {
+            setFilteredStocks(stocks);
+            return;
+        }
+
+        const query = searchQuery.toLowerCase().trim();
+        const filtered = stocks.filter(stock =>
+            stock.ticker.toLowerCase().includes(query) ||
+            stock.company_name.toLowerCase().includes(query) ||
+            stock.sector.toLowerCase().includes(query) ||
+            stock.industry.toLowerCase().includes(query)
+        );
+        setFilteredStocks(filtered);
+    }, [stocks, searchQuery]);
+
+    useEffect(() => {
+        filterStocks();
+    }, [filterStocks]);
+
 
 
     // initial + on page change
@@ -107,6 +129,14 @@ const CloneTable: React.FC = () => {
     const formatPercent = (value: number | null | undefined, decimals: number = 1): string => {
         if (value == null) return '-';
         return `${formatNumber(value, decimals)}%`;
+    };
+
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchQuery(e.target.value);
+    };
+
+    const clearSearch = () => {
+        setSearchQuery('');
     };
 
 
@@ -161,6 +191,28 @@ const CloneTable: React.FC = () => {
         <div className='bg-black'>
             <Navigation />
             <h2 className="text-7xl lg:text-8xl font-medium mb-4 text-center mt-20">STOCK Analysis</h2>
+            <div className="flex justify-center px-6 mt-8 mb-6">
+                <div className="relative w-full max-w-md">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <Search className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <input
+                        type="text"
+                        placeholder="Search by ticker, company, sector, or industry..."
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                        className="block w-full pl-10 pr-10 py-3 border border-gray-600 rounded-lg bg-gray-900 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF5D00] focus:border-transparent"
+                    />
+                    {searchQuery && (
+                        <button
+                            onClick={clearSearch}
+                            className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                        >
+                            <X className="h-5 w-5 text-gray-400 hover:text-white transition-colors" />
+                        </button>
+                    )}
+                </div>
+            </div>
             <div className="flex flex-col flex-1 bg-black px-30 mt-20">
                 <div className="flex-1 bg-black h-screen overflow-hidden">
                     <div className="overflow-x-auto overflow-y-auto h-full border-r border-l border-gray-700">
@@ -472,7 +524,7 @@ const CloneTable: React.FC = () => {
                                         <div className="text-gray-400">Loading stocks...</div>
                                     </div>
                                 ) : (
-                                    stocks.map((stock: Stock) => (
+                                    filteredStocks.map((stock: Stock) => (
                                         <div
                                             key={stock.ticker}
                                             className="flex px-6 py-4 border border-gray-800 transition-colors"
