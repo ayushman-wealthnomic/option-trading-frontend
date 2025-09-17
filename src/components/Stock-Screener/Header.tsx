@@ -7,7 +7,10 @@ interface HeaderProps {
     onIndexChange: (index: string) => void;
 }
 
+
+
 const Header: React.FC<HeaderProps> = ({ indices, selectedIndex, onIndexChange }) => {
+
     return (
         <header className="flex flex-col sm:flex-row justify-between mb-4">
             <h2 className="text-3xl font-bold text-white mb-4 sm:mb-0">Stock Screener</h2>

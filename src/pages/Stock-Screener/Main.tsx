@@ -22,6 +22,10 @@ function StockScreener() {
         loading
     } = useStockData();
 
+    console.log(displayedStocks);
+
+
+
     useSEO({
         title: seoConfig.stockScreener.title,
         description: seoConfig.stockScreener.description,
