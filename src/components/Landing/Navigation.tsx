@@ -100,7 +100,7 @@ const Navigation = () => {
                         </div>
                     ) : (
                         <div className="flex items-center gap-5">
-                            <a href="/platform" className="text-white font-medium text-xl underline">Platform Table</a>
+                            <a href="/platform" className="text-white font-medium text-xl underline">Platform</a>
                             <a href="/login" className="text-white font-medium text-xl underline">Investor Login</a>
                             <a href="/signup" className="text-white font-medium text-xl underline">Signup</a>
                         </div>

@@ -50,7 +50,7 @@ const App = () => (
               }
             />
             <Route
-              path="/stock-screener"
+              path="/market-watch"
               element={
                 <ProtectedRoute>
                   <StockScreener />

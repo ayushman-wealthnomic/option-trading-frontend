@@ -7,6 +7,7 @@ import MessageArea from '../../components/Stock-Screener/MessageArea';
 import { Toaster } from 'sonner';
 import { seoConfig } from '@/lib/seoConfig';
 import { useSEO } from '@/hooks/useSEO';
+import Navigation from '@/components/Landing/Navigation';
 
 function StockScreener() {
     const {
@@ -35,6 +36,7 @@ function StockScreener() {
     });
 
     return (<>
+        <Navigation />
         <div className="min-h-screen w-screen p-10 md:px-40 text-gray-300 overflow-auto">
             <div className="max-w-screen-5xl mx-auto">
                 <Header

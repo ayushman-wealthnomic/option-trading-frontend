@@ -202,7 +202,7 @@ const CloneDashboard: React.FC<DashboardProps> = () => {
     const navigate = useNavigate();
     const [metrics, setMetrics] = useState<StockMetrics[]>();
     const [selectedMethod, setSelectedMethod] = useState('Warren Buffet');
-    const [selectedStock, setSelectedStock] = useState<string>("AEGISLOG");
+    const [selectedStock, setSelectedStock] = useState<string | undefined>("AEGISLOG");
     const [open, setOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [filteredStocks, setFilteredStocks] = useState<string[]>([]);
@@ -210,6 +210,7 @@ const CloneDashboard: React.FC<DashboardProps> = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                setSelectedStock(urlTicker)
                 setLoading(true);
                 const res = await fetch(`${baseURL}/clone-stock-data/${urlTicker}`);
                 if (!res.ok) throw new Error("Failed to fetch data");
@@ -280,7 +281,7 @@ const CloneDashboard: React.FC<DashboardProps> = () => {
                                 variant="outline"
                                 role="combobox"
                                 aria-expanded={open}
-                                className="justify-between w-64"
+                                className="justify-between"
                             >
                                 {selectedStock
                                     ? `${selectedStock}: ${stockList[selectedStock as keyof typeof stockList]}`

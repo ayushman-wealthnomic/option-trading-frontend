@@ -26,7 +26,7 @@ const Controls: React.FC<ControlsProps> = ({ searchTerm, onSearchChange, current
                     type="text"
                     id="search-input"
                     placeholder="Search by symbol..."
-                    className="w-full p-2.5 pl-10 control-bg border control-border text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500"
+                    className="w-full p-2.5 pl-10 bg-[#111111] border control-border text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500"
                     value={searchTerm}
                     onChange={(e) => onSearchChange(e.target.value)}
                 />
@@ -35,7 +35,7 @@ const Controls: React.FC<ControlsProps> = ({ searchTerm, onSearchChange, current
             <div className="flex items-center justify-center gap-2">
                 <Button
                     variant="outline"
-                    className={`p-2.5 control-bg control-border text-white hover:bg-gray-70 hover:border-white hover:text-white hover:scale-105 ${isNameSorted ? 'bg-gray-700' : ''}`}
+                    className={`p-2.5 control-border bg-[#111111] text-white hover:bg-gray-70 hover:border-white hover:text-white hover:scale-105 ${isNameSorted ? 'bg-gray-700' : ''}`}
                     title="Sort by Name"
                     onClick={() => onSort('symbol')}
                 >
@@ -43,7 +43,7 @@ const Controls: React.FC<ControlsProps> = ({ searchTerm, onSearchChange, current
                 </Button>
                 <Button
                     variant="outline"
-                    className={`p-2.5 control-bg border control-border text-white hover:text-white hover:scale-105 hover:bg-gray-700  ${isPercentSorted ? 'bg-gray-700' : ''}`}
+                    className={`p-2.5 bg-[#111111] border control-border text-white hover:text-white hover:scale-105 hover:bg-gray-700  ${isPercentSorted ? 'bg-gray-700' : ''}`}
                     title="Sort by Percentage"
                     onClick={() => onSort('change')}
                 >

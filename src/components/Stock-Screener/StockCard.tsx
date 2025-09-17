@@ -1,12 +1,14 @@
 // src/components/StockCard.tsx
 import React from "react";
 import type { Stock } from "../../../types";
+import { useNavigate } from "react-router-dom";
 
 interface StockCardProps {
     stock: Stock;
 }
 
 const StockCard: React.FC<StockCardProps> = ({ stock }) => {
+    const navigate = useNavigate();
     const isPositive = stock.change >= 0;
     const colorClass = isPositive ? "text-green-500" : "text-red-500";
     const chartColor = isPositive ? "#22c55e" : "#ef4444"; // Tailwind green-500 / red-500
@@ -83,7 +85,7 @@ const StockCard: React.FC<StockCardProps> = ({ stock }) => {
             : undefined);
 
     return (
-        <div className="card-bg p-5 flex flex-col shadow-lg hover:shadow-purple-500/20 transform hover:-translate-y-1 transition-all duration-300 rounded">
+        <div className="bg-[#111111] p-5 flex flex-col shadow-lg hover:shadow-gray-500/20 cursor-pointer transform hover:-translate-y-1 transition-all duration-300 rounded" onClick={() => { navigate(`/clone/${stock.symbol}`) }}>
             <div className="flex-grow">
                 <h2 className="text-xl font-semibold text-white">{stock.symbol}</h2>
                 <p className="text-md overflow-ellipsis truncate">{stock.companyName}</p>

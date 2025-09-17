@@ -1,5 +1,6 @@
 import React from 'react';
 import Navigation from './Navigation';
+import { Link } from 'react-router-dom';
 
 const InvestmentPlatform: React.FC = () => {
 
@@ -8,14 +9,14 @@ const InvestmentPlatform: React.FC = () => {
     return (<>
         <Navigation />
         <div className="bg-black text-white min-h-screen flex items-center justify-center gap-52">
-            <div className='flex flex-col justify-center items-center gap-8'>
+            <Link to={"/clone"} className='flex flex-col justify-center items-center gap-8'>
                 <img src="/dice 1.png" alt="Logo" />
                 <p className='font-semibold text-2xl'>AI Clone</p>
-            </div>
-            <div className='flex flex-col justify-center items-center gap-8'>
+            </Link>
+            <Link to={"/market-watch"} className='flex flex-col justify-center items-center gap-8'>
                 <img src="/polygon_1.png" alt="Logo" />
                 <p className='font-semibold text-2xl'>Market Watch</p>
-            </div>
+            </Link>
             <div className='flex flex-col justify-center items-center gap-4'>
                 <img src="/icon-park-outline_virtual-reality-glasses.png" alt="Logo" />
                 <p className='font-semibold text-2xl'>Portfolio Tracking</p>
